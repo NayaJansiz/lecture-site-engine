@@ -63,31 +63,34 @@ parts:
   mcq:
     enabled: true
     heading: "الجزء الثالث: أسئلة اختيار من متعدد (MCQ)"
-    count: 14
+    count: 16
     min_count: 14
     difficulty: [medium, hard]
     forbid_easy_literal: false
     distribution:
-      comparisons: 30
-      code_scenario: 25
-      application: 45
+      comparisons: 25
+      code_scenario: 30      # Python/SQL + مخرجات خوارزمية
+      application: 30
+      algorithm_trace: 15    # تتبع Apriori، k-Means، Decision Tree
 
   debug:
-    enabled: false
+    enabled: true
     heading: "الجزء الرابع: أسئلة تصحيح الكود"
     count: 5
-    cover: [syntax, logic, return_check, dead_code, misconception]
+    cover: [logic, misconception, return_check, dead_code]
 
   exercise:
-    enabled: false
-    heading: "الجزء الرابع: تمارين إضافية (من إعداد الدليل للتدريب)"
-    count_min: 4
-    count_max: 6
+    enabled: true
+    heading: "الجزء الرابع: تمارين تطبيقية (من إعداد الدليل للتدريب)"
+    count_min: 5
+    count_max: 8
     authored_by_guide: true
     types:
       - fill_gaps
       - code_fix
       - scenario
+      - metric_calculation    # حساب Support, Confidence, Entropy, F1
+      - model_apply           # تطبيق k-Means أو Decision Tree على بيانات
 
   analysis_exercise:
     enabled: true
@@ -96,13 +99,15 @@ parts:
     count_max: 8
     types:
       - case_study
-      - table_fill
+      - table_fill            # confusion matrix، itemsets، iterations
       - written_analysis
+      - diagram_completion    # شجرة قرار، مخطط KDD pipeline
 
   trace_exercise:
     enabled: true
     heading: "الجزء الرابع: تمارين تتبع التنفيذ"
-    count_min: 2
+    count_min: 3
+    note: "كل تمرين: بيانات/معطيات + جدول تكرارات ناقص + نموذج الحل — Apriori، k-Means، Gradient Descent"
 
   design_question:
     enabled: false
@@ -129,16 +134,16 @@ parts:
 
   qa_cards:
     enabled: true
-    heading: "الجزء السابع: بطاقات سؤال وجواب (Q&A Cards) — للمراجعة العميقة"
-    count_min: 12
+    heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
+    count_min: 14
 
   reference_code:
-    enabled: false
-    heading: "الجزء الثامن: كتابة الكود الكامل (مرجع شامل)"
+    enabled: true
+    heading: "الجزء الخامس: كتابة الكود الكامل (مرجع شامل)"
     assemble_from_fragments: true
-    same_program_only: true
-    languages: []
-    note: ""
+    same_program_only: false
+    languages: [python]
+    note: "يجمع كود المحاضرة: preprocessing، Apriori، regression، classification، clustering"
 
   checklist:
     enabled: true
@@ -167,7 +172,7 @@ blocks:
     enabled: true
 
   troubleshooting:
-    enabled: false
+    enabled: true
 
   diagrams:
     enabled: true
@@ -196,16 +201,16 @@ blocks:
 
   think_prompt:
     enabled: true
-    min_per_lecture: 2
+    min_per_lecture: 3
 
   tables:
     enabled: true
 
   fill_gaps:
-    enabled: false
+    enabled: true
 
   code_fix:
-    enabled: false
+    enabled: true
 
   images_note:
     enabled: false
@@ -271,6 +276,86 @@ pedagogy:
 assessment:
   mcq_option_letters: arabic
 
+automation_question_types:
+
+  flash_qa:
+    enabled: true
+    label_ar: "مراجعة سريعة (سؤال / جواب)"
+    difficulty: easy
+    count_min: 14
+    parts: [qa_cards, qa_inline, theory]
+    blocks: [qa_inline, callouts]
+    examples:
+      - "ما الفرق بين `Classification` و `Clustering`؟"
+      - "متى نستخدم `Precision` بدل `Accuracy`؟"
+
+  scenario_cluster:
+    enabled: true
+    label_ar: "تحدي مركّب (سيناريو + أسئلة متعددة)"
+    difficulty: hard
+    count_min: 3
+    questions_per_scenario: 4
+    parts: [mcq, debug, theory]
+    blocks: [code, trace, diagrams, tables, equations]
+    scenario_sources:
+      - code_trace
+      - numerical_case
+      - algorithm_state
+    examples:
+      - "جدول `Confusion Matrix` ناقص — احسب `F1`"
+      - "كود `Apriori` — أي itemset يُقصى في التكرار التالي؟"
+      - "بيانات `k-Means` — أي نقطة تنتقل لأي cluster؟"
+
+  hands_on:
+    enabled: true
+    label_ar: "تطبيق عملي (أكمل / صحّح / نفّذ)"
+    difficulty: medium
+    count_min: 5
+    parts: [exercise, analysis_exercise, debug]
+    blocks: [fill_gaps, code_fix, algorithm, expected_output, tables]
+    types:
+      - fill_gaps
+      - code_fix
+      - table_fill
+      - metric_calculation
+      - model_apply
+
+  step_trace:
+    enabled: true
+    label_ar: "تتبع خطوة بخطوة (جدول ناقص)"
+    difficulty: medium
+    count_min: 3
+    parts: [trace_exercise, mcq]
+    blocks: [trace, algorithm, tables, diagrams]
+    trace_targets:
+      - algorithm_iterations
+      - variable_state
+
+  compare_analyze:
+    enabled: true
+    label_ar: "مقارنة وتحليل"
+    difficulty: medium
+    count_min: 4
+    parts: [mcq, theory, analysis_exercise]
+    blocks: [compare, trade_off, tables]
+
+  find_the_bug:
+    enabled: true
+    label_ar: "اكتشف الخطأ (كود / منطق / حساب)"
+    difficulty: hard
+    count_min: 4
+    parts: [debug, exercise]
+    blocks: [code_fix, troubleshooting]
+    bug_types: [logic, misconception, wrong_formula, off_by_one]
+
+  structured_theory:
+    enabled: true
+    label_ar: "نظري منظم"
+    difficulty: medium
+    count_min: 8
+    parts: [theory, mcq]
+    blocks: [compare, tables, callouts]
+
 output:
   validation_footer: true
   schema_reference: "SCHEMA.md v1.0"
@@ -281,3 +366,11 @@ output:
     - "الأقسام مرقّمة هرمياً (1، 1.1، 2 …)"
     - "استخدمت جداول لكل مقارنة وقائمة تعريفات"
     - "كل مصطلح إنجليزي بين backticks"
+    - "≥16 سؤال MCQ مع تعليل كامل"
+    - "≥5 أسئلة تصحيح كود Python"
+    - "≥3 تمارين تتبع (Apriori، k-Means، Gradient Descent)"
+    - "≥5 تمارين تطبيقية مع نموذج حل"
+    - "≥14 بطاقة Q/A مراجعة سريعة"
+    - "≥3 سيناريوهات مركّبة × 4 أسئلة MCQ لكل سيناريو"
+    - "حسابات `Support`، `Confidence`، `Entropy`، `F1` مع أمثلة"
+    - "قارنت بين خوارزميات التصنيف والتجميع"

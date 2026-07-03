@@ -1,0 +1,423 @@
+schema_version: "1.0"
+
+# ─── Subject identity ─────────────────────────────────────────────────────────
+subject:
+  id: ai-theory
+  name_ar: "الذكاء الاصطناعي"
+  name_en: "Artificial Intelligence"
+  tagline: "منطق + خوارزميات + بحث + تعلم"
+  section_label: "القسم النظري"
+
+# ─── Locale & terminology ─────────────────────────────────────────────────────
+locale:
+  language: ar
+  direction: rtl
+  terms_in_backticks: true
+  inline_code_comments: english
+  extra_explanation_tag: "(شرح زيادة للفهم)"
+  not_in_lecture_tag: "(غير مشروحة في المحاضرة)"
+
+# ─── Domain ───────────────────────────────────────────────────────────────────
+domain: mixed
+
+domain_profile:
+  content_types:
+    - theory
+    - diagrams
+    - tables
+    - pseudocode
+    - equations
+  forbid_adding:
+    - "Java"
+    - "C++"
+    - "Python"
+    - "JavaScript"
+    - "SQL"
+    - "HTML"
+  prerequisites:
+    - "Basic logic"
+    - "Simple algorithms"
+
+# ─── Lecture heading ──────────────────────────────────────────────────────────
+lecture:
+  unit_label: "المحاضرة"
+  split_regex: "^# المحاضرة "
+  title_pattern: "# {unit_label} {num} — {title_en} ({title_ar})"
+  intro_blockquote: true
+
+# ─── Parts ────────────────────────────────────────────────────────────────────
+parts:
+
+  integration_map:
+    enabled: true
+    heading: "📌 خريطة التكامل (أين تقع هذه المحاضرة في الدورة؟)"
+
+  detail:
+    enabled: true
+    heading: "الجزء الأول: الشرح التفصيلي (سطر بسطر / فقرة بفقرة)"
+    numbered_sections: true
+    require_per_section:
+      - original_quote
+      - simplified_explanation
+
+  summary:
+    enabled: true
+    heading: "الجزء الثاني: ملخص منظم"
+    subsections:
+      - definitions_table
+      - components_table
+      - comparisons_table
+      - glossary
+      - golden_points
+      - common_mistakes_table
+      - patterns
+      - main_ideas
+
+  mcq:
+    enabled: true
+    heading: "الجزء الثالث: أسئلة اختيار من متعدد (MCQ)"
+    count: 18
+    min_count: 16
+    difficulty: [medium, hard]
+    forbid_easy_literal: false
+    distribution:
+      comparisons: 25        # مقارنة خوارزميات/طرق (BFS vs DFS، Greedy vs A*)
+      code_scenario: 35      # pseudocode + تتبع خطوة + مخرجات خوارزمية
+      application: 25      # تطبيق على مسألة بحث/منطق/تعلم
+      algorithm_trace: 15  # ماذا يحدث في التكرار التالي؟ أي عقدة تُوسَّع؟
+
+  debug:
+    enabled: true
+    heading: "الجزء الرابع: أسئلة تصحيح الخوارزميات (Pseudocode)"
+    count: 6
+    cover: [logic, misconception, return_check, dead_code]   # أخطاء في BFS/DFS/A*/Minimax/Resolution/Chaining
+
+  exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين تطبيقية (من إعداد الدليل للتدريب)"
+    count_min: 5
+    count_max: 8
+    authored_by_guide: true
+    types:
+      - fill_gaps           # إكمال خطوات خوارزمية ناقصة
+      - code_fix            # تصحيح pseudocode خاطئ
+      - scenario            # اختر الخوارزمية/الاستراتيجية المناسبة
+      - search_trace        # تطبيق BFS/DFS/UCS/IDS/A* على مسألة
+      - logic_table         # جدول حقيقة أو entailment
+      - minimax_trace       # تتبع Minimax أو Alpha-Beta
+
+  analysis_exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين تحليل وتطبيق (إضافية — من إعداد الدليل)"
+    count_min: 4
+    count_max: 8
+    types:
+      - case_study
+      - diagram_completion  # إكمال شجرة بحث أو مخطط حالة
+      - table_fill          # جدول frontier/closed، أو خطوات Resolution
+      - written_analysis
+      - heuristic_eval      # حساب f(n)=g(n)+h(n) أو ترتيب العقد
+      - resolution_steps    # تطبيق Resolution خطوة بخطوة
+
+  trace_exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين تتبع الخوارزميات (خطوة بخطوة)"
+    count_min: 4   # BFS, DFS, A*, Minimax, Alpha-Beta, Forward/Backward Chaining, Gradient Descent
+    note: "كل تمرين: المعطيات + جدول/شجرة ناقصة للطالب + نموذج الحل الكامل"
+
+  design_question:
+    enabled: true
+    heading: "الجزء الرابع: أسئلة تصميم"
+    count_min: 2
+    types:
+      - uml_design          # شجرة بحث، state space، activity للوكيل
+      - architecture        # تصميم وكيل PEAS أو نظام بحث/منطق
+
+  theory:
+    enabled: true
+    heading: "الجزء الخامس: أسئلة نظرية متوقعة بالامتحان"
+    count_min: 10
+
+  cheat_sheet:
+    enabled: true
+    heading: "الجزء السادس: ورقة المراجعة السريعة (Cheat Sheet)"
+    subsections:
+      - integration_map_table
+      - golden_rules_table
+      - quick_reference_tables
+
+  qa_cards:
+    enabled: true
+    heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
+    count_min: 16
+
+  reference_code:
+    enabled: true
+    heading: "الجزء الخامس: الخوارزميات الكاملة (مرجع Pseudocode)"
+    assemble_from_fragments: true
+    same_program_only: false
+    languages: [pseudocode]
+    note: "يجمع pseudocode لخوارزميات المحاضرة: BFS, DFS, A*, Minimax, Resolution, Gradient Descent"
+
+  checklist:
+    enabled: true
+    heading: "الجزء السادس: قائمة فحص ذاتي قبل الامتحان ✅"
+
+# ─── Blocks ───────────────────────────────────────────────────────────────────
+blocks:
+
+  original_quote:
+    enabled: true
+
+  simplified_explanation:
+    enabled: true
+
+  code:
+    enabled: true
+    languages: [pseudocode]
+    require_line_explain: true
+
+  line_explain:
+    enabled: true
+    format: numbered_list
+
+  imports:
+    enabled: false
+
+  expected_output:
+    enabled: true   # مخرجات خوارزمية: ترتيب العقد، الحل، القيمة، جدول البحث
+
+  troubleshooting:
+    enabled: true   # أخطاء شائعة في تطبيق الخوارزميات والمنطق
+
+  diagrams:
+    enabled: true
+    types: [flowchart, bpmn, decision-tree, dfd]
+    require_node_table: true
+    require_edge_table: true
+
+  uml:
+    enabled: true
+    types: [usecase, class, activity, flowchart]
+
+  screen_description:
+    enabled: false
+
+  algorithm:
+    enabled: true
+
+  structured_english:
+    enabled: true
+
+  compare:
+    enabled: true
+
+  callouts:
+    enabled: true
+
+  think_prompt:
+    enabled: true
+    min_per_lecture: 3
+
+  tables:
+    enabled: true
+
+  fill_gaps:
+    enabled: true   # خطوات خوارزمية ناقصة، شروط، أو قواعد استنتاج
+
+  code_fix:
+    enabled: true   # تصحيح pseudocode خاطئ في البحث/المنطق/التعلم
+
+  images_note:
+    enabled: false
+
+  qa_inline:
+    enabled: true
+
+  analogy:
+    enabled: true
+
+  trade_off:
+    enabled: true
+
+  before_after:
+    enabled: true
+
+  trace:
+    enabled: true
+
+  equations:
+    enabled: true
+    display_mode: both
+    require_explanation: true
+    common_symbols:
+      - "f(n)"
+      - "g(n)"
+      - "h(n)"
+      - "C*"
+      - "P*"
+      - "α"
+      - "β"
+      - "θ"
+      - "J(θ)"
+      - "∇"
+      - "∀"
+      - "∃"
+      - "⊢"
+      - "⊨"
+
+# ─── Pedagogy flags ───────────────────────────────────────────────────────────
+pedagogy:
+  cover_every_line: true
+  complete_gaps: true
+  beginner_friendly: true
+  explain_why: true
+  daily_analogy_plus_example: true
+  follow_lecture_order: true
+  adapt_to_lecture_type: true
+
+  lecture_types:
+    - id: ai_intro
+      match: "Introduction"
+      tools: ["Turing Test", "Cognitive Science", "Laws of Thought", "Rational Agent"]
+    - id: intelligent_agents
+      match: "Intelligent Agents"
+      tools: ["PEAS", "Environment Types", "Agent Function", "Rationality"]
+    - id: problem_solving_search
+      match: "Problem Solving and Search"
+      tools: ["BFS", "DFS", "Uniform Cost", "IDS", "A*", "Greedy"]
+    - id: local_search
+      match: "Local Search Algorithms"
+      tools: ["Hill Climbing", "Simulated Annealing", "Genetic Algorithms"]
+    - id: game_playing
+      match: "Game Playing"
+      tools: ["Minimax", "Alpha-Beta Pruning", "Utility"]
+    - id: logical_agents
+      match: "Logical Agent"
+      tools: ["Propositional Logic", "Entailment", "Resolution", "Forward Chaining", "Backward Chaining"]
+    - id: first_order_logic
+      match: "First-Order Logic"
+      tools: ["Syntax", "Semantics", "Quantifiers", "Unification"]
+    - id: inference_fol
+      match: "Inference in First-Order Logic"
+      tools: ["Universal Instantiation", "Existential Instantiation", "Forward Chaining", "Backward Chaining", "Resolution"]
+    - id: machine_learning
+      match: "Machine Learning"
+      tools: ["Supervised", "Unsupervised", "Reinforcement", "Representation", "Optimization", "Evaluation"]
+    - id: linear_regression
+      match: "Linear Regression"
+      tools: ["Cost Function", "Gradient Descent", "Learning Rate", "Convergence"]
+    - id: rule_learning
+      match: "Rule Learning"
+      tools: ["Divide and Conquer", "Rule Induction", "Pruning"]
+
+# ─── Assessment ───────────────────────────────────────────────────────────────
+assessment:
+  mcq_option_letters: arabic
+
+automation_question_types:
+
+  flash_qa:
+    enabled: true
+    label_ar: "مراجعة سريعة (سؤال / جواب)"
+    difficulty: easy
+    count_min: 16
+    parts: [qa_cards, qa_inline, theory]
+    blocks: [qa_inline, callouts]
+    examples:
+      - "ما الفرق بين `BFS` و `DFS`؟"
+      - "ما شروط الاستعصاء الأربعة؟"
+
+  scenario_cluster:
+    enabled: true
+    label_ar: "تحدي مركّب (سيناريو + أسئلة متعددة)"
+    difficulty: hard
+    count_min: 3
+    questions_per_scenario: 4
+    parts: [mcq, debug, theory]
+    blocks: [code, trace, diagrams, tables, equations]
+    scenario_sources:
+      - code_trace
+      - algorithm_state
+      - logic_entailment
+      - system_design
+    examples:
+      - "شجرة بحث `A*` ناقصة — أي عقدة تُوسَّع تالياً؟"
+      - "كود `Minimax` + alpha-beta — أي عقدة تُقصى؟"
+      - "قواعد منطقية — أي استنتاج صحيح؟"
+
+  hands_on:
+    enabled: true
+    label_ar: "تطبيق عملي (أكمل / صحّح)"
+    difficulty: medium
+    count_min: 5
+    parts: [exercise, analysis_exercise, debug]
+    blocks: [fill_gaps, code_fix, algorithm, expected_output, tables]
+    types:
+      - fill_gaps
+      - code_fix
+      - search_trace
+      - logic_table
+      - minimax_trace
+      - heuristic_eval
+
+  step_trace:
+    enabled: true
+    label_ar: "تتبع خطوة بخطوة"
+    difficulty: medium
+    count_min: 4
+    parts: [trace_exercise, mcq]
+    blocks: [trace, algorithm, tables, diagrams]
+    trace_targets:
+      - algorithm_iterations
+      - search_tree_expansion
+      - variable_state
+
+  compare_analyze:
+    enabled: true
+    label_ar: "مقارنة وتحليل"
+    difficulty: medium
+    count_min: 4
+    parts: [mcq, theory, analysis_exercise]
+    blocks: [compare, trade_off, tables, analogy]
+
+  find_the_bug:
+    enabled: true
+    label_ar: "اكتشف الخطأ (pseudocode / منطق)"
+    difficulty: hard
+    count_min: 4
+    parts: [debug, exercise]
+    blocks: [code_fix, compare, troubleshooting]
+    bug_types: [logic, misconception, infinite_loop, wrong_heuristic]
+
+  structured_theory:
+    enabled: true
+    label_ar: "نظري منظم"
+    difficulty: medium
+    count_min: 10
+    parts: [theory, mcq]
+    blocks: [compare, tables, callouts]
+
+output:
+  validation_footer: true
+  schema_reference: "SCHEMA.md v1.0"
+  closing_line: "ابدأ الآن. سأرسل المحاضرة في الرسالة التالية."
+  checklist_items:
+    - "غطّيت كل معلومة وردت في المحاضرة"
+    - "كل قسم يبدأ بـ «النص الأصلي يقول» + «الشرح المبسّط»"
+    - "الأقسام مرقّمة هرمياً (1، 1.1، 2 …)"
+    - "استخدمت جداول لكل مقارنة وقائمة تعريفات"
+    - "كل مصطلح إنجليزي بين backticks"
+    - "كل معادلة رياضية لها شرح بعدها"
+    - "18 سؤال MCQ مع تعليل كامل — يشمل سيناريوهات خوارزمية"
+    - "6 أسئلة تصحيح pseudocode (منطق/سوء فهم/إرجاع)"
+    - "≥4 تمارين تتبع خطوة بخطوة (بحث، Minimax، Resolution، Gradient Descent)"
+    - "≥5 تمارين تطبيقية مع نموذج حل (fill_gaps، code_fix، search_trace)"
+    - "تمارين تحليل: جداول ناقصة + إكمال مخططات + heuristic_eval"
+    - "≥10 أسئلة نظرية مع نموذج إجابة منظم"
+    - "≥16 بطاقة Q&A للمراجعة السريعة"
+    - "قارنت بين خوارزميات البحث (اكتمال، optimality، تعقيد)"
+    - "غطّيت Forward/Backward Chaining و Resolution في FOL"
+    - "≥3 سيناريوهات مركّبة × 4 أسئلة MCQ لكل سيناريو"
+    - "≥4 أسئلة اكتشف الخطأ في pseudocode"
+    - "مراجعة سريعة: ≥16 بطاقة Q/A (flash_qa)"

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * Generate dist/contrib/index.html — easy GitHub upload links (no Decap CMS / OAuth).
+ * Generate dist/contrib/index.html — Fork + PR (no Collaborator / Write needed on public repo).
  */
 import { existsSync } from 'node:fs';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { listAllSubjectDirs } from './lib/scaffold-subject.mjs';
+import { listAllSubjectDirs, parseSubjectBrief } from './lib/scaffold-subject.mjs';
 import { ENGINE_ROOT } from './lib/subject-paths.mjs';
 
 const REPO = (process.env.GITHUB_REPOSITORY || 'Shahd-Abbara/lecture-site-engine');
-const BRANCH = process.env.GITHUB_BRANCH || 'main';
+const MAIN_BRANCH = process.env.GITHUB_BRANCH || 'main';
 const GH = `https://github.com/${REPO}`;
 
 function esc(s) {
@@ -22,6 +22,13 @@ function esc(s) {
 
 /** @param {string} subjectRel */
 async function subjectTitle(subjectRel) {
+  const briefPath = path.join(ENGINE_ROOT, 'subjects', subjectRel, 'subject-brief.yaml');
+  if (existsSync(briefPath)) {
+    try {
+      const brief = parseSubjectBrief(await readFile(briefPath, 'utf8'));
+      if (brief.name_ar) return brief.name_ar;
+    } catch { /* ignore */ }
+  }
   const manifestPath = path.join(ENGINE_ROOT, 'subjects', subjectRel, 'lectures/manifest.json');
   if (existsSync(manifestPath)) {
     try {
@@ -37,23 +44,14 @@ function lecturePath(subjectRel) {
   return `subjects/${subjectRel}/lectures`;
 }
 
-/** @param {string} subjectRel */
-function links(subjectRel) {
-  const folder = lecturePath(subjectRel);
-  const enc = folder.split('/').map(encodeURIComponent).join('/');
-  return {
-    newPar: `${GH}/new/${BRANCH}/${enc}?filename=parN.md`,
-    upload: `${GH}/upload/${BRANCH}/${enc}`,
-    folder: `${GH}/tree/${BRANCH}/${enc}`,
-  };
-}
-
 async function main() {
-  const subjectRels = (await listAllSubjectDirs()).filter(s =>
-    existsSync(path.join(ENGINE_ROOT, 'subjects', s, 'lectures')),
-  );
+  const subjectRels = (await listAllSubjectDirs()).filter(s => {
+    const base = path.join(ENGINE_ROOT, 'subjects', s);
+    return existsSync(path.join(base, 'lectures'))
+      || existsSync(path.join(base, 'subject-brief.yaml'));
+  });
 
-  /** @type {{ year: number, id: string, title: string, path: string, links: ReturnType<typeof links> }[]} */
+  /** @type {{ year: number, id: string, title: string, path: string }[]} */
   const subjects = await Promise.all(subjectRels.map(async id => {
     const year = Number(id.match(/^year-(\d)/)?.[1] || 0);
     return {
@@ -61,7 +59,6 @@ async function main() {
       id,
       title: await subjectTitle(id),
       path: lecturePath(id),
-      links: links(id),
     };
   }));
 
@@ -93,12 +90,12 @@ async function main() {
     .card.is-visible { display: block; }
     .card__title { font-size: 1.05rem; margin: 0 0 0.35rem; color: #1e5a8a; }
     .card__path { font-size: 0.78rem; color: #666; font-family: monospace; margin: 0 0 1rem; word-break: break-all; }
-    .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .btn { display: inline-block; padding: 0.5rem 0.85rem; border-radius: 8px; font-size: 0.9rem; text-decoration: none; background: #e8eef4; color: #1a1a1a; border: 1px solid #c5d0dc; }
+    .actions { display: flex; flex-direction: column; gap: 0.5rem; }
+    .btn { display: block; text-align: center; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.95rem; text-decoration: none; background: #e8eef4; color: #1a1a1a; border: 1px solid #c5d0dc; }
     .btn:hover { background: #dce6f0; }
-    .btn--primary { background: #1e5a8a; color: #fff; border-color: #1e5a8a; }
+    .btn--primary { background: #1e5a8a; color: #fff; border-color: #1e5a8a; font-weight: 600; }
     .btn--primary:hover { background: #164a72; }
-    .btn--ghost { background: transparent; }
+    .btn--ghost { background: transparent; font-size: 0.88rem; }
     .btn.is-disabled { pointer-events: none; opacity: 0.45; }
     .steps { background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; border: 1px solid #dde3ea; font-size: 0.9rem; }
     .steps ol { margin: 0.5rem 0 0; padding-right: 1.25rem; }
@@ -107,6 +104,7 @@ async function main() {
     .naming code { background: #e8eef4; padding: 0.1rem 0.35rem; border-radius: 4px; }
     .back { display: inline-block; margin-bottom: 1rem; color: #1e5a8a; text-decoration: none; }
     .note { font-size: 0.85rem; color: #666; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #dde3ea; }
+    .note--ok { background: #eef8f0; border: 1px solid #b8dcc0; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; color: #1f4d2a; font-size: 0.88rem; }
     .empty { color: #888; text-align: center; padding: 1rem; }
   </style>
 </head>
@@ -114,7 +112,12 @@ async function main() {
   <div class="wrap">
     <a class="back" href="../">← الصفحة الرئيسية</a>
     <h1>📤 رفع محاضرة</h1>
-    <p class="lead">اختر السنة والمادة → ارفع الملف على GitHub → افتح Pull Request.</p>
+    <p class="lead">زر واحد → GitHub يعمل <strong>Fork</strong> تلقائياً → تحفظ → <strong>Pull Request</strong>. بدون صلاحية على المستودع.</p>
+
+    <div class="note--ok">
+      <strong>ما بتحتاجي تضيفيهم Collaborator.</strong> المستودع Public + هالواجهة كافية.
+      <code>main</code> و <code>dev</code> محميين — التعديل بيوصل بس عبر PR وأنتِ بتوافقي.
+    </div>
 
     <div class="panel">
       <div class="field">
@@ -136,35 +139,37 @@ async function main() {
       <h2 class="card__title" id="cardTitle"></h2>
       <p class="card__path" id="cardPath"></p>
       <div class="actions">
-        <a class="btn btn--primary is-disabled" id="btnNew" href="#" target="_blank" rel="noopener">➕ محاضرة جديدة</a>
-        <a class="btn is-disabled" id="btnUpload" href="#" target="_blank" rel="noopener">📤 رفع ملف</a>
-        <a class="btn btn--ghost is-disabled" id="btnFolder" href="#" target="_blank" rel="noopener">📁 عرض المجلد</a>
+        <a class="btn btn--primary is-disabled" id="btnSubmit" href="#" target="_blank" rel="noopener">📤 Fork ورفع المحاضرة</a>
+        <a class="btn btn--ghost is-disabled" id="btnFolder" href="#" target="_blank" rel="noopener">📁 عرض مجلد المحاضرات</a>
       </div>
     </article>
 
     <div class="steps">
-      <strong>بعد اختيار المادة:</strong>
+      <strong>شو بيصير لما يضغطوا الزر:</strong>
       <ol>
-        <li>اضغط <strong>محاضرة جديدة</strong> أو <strong>رفع ملف</strong></li>
-        <li>سمِّ الملف حسب القاعدة أدناه</li>
-        <li>الصق المحتوى (حسب SCHEMA.md) واحفظ على GitHub</li>
-        <li>افتح <a href="${esc(GH)}/compare" target="_blank" rel="noopener">Pull Request</a> → CI يتحقق → Merge → الموقع يتحدّث</li>
+        <li>يفتح GitHub — إذا أول مرة يطلب <strong>Fork this repository</strong> → يضغطوا Fork</li>
+        <li>يفتح محرّر ملف جديد — يسمّوه <code>parN.md</code> ويلصقوا المحتوى</li>
+        <li>عند الحفظ: يختاروا <strong>Propose changes</strong> / <strong>Create a new branch and start a pull request</strong></li>
+        <li>GitHub يفتح Pull Request نحو <code>main</code> — يضغطوا Create</li>
+        <li>بعد نجاح CI → أنتِ Merge → الموقع يتحدّث</li>
       </ol>
       <div class="naming">
         <strong>تسمية الملف:</strong><br>
-        <code>parN.md</code> — محاضرة كاملة (<strong>N</strong> = رقم المحاضرة، مثل 1 أو 5)<br>
-        <code>parN-secM.md</code> — جزء من محاضرة (<strong>N</strong> = رقم المحاضرة، <strong>M</strong> = رقم الجزء: 1، 2، 3…)<br>
-        <span style="color:#666">مثال: <code>par1.md</code> · <code>par1-sec1.md</code> · <code>par1-sec2.md</code> · <code>par5-sec3.md</code></span>
+        <code>parN.md</code> — محاضرة كاملة<br>
+        <code>parN-secM.md</code> — جزء من محاضرة<br>
+        <span style="color:#666">مثال: <code>par1.md</code> · <code>par1-sec1.md</code></span>
       </div>
     </div>
 
     ${subjects.length ? '' : '<p class="empty">لا توجد مواد بعد.</p>'}
 
     <p class="note">
-      لا تحتاج تعديل <code>manifest.json</code> — يُزامَن تلقائياً.
+      لا تحتاج تعديل <code>manifest.json</code> — يُزامَن تلقائياً عند الـ PR.
     </p>
   </div>
   <script>
+    const GH = ${JSON.stringify(GH)};
+    const MAIN_BRANCH = ${JSON.stringify(MAIN_BRANCH)};
     const SUBJECTS = ${subjectsJson};
 
     const yearSelect = document.getElementById('yearSelect');
@@ -172,9 +177,21 @@ async function main() {
     const card = document.getElementById('subjectCard');
     const cardTitle = document.getElementById('cardTitle');
     const cardPath = document.getElementById('cardPath');
-    const btnNew = document.getElementById('btnNew');
-    const btnUpload = document.getElementById('btnUpload');
+    const btnSubmit = document.getElementById('btnSubmit');
     const btnFolder = document.getElementById('btnFolder');
+
+    function encPath(folder) {
+      return folder.split('/').map(encodeURIComponent).join('/');
+    }
+
+    /**
+     * Upstream /new/main/... — GitHub prompts Fork for users without write access,
+     * then edits on their fork and offers PR to main.
+     */
+    function forkSubmitUrl(s) {
+      const enc = encPath(s.path);
+      return GH + '/new/' + encodeURIComponent(MAIN_BRANCH) + '/' + enc + '?filename=parN.md';
+    }
 
     function setBtn(btn, href, on) {
       btn.href = href || '#';
@@ -183,17 +200,15 @@ async function main() {
 
     function hideCard() {
       card.classList.remove('is-visible');
-      setBtn(btnNew, '#', false);
-      setBtn(btnUpload, '#', false);
+      setBtn(btnSubmit, '#', false);
       setBtn(btnFolder, '#', false);
     }
 
     function showSubject(s) {
       cardTitle.textContent = s.title;
       cardPath.textContent = s.path + '/';
-      setBtn(btnNew, s.links.newPar, true);
-      setBtn(btnUpload, s.links.upload, true);
-      setBtn(btnFolder, s.links.folder, true);
+      setBtn(btnSubmit, forkSubmitUrl(s), true);
+      setBtn(btnFolder, GH + '/tree/' + encodeURIComponent(MAIN_BRANCH) + '/' + encPath(s.path), true);
       card.classList.add('is-visible');
     }
 

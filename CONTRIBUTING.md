@@ -19,7 +19,16 @@ Do **not** modify `parser/`, `renderer/`, `site-shell/`, or `build/` unless you 
 3. Use AI to produce `lectures/parN.md` following `SCHEMA.md`.
 4. Open a Pull Request to `main` — **Validate lectures** auto-syncs `manifest.json` from your new files.
 
-**الطريقة الأسهل:** افتح [/contrib/](https://shahd-abbara.github.io/lecture-site-engine/contrib/) → اختر المادة → ارفع `parN.md` مباشرة على GitHub (بدون Decap CMS).
+**الطريقة الأسهل:** افتح [/contrib/](https://shahd-abbara.github.io/lecture-site-engine/contrib/) → اختر المادة → **Fork ورفع المحاضرة** (زر واحد) → Pull Request إلى `main`. **لا تحتاج صلاحية Collaborator** على مستودع public.
+
+**لا تعدّل `main` ولا `dev` مباشرة** — الفرعان محميان؛ أي تغيير عبر PR فقط.
+
+## صلاحيات المساهمين (للمشرف)
+
+1. المستودع **Public**.
+2. **Branch protection** على `main` **و** `dev` (PR مطلوب + CI).
+3. المساهمون **لا يحتاجون** Collaborator — Fork + PR من [/contrib/](https://shahd-abbara.github.io/lecture-site-engine/contrib/).
+4. الـ PR دائماً يستهدف **`main`** — بعد الدمج يُنشر الموقع تلقائياً.
 
 ## CI on Pull Request
 

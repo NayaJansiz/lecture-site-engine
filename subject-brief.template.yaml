@@ -21,7 +21,28 @@
 #   - املأ subject (name_ar, name_en, tagline, section_label) من اسم المادة
 #   - املأ lecture_types تحت pedagogy إذا adapt_to_lecture_type: true
 #   - فعّل reference_code إذا المحاضرة تشرح برنامجاً واحداً على دفعات — يُجمَّع كود كامل في النهاية
-#   - فعّل equations للمواد الرياضية (Work, Span, Amdahl, تعقيد، إلخ)
+#   - فعّل equations للمواد الرياضية (تعقيد، A* f(n), تكامل، إلخ)
+#
+# ═══ أولوية الأتمتة (الفحص كله أتمتة — هذا الأهم) ═══
+#   الهدف: أكبر عدد ممكن من أسئلة/تمارين قابلة للتصحيح الآلي مع نموذج إجابة واضح.
+#
+#   فعّل دائماً إن أمكن:
+#     mcq (≥16) | theory (≥8) | trace_exercise (≥3) | exercise (≥4) |
+#     analysis_exercise | qa_cards (≥12) | checklist | fill_gaps | code_fix
+#
+#   فعّل حسب المادة:
+#     programming  → code + debug + reference_code + imports + expected_output
+#     analysis     → trace_exercise + table_fill + numerical_solve + equations + algorithm
+#     theory/mixed → pseudocode + debug(logic) + algorithm_trace في MCQ + diagrams
+#
+#   ارفع count/count_min — لا تكتفِ بالحد الأدنى. كل جزء يحتاج نموذج حل كامل.
+#   أضف في checklist_items بنوداً تتحقق من وجود كل نوع سؤال مفعّل.
+#
+#   توزيع MCQ المقترح للأتمتة:
+#     comparisons 20–30% | code_scenario/algorithm_trace 30–40% | application 25–40%
+#
+#   املأ قسم automation_question_types — 6 أنواع جاهزة، فعّل ما يناسب المادة واضبط count_min.
+#   كل نوع يربط parts + blocks + صيغة الإخراج — لا تكتفِ بالنظري فقط.
 #
 # قواعد صارمة:
 #   - أبقِ schema_version: "1.0" كما هو
@@ -129,34 +150,35 @@ parts:
   mcq:
     enabled: true
     heading: "الجزء الثالث: أسئلة اختيار من متعدد (MCQ)"
-    count: 14
-    min_count: 14                   # optional — minimum if count is approximate
-    difficulty: [medium, hard]      # easy | medium | hard (list the allowed levels)
-    forbid_easy_literal: false      # true → no trivial recall questions
-    distribution:                   # optional — approximate percentages
-      comparisons: 40
+    count: 16                       # للأتمتة: ≥16 — لا تقل عن 14
+    min_count: 14
+    difficulty: [medium, hard]
+    forbid_easy_literal: false
+    distribution:                   # اضبط حسب المادة — أضف algorithm_trace أو numerical_trace إن لزم
+      comparisons: 25
       code_scenario: 35
-      application: 25
+      application: 30
+      algorithm_trace: 10           # اختياري — تتبع خطوة/مخرج خوارزمية
 
   debug:
-    enabled: false
+    enabled: false                  # للأتمتة: فعّل إذا فيها كود أو pseudocode
     heading: "الجزء الرابع: أسئلة تصحيح الكود"
     count: 5
-    cover: [syntax, logic, return_check, dead_code, misconception]
+    cover: [logic, misconception, return_check, dead_code]
 
   exercise:
-    enabled: false
+    enabled: true                   # للأتمتة: فعّل دائماً — تمارين مع نموذج حل
     heading: "الجزء الرابع: تمارين إضافية (من إعداد الدليل للتدريب)"
     count_min: 4
-    count_max: 6
-    authored_by_guide: true         # true → AI must write: «هذه تمارين إضافية»
+    count_max: 7
+    authored_by_guide: true
     types:
-      - fill_gaps                   # كود ناقص
-      - code_fix                    # تصحيح كود
-      - scenario                    # write code from description
+      - fill_gaps
+      - code_fix
+      - scenario
 
   analysis_exercise:
-    enabled: false
+    enabled: true                   # للأتمتة: جداول ناقصة + إكمال مخططات
     heading: "الجزء الرابع: تمارين تحليل وتطبيق (إضافية — من إعداد الدليل)"
     count_min: 3
     count_max: 6
@@ -167,9 +189,10 @@ parts:
       - written_analysis
 
   trace_exercise:
-    enabled: false
+    enabled: true                   # للأتمتة: الأهم — جدول ناقص + نموذج حل
     heading: "الجزء الرابع: تمارين تتبع التنفيذ"
-    count_min: 2                    # each exercise: input + incomplete table for student + model solution
+    count_min: 3
+    note: "كل تمرين: مدخل + جدول/شجرة ناقصة للطالب + نموذج الحل الكامل"
 
   design_question:
     enabled: false
@@ -184,7 +207,7 @@ parts:
   theory:
     enabled: true
     heading: "الجزء الخامس: أسئلة نظرية متوقعة بالامتحان"
-    count_min: 5
+    count_min: 8                    # للأتمتة: ≥8 أسئلة مع نموذج إجابة
 
   cheat_sheet:
     enabled: true
@@ -195,9 +218,9 @@ parts:
       - quick_reference_tables
 
   qa_cards:
-    enabled: false
-    heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards) — للمراجعة العميقة"
-    count_min: 10
+    enabled: true                   # للأتمتة: مراجعة سريعة Q/A
+    heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
+    count_min: 12
 
   reference_code:
     enabled: false
@@ -208,7 +231,7 @@ parts:
     note: ""                        # optional — extra instructions for meta-prompt
 
   checklist:
-    enabled: false
+    enabled: true                   # للأتمتة: تحقق من اكتمال كل أنواع الأسئلة
     heading: "الجزء السادس: قائمة فحص ذاتي قبل الامتحان ✅"
 
 # ─── Blocks ───────────────────────────────────────────────────────────────────
@@ -267,17 +290,17 @@ blocks:
     enabled: true                   # مهم للامتحان | نقطة مهمة | ملاحظة | الدرس المستفاد
 
   think_prompt:
-    enabled: false
-    min_per_lecture: 2              # 🤔 تفعيل الفهم — minimum uses per lecture
+    enabled: true
+    min_per_lecture: 3
 
   tables:
     enabled: true                   # mandatory for comparisons and definitions
 
   fill_gaps:
-    enabled: false                  # _______ or // (N) markers in code
+    enabled: true                   # للأتمتة: خطوات/كود ناقص — _______ أو // (N)
 
   code_fix:
-    enabled: false                  # show buggy code, then fixed code
+    enabled: true                   # للأتمتة: كود خاطئ ثم مصحّح
 
   images_note:
     enabled: false                  # note slide/page number for lecture images
@@ -328,6 +351,137 @@ pedagogy:
 assessment:
   mcq_option_letters: arabic        # arabic (أ ب ج د) | latin (a b c d)
 
+# ─── أنواع أسئلة الأتمتة ─────────────────────────────────────────────────────
+# يحدد **أنواع** الأسئلة القابلة للتصحيح الآلي — ليس نظرياً فقط.
+# فعّل الأنواع المناسبة للمادة واضبط count_min. كل نوع مفعّل يجب أن يظهر في المحاضرة.
+# الـ AI يقرأ: enabled, count_min, parts, blocks, format — ويولّد المحتوى accordingly.
+
+automation_question_types:
+
+  # ── 1. مراجعة سريعة: سؤال ← جواب ← سؤال ← جواب ─────────────────────────────
+  flash_qa:
+    enabled: true
+    label_ar: "مراجعة سريعة (سؤال / جواب)"
+    difficulty: easy
+    count_min: 12                   # لكل محاضرة: ≥12 بطاقة أو زوج inline
+    parts: [qa_cards, qa_inline, theory]
+    blocks: [qa_inline, callouts]
+    format: |
+      **Q{N}:** سؤال مراجعة مباشر (تعريف، فرق، متى نستخدم)
+      **A:** إجابة مختصرة قابلة للمقارنة الآلية (جملة أو جملتان)
+      — بدون تعليل طويل. مناسب للحفظ السريع قبل الامتحان.
+    examples:
+      - "ما الفرق بين `BFS` و `DFS`؟"
+      - "متى نستخدم `LRU` بدل `FIFO`؟"
+
+  # ── 2. تحدي صعب: سيناريو واحد + عدة أسئلة MCQ عليه ───────────────────────
+  scenario_cluster:
+    enabled: true
+    label_ar: "تحدي مركّب (سيناريو + أسئلة متعددة)"
+    difficulty: hard
+    count_min: 3                    # 3 سيناريوهات × 3–5 أسئلة لكل سيناريو
+    questions_per_scenario: 4
+    parts: [mcq, debug, theory]
+    blocks: [code, trace, diagrams, tables, compare, equations]
+    format: |
+      ### السيناريو {N}: {عنوان}
+      > [وصف الحالة: كود، جدول، مخطط، أو مسألة رياضية كاملة — 5–10 أسطر]
+      ثم 3–5 أسئلة MCQ **كلها مبنية على نفس السيناريو** (لا تكرر نفس الفكرة):
+      ### السؤال {N}.1 (hard) … أ) ب) ج) د) + تعليل
+      كل سيناريو يختبر: فهم + تطبيق + قرار (أي خطوة تالية؟ أي ناتج؟ أين الخطأ؟)
+    scenario_sources:               # اختر ما ينطبق على المادة
+      - code_trace                  # كود/pseudocode + ماذا يطبع؟ ماذا يحدث بعد التكرار؟
+      - numerical_case              # معطيات رقمية + حساب خطوة أو ناتج نهائي
+      - algorithm_state             # جدول frontier/closed أو تكرارات خوارزمية
+      - logic_entailment            # قواعد منطقية + أي استنتاج صحيح؟
+      - system_design               # وكيل/نظام + قرار تصميمي
+    examples:
+      - "جدول تكرارات `Newton-Raphson` ناقص — أي قيمة في الخلية X؟"
+      - "كود `Minimax` مع alpha-beta — أي عقدة تُقصى؟"
+
+  # ── 3. تطبيق عملي: الطالب ينفّذ أو يكمل ───────────────────────────────────
+  hands_on:
+    enabled: true
+    label_ar: "تطبيق عملي (أكمل / صحّح / نفّذ)"
+    difficulty: medium
+    count_min: 5
+    parts: [exercise, analysis_exercise, debug]
+    blocks: [fill_gaps, code_fix, algorithm, expected_output, tables]
+    types:
+      - fill_gaps           # خطوات ناقصة في كود أو خوارزمية
+      - code_fix            # كود خاطئ → مصحّح
+      - table_fill          # إكمال جدول حسابي أو تكرارات
+      - numerical_solve     # تطبيق طريقة كاملة على أرقام معطاة
+      - diagram_completion  # إكمال عقد/حواف في مخطط
+    format: |
+      كل تمرين: **المعطيات** + **المطلوب** (مرقّم) + **نموذج الحل الكامل**
+      الطالب يجيب بقيمة/جدول/كود — الإجابة قابلة للمقارنة حرفياً أو رقمياً.
+
+  # ── 4. تتبع خطوة بخطوة: جدول ناقص + نموذج حل ─────────────────────────────
+  step_trace:
+    enabled: true
+    label_ar: "تتبع خطوة بخطوة (جدول ناقص)"
+    difficulty: medium
+    count_min: 3
+    parts: [trace_exercise, mcq]
+    blocks: [trace, algorithm, tables, diagrams]
+    format: |
+      **المدخل:** {حالة ابتدائية}
+      **أكمل الجدول:**
+      | الخطوة | العملية | الحالة |
+      | 1 | ... | ؟ |
+      **نموذج الحل:** جدول مكتمل + **النتيجة النهائية**
+      + 1–2 سؤال MCQ على نفس التتبع (ماذا في الخطوة 3؟)
+    trace_targets:                  # فعّل ما ينطبق
+      - algorithm_iterations        # BFS, DFS, Gauss, Bisection, Newton
+      - variable_state              # قيم متغيرات بعد كل سطر تنفيذ
+      - search_tree_expansion       # أي عقدة تُوسَّع تالياً؟
+      - memory_page_replacement     # إطارات الذاكرة بعد كل page fault
+
+  # ── 5. مقارنة وتحليل: اختر الأفضل / وضّح الفرق ───────────────────────────
+  compare_analyze:
+    enabled: true
+    label_ar: "مقارنة وتحليل (أيهما أفضل؟ لماذا؟)"
+    difficulty: medium
+    count_min: 4
+    parts: [mcq, theory, analysis_exercise]
+    blocks: [compare, trade_off, tables, analogy]
+    format: |
+      سؤال مقارنة بخيارات (أ، ب، ج، د) + تعليل لماذا الباقي خاطئ
+      أو جدول: | المعيار | الخيار A | الخيار B |
+      أو تمرين تحليل: «في الحالة X استخدم Y لأن Z»
+
+  # ── 6. اكتشف الخطأ: كود/منطق/حساب خاطئ ──────────────────────────────────
+  find_the_bug:
+    enabled: true
+    label_ar: "اكتشف الخطأ (كود / منطق / حساب)"
+    difficulty: hard
+    count_min: 4
+    parts: [debug, exercise]
+    blocks: [code_fix, compare, troubleshooting]
+    bug_types: [logic, misconception, off_by_one, wrong_formula, race_condition, infinite_loop]
+    format: |
+      **الكود/الحساب (يحتوي خطأ):** …
+      **اكتشف الخطأ:** [وصف موجز]
+      **التصحيح:** … + **شرح الحل** (3 نقاط)
+
+  # ── 7. نظري منظم: تعريف + مكونات + مثال (قابل للتصحيح الجزئي) ─────────────
+  structured_theory:
+    enabled: true
+    label_ar: "نظري منظم (تعريف + مكونات + مثال)"
+    difficulty: medium
+    count_min: 8
+    parts: [theory, mcq]
+    blocks: [compare, tables, callouts]
+    format: |
+      ### السؤال {N}: {السؤال}
+      **نموذج الإجابة:**
+      1. التعريف: …
+      2. المكونات/الشروط: …
+      3. مثال: …
+      4. متى نستخدم: …
+      — هيكل ثابت يسهّل التصحيح الآلي بالكلمات المفتاحية.
+
 # ─── Output ───────────────────────────────────────────────────────────────────
 output:
   validation_footer: true           # add <!-- VALIDATION ... --> at end of lecture file
@@ -342,3 +496,17 @@ output:
     - "الأقسام مرقّمة هرمياً (1، 1.1، 2 …)"
     - "استخدمت جداول لكل مقارنة وقائمة تعريفات"
     - "كل مصطلح إنجليزي بين backticks"
+    # ── بنود الأتمتة (أضف/عدّل حسب المادة) ──
+    - "≥16 سؤال MCQ مع تعليل كامل لكل خيار"
+    - "≥8 أسئلة نظرية مع نموذج إجابة منظم"
+    - "تمارين تتبع: كل تمرين له جدول ناقص + نموذج حل كامل"
+    - "تمارين تطبيقية من إعداد الدليل مع نموذج حل"
+    - "أسئلة تصحيح كود/pseudocode إن كانت المادة تحتوي خوارزميات"
+    # ── أنواع الأتمتة (تحقق من كل نوع مفعّل في automation_question_types) ──
+    - "مراجعة سريعة: ≥12 بطاقة Q/A (flash_qa)"
+    - "تحدي مركّب: ≥3 سيناريوهات × 3–5 أسئلة MCQ لكل سيناريو (scenario_cluster)"
+    - "تطبيق عملي: ≥5 تمارين مع نموذج حل (hands_on)"
+    - "تتبع خطوة بخطوة: ≥3 جداول ناقصة + نموذج حل (step_trace)"
+    - "مقارنة وتحليل: ≥4 أسئلة مقارنة (compare_analyze)"
+    - "اكتشف الخطأ: ≥4 أسئلة تصحيح (find_the_bug)"
+    - "نظري منظم: ≥8 أسئلة بهيكل ثابت (structured_theory)"

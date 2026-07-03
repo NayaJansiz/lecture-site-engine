@@ -72,10 +72,10 @@ parts:
       numerical_trace: 25  # تتبع الخوارزميات خطوة بخطوة
 
   debug:
-    enabled: false
-    heading: "الجزء الرابع: أسئلة تصحيح الكود"
+    enabled: true
+    heading: "الجزء الرابع: أسئلة تصحيح الخوارزميات (Pseudocode)"
     count: 5
-    cover: [syntax, logic, return_check, dead_code, misconception]
+    cover: [logic, misconception, return_check, wrong_formula]
 
   exercise:
     enabled: true
@@ -206,7 +206,7 @@ blocks:
     enabled: true   # ملء خطوات ناقصة في الحسابات أو الجداول
 
   code_fix:
-    enabled: false
+    enabled: true
 
   images_note:
     enabled: false
@@ -253,6 +253,83 @@ pedagogy:
 assessment:
   mcq_option_letters: arabic
 
+automation_question_types:
+
+  flash_qa:
+    enabled: true
+    label_ar: "مراجعة سريعة (سؤال / جواب)"
+    difficulty: easy
+    count_min: 12
+    parts: [qa_cards, qa_inline, theory]
+    blocks: [qa_inline, callouts]
+    examples:
+      - "ما الفرق بين الخطأ المطلق والنسبي؟"
+      - "متى نستخدم `Newton-Raphson` بدل `Bisection`؟"
+
+  scenario_cluster:
+    enabled: true
+    label_ar: "تحدي مركّب (مسألة + أسئلة متعددة)"
+    difficulty: hard
+    count_min: 3
+    questions_per_scenario: 4
+    parts: [mcq, debug, theory]
+    blocks: [trace, algorithm, tables, equations]
+    scenario_sources:
+      - numerical_case
+      - algorithm_state
+    examples:
+      - "جدول تكرارات `Bisection` ناقص — أي قيمة في الخلية؟"
+      - "معادلة `Lagrange` — أي حد ناقص؟"
+
+  hands_on:
+    enabled: true
+    label_ar: "تطبيق عملي (حساب / إكمال)"
+    difficulty: medium
+    count_min: 5
+    parts: [exercise, analysis_exercise, debug]
+    blocks: [fill_gaps, algorithm, tables, equations]
+    types:
+      - fill_gaps
+      - numerical_solve
+      - error_calculation
+      - table_fill
+      - formula_derivation
+
+  step_trace:
+    enabled: true
+    label_ar: "تتبع خطوة بخطوة (جدول ناقص)"
+    difficulty: medium
+    count_min: 3
+    parts: [trace_exercise, mcq]
+    blocks: [trace, algorithm, tables]
+    trace_targets:
+      - algorithm_iterations
+
+  compare_analyze:
+    enabled: true
+    label_ar: "مقارنة وتحليل"
+    difficulty: medium
+    count_min: 4
+    parts: [mcq, theory, analysis_exercise]
+    blocks: [compare, trade_off, tables]
+
+  find_the_bug:
+    enabled: true
+    label_ar: "اكتشف الخطأ (صيغة / حساب)"
+    difficulty: hard
+    count_min: 4
+    parts: [debug, exercise]
+    blocks: [code_fix, compare]
+    bug_types: [wrong_formula, off_by_one, misconception, logic]
+
+  structured_theory:
+    enabled: true
+    label_ar: "نظري منظم"
+    difficulty: medium
+    count_min: 8
+    parts: [theory, mcq]
+    blocks: [compare, tables, equations]
+
 output:
   validation_footer: true
   schema_reference: "SCHEMA.md v1.0"
@@ -268,3 +345,9 @@ output:
     - "أضفت تمارين تطبيقية حسابية مع نموذج حل كامل"
     - "غطّيت حساب الأخطاء (مطلق، نسبي، تقريبي) مع أمثلة"
     - "قارنت بين الطرق (السرعة، الدقة، شروط التقارب، سهولة التطبيق)"
+    - "≥16 سؤال MCQ مع تعليل كامل"
+    - "≥3 سيناريوهات مركّبة × 4 أسئلة MCQ"
+    - "≥5 تمارين تطبيقية حسابية مع نموذج حل"
+    - "≥3 تمارين تتبع بجدول ناقص + نموذج حل"
+    - "≥4 أسئلة اكتشف الخطأ في الصيغة/الحساب"
+    - "≥12 بطاقة Q/A مراجعة سريعة"

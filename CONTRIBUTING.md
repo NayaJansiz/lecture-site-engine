@@ -8,7 +8,7 @@ Contributors should **only** edit files under:
 subjects/year-{1-5}/{subject-id}/lectures/*.md
 ```
 
-Do **not** edit `lectures/manifest.json` `files` by hand — CI and `npm run validate` auto-sync entries from `par*.md` (icons, badges for `parN-secN.md`).
+Do **not** edit `lectures/manifest.json` `files` by hand — CI and `npm run validate` auto-sync entries from `par*.md` (icons, badges for `parN-secM.md`).
 
 Do **not** modify `parser/`, `renderer/`, `site-shell/`, or `build/` unless you are a maintainer.
 
@@ -53,8 +53,8 @@ Keep `settings`, `title`, `subtitle`, and optional `lectureIcons` / `lectureMatI
 
 | Filename | Auto entry |
 | --- | --- |
-| `par1.md` | `num: 1`, icon from `lectureIcons[0]` |
-| `par1-sec1.md`, `par1-sec2.md` | same `num: 1`, badge `المحاضرة ١ — جزء ١` etc., distinct icons per file |
+| `par1.md` | `num: 1`, icon from `lectureIcons[0]` — **N** = رقم المحاضرة |
+| `par1-sec1.md`, `par1-sec2.md` | same `num: 1`, badge `المحاضرة ١ — جزء ١` — **M** = رقم الجزء |
 
 Example after sync for split lectures:
 

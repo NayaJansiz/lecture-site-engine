@@ -69,8 +69,8 @@ function lectureCollectionYaml(subjectRel, label) {
         name: slug
         widget: string
         meta: true
-        hint: ${q('مثال: par1 أو par1-sec2')}
-        pattern: ['^par\\\\d+(-sec\\\\d+)?$', ${q('استخدم parN أو parN-secN')}]
+        hint: ${q('مثال: par1 أو par1-sec2 (N=محاضرة، M=جزء)')}
+        pattern: ['^par\\\\d+(-sec\\\\d+)?$', ${q('استخدم parN أو parN-secM')}]
       - label: ${q('محتوى المحاضرة')}
         name: body
         widget: markdown

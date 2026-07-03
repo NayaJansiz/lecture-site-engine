@@ -27,7 +27,7 @@ npm run build -- --subject year-4/my-subject
 
 ## Contributor rules
 
-- Only add/edit `lectures/parN.md` (or `parN-secN.md` for split lectures)
-- Filename must match `parN.md` (e.g. `par1.md`, `par5-sec1.md`)
+- Only add/edit `lectures/parN.md` or `parN-secM.md` (N = رقم المحاضرة، M = رقم الجزء)
+- Filename examples: `par1.md`, `par5-sec1.md`, `par5-sec2.md`
 - Do not hand-edit `manifest.json` `files` — auto-synced on validate/build/CI
 - Do not modify `parser/`, `renderer/`, or `site-shell/`

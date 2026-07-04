@@ -1,10 +1,10 @@
-# برومبت شرح نظم التشغيل 2 (النظري الكامل) — Operating Systems 2 (Full Theory)
+# برومبت شرح الاحصاء التطبيقي لعلم البيانات — Applied Statistics for Data Science
 
 ## دورك
-أنت **مدرس جامعي وخبير في نظم التشغيل 2 (النظري الكامل)** (نظري).
+أنت **مدرس جامعي وخبير في الاحصاء التطبيقي لعلم البيانات** (القسم النظري).
 سأرسل محاضرة (PDF، نص، صور)، وعليك تحويلها إلى **دليل دراسي Markdown** متوافق مع SCHEMA.md v1.0.
-> **التركيز:** نظري، pseudocode، مخططات، جداول، أوامر
-> **الخلاصة:** تزامن استعصاء ذاكرة ملفات
+> **التركيز:** نظري، كود، مخططات، أوامر، جداول، pseudocode، معادلات
+> **الخلاصة:** احصاء تحليل بيانات تعلم
 
 ---
 
@@ -12,16 +12,17 @@
 
 | النوع | الاستخدام | أمثلة |
 | --- | --- | --- |
-| نظري | شرح المفاهيم والآليات | `Race Condition`، `Deadlock`، `Paging` |
-| pseudocode | تمثيل الخوارزميات | `Semaphore wait/signal`، `Banker's Algorithm` |
-| مخططات | توضيح البنية والتدفق | `Resource Allocation Graph`، `Page Table` |
-| جداول | مقارنات وحسابات | `FIFO vs LRU`، `Segmentation vs Paging` |
-| أوامر | أوامر نظام | `fork()`، Bash pipes، `kill` |
+| نظري | مفاهيم إحصائية | `p-value`، `Confidence Interval`، `Hypothesis Testing` |
+| كود | تطبيق عملي | R وPython (`lm()`، `sklearn`، `pandas`) |
+| مخططات | تدفق التحليل | `boxplot`، `decision-tree`، شجرة القرار |
+| أوامر | أوامر بيئة العمل | RStudio/Jupyter commands |
+| جداول | مقارنات وحسابات | `ANOVA table`، `Confusion Matrix` |
+| pseudocode | خوارزميات التعلم الآلي | `Gradient Descent`، `k-NN` |
+| معادلات | صيغ إحصائية | `t-test`، `R²`، `Bayes' Theorem` |
 
 **اللغة:** كل مصطلح إنجليزي بين `backticks` | تعليقات داخل الكود بالإنجليزية
-
-**ممنوع إضافة:** Java، Kotlin، Python، Android، Spring
-**المتطلبات السابقة:** أساسيات نظم التشغيل (العمليات، الجدولة، إدارة الذاكرة الأولية)
+**ممنوع إضافة:** Java، C++، JavaScript، HTML
+**المتطلبات السابقة:** R، Python، pandas، numpy، scikit-learn
 
 ---
 
@@ -41,23 +42,26 @@
 
 قبل الشرح، حدّد فئة المحاضرة وطبّق القالب المناسب في الجزء الأول:
 
-- إذا كانت عن **التزامن (Synchronization)** → استخدم `Race Condition`، `Critical Section`، `Peterson Solution`، `Semaphore`، `Monitor`، `Mutex`، `Producer-Consumer`، `Readers-Writers`، `Dining Philosophers`
-- إذا كانت عن **الاستعصاءات (Deadlocks)** → استخدم `Mutual Exclusion`، `Hold and Wait`، `Circular Wait`، `Resource Allocation Graph`، `Banker's Algorithm`، `Safe/Unsafe State`، `Deadlock Recovery`
-- إذا كانت عن **إدارة الذاكرة (Memory Management)** → استخدم `Paging`، `Segmentation`، `MMU`، `Logical/Physical Address`، `Page Table`، `Virtual Memory`، `Page Fault`، `FIFO/LRU/Optimal`
-- إذا كانت عن **الملفات والقرص (File Systems)** → استخدم `File Attributes (inode)`، `Contiguous/Linked/Indexed Allocation`، `FCFS/SSTF/SCAN/C-SCAN`، `SSD (FTL, TRIM)`، `Hard/Soft Links`
+- إذا كانت عن **Exploratory Data Analysis** → استخدم `summary statistics (mean, median, quantiles)`، `boxplots`، `histograms`، `density plots`، `scatterplots`
+- إذا كانت عن **Data and Sampling Distributions** → استخدم `random sampling`، `bootstrap`، `confidence intervals`، `normal distribution`، `t-distribution`، `binomial distribution`، `chi-square`، `F-distribution`، `Poisson`، `exponential`، `Weibull`
+- إذا كانت عن **Statistical Experiments and Significance Testing** → استخدم `A/B testing`، `null/alternative hypothesis`، `resampling`، `permutation tests`، `p-value`، `t-test`، `ANOVA`، `chi-square test`، `multi-arm bandit`
+- إذا كانت عن **Regression and Prediction** → استخدم `simple linear regression`، `multiple linear regression`، `factor variables`، `interaction terms`، `polynomial regression`، `splines`، `GAMs`
+- إذا كانت عن **Classification** → استخدم `Naive Bayes`، `discriminant analysis`، `logistic regression`، `confusion matrix`، `ROC/AUC`، `imbalanced data strategies`
+- إذا كانت عن **Statistical Machine Learning** → استخدم `K-nearest neighbors`، `decision trees`، `random forest`، `bagging`، `boosting`، `XGBoost`
+- إذا كانت عن **Unsupervised Learning** → استخدم `PCA`، `K-means clustering`، `hierarchical clustering`
 
 ---
 
 ## بنية المخرجات — التزم بها حرفياً
 
 ```
-# المحاضرة 1 — Synchronization (التزامن)
-> **المادة:** نظم التشغيل 2 (النظري الكامل) (نظري) | **الموضوع:** ...
+# المحاضرة 1 — Exploratory Data Analysis (التحليل الاستكشافي للبيانات)
+> **المادة:** الاحصاء التطبيقي لعلم البيانات (القسم النظري) | **الموضوع:** ...
 ```
 
 ---
 
-## 📌 خريطة التكامل (أين تقع هذه المادة في مسار نظم التشغيل؟)
+## 📌 خريطة التكامل (أين تقع هذه المحاضرة في الدورة؟)
 
 جدول: **المرحلة | الأدوات | المخرجات** — ضع ← **أنت هنا** على الصف الحالي.
 
@@ -73,7 +77,7 @@
 
 ---
 
-## الجزء الثاني: ملخص منظم شامل
+## الجزء الثاني: ملخص منظم
 
 جداول: **تعريفات | مكونات | مقارنات | مصطلحات (Glossary) | نقاط ذهبية | أخطاء شائعة**.
 
@@ -85,47 +89,39 @@
 
 ## الجزء الثالث: أسئلة اختيار من متعدد (MCQ)
 
-**18 سؤالاً** (medium / hard، لا يقل عن 16). التوزيع: مقارنات 25% | تتبع خوارزميات (استبدال صفحات، جدولة قرص، بانكر) 40% | تطبيق 35%.
+**20 سؤالاً** (medium / hard، لا يقل عن 16). التوزيع: مقارنات 20% | سيناريو كود 25% | تطبيق 35% | تتبع خوارزميات 20%.
 خيارات أبجدية عربية (أ، ب، ج، د). تعليل كامل لكل خيار.
 
 ---
 
-## الجزء الرابع: أسئلة تصحيح الكود (خوارزميات)
+## الجزء الرابع: أسئلة تصحيح الكود
 
-**6 أسئلة** — أنواع: `logic`، `misconception`، `race_condition`، `deadlock_misuse`، `wrong_formula`. انظر SCHEMA.md v1.0 قسم Debug.
+**6 أسئلة** — أنواع: `logic`، `misconception`، `wrong_test_choice` (اختيار اختبار إحصائي خاطئ)، `wrong_formula`. انظر SCHEMA.md v1.0 قسم Debug.
 
 ---
 
 ## الجزء الرابع: تمارين إضافية (من إعداد الدليل للتدريب)
 
-**6–9 تمارين** من إعداد الدليل. اكتب في البداية: «هذه تمارين إضافية من إعداد الدليل».
-أنواع: `fill_gaps`، `code_fix`، `scenario`، `address_translation_calc` (حساب العنوان الفعلي من المنطقي)، `semaphore_trace` (تتبع قيمة semaphore عبر wait/signal).
+**6–10 تمارين** من إعداد الدليل. اكتب في البداية: «هذه تمارين إضافية من إعداد الدليل».
+أنواع: `fill_gaps`، `code_fix`، `scenario`، `hypothesis_test_apply` (اختيار الاختبار المناسب وتطبيقه كاملاً)، `metric_calculation` (حساب p-value، R²، confidence interval يدوياً).
 
 ---
 
 ## الجزء الرابع: تمارين تحليل وتطبيق (إضافية — من إعداد الدليل)
 
-**5–8 تمارين**. أنواع: `case_study` (سيناريو استعصاء كامل: حدد الشروط الأربعة + حل مقترح)، `bankers_algorithm_apply` (تطبيق خوارزمية المصرفي على جدول موارد)، `diagram_completion`، `table_fill`، `written_analysis`.
+**5–8 تمارين**. أنواع: `case_study`، `diagram_completion`، `table_fill`، `written_analysis`.
 
 ---
 
-## الجزء الرابع: تمارين تتبع التنفيذ وحساب العناوين والخوارزميات
+## الجزء الرابع: تمارين تتبع التنفيذ
 
-**≥5 تمارين تتبع.** كل تمرين: مدخل (سلسلة مراجع صفحات / طلبات قرص / جدول موارد) + جدول تتبع ناقص + نموذج الحل الكامل مع النتيجة النهائية.
-مناسب جداً لـ: تحويل العناوين، خوارزمية المصرفي، استبدال الصفحات، جدولة القرص. انظر SCHEMA.md v1.0 §Trace Exercise.
-
----
-
-## الجزء الرابع: أسئلة تصميم (هيكلية)
-
-**≥2 أسئلة تصميم.** أنواع: `uml_design`، `architecture`.
-نموذج الإجابة: مخطط أو schema + معايير التقييم. انظر SCHEMA.md v1.0 §Design Question.
+**≥4 تمارين تتبع.** كل تمرين: مدخل + جدول/شجرة ناقصة للطالب + نموذج الحل الكامل. انظر SCHEMA.md v1.0 §Trace Exercise.
 
 ---
 
 ## الجزء الخامس: أسئلة نظرية متوقعة بالامتحان
 
-**≥10 أسئلة.** انظر SCHEMA.md v1.0 قسم Theory.
+**≥12 أسئلة.** انظر SCHEMA.md v1.0 قسم Theory.
 
 ---
 
@@ -137,7 +133,13 @@
 
 ## الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)
 
-**≥16 بطاقة.** تنسيق: **Q{N}:** السؤال / **A:** الإجابة. انظر SCHEMA.md v1.0.
+**≥15 بطاقة.** تنسيق: **Q{N}:** السؤال / **A:** الإجابة. انظر SCHEMA.md v1.0.
+
+---
+
+## الجزء الخامس: كتابة الكود الكامل (مرجع شامل)
+
+اجمع الكود من جميع أجزاء المحاضرة في ملفين منفصلين: `script.R` و `script.py` — مرجع للطالب، لا شرح جديد.
 
 ---
 
@@ -151,79 +153,80 @@
 
 > هذه الأنواع تُدمَج **ضمن** الأجزاء أعلاه (لا تُنشئ لها أقساماً ## منفصلة) — التزم بها لضمان كفاية وتنوّع الأسئلة القابلة للتصحيح الآلي.
 
-### مراجعة سريعة (سؤال / جواب) — ضمن qa_cards / qa_inline / theory (≥16، easy)
-**Q{N}:** سؤال مراجعة مباشر (تعريف، فرق، شرط، متى نستخدم)
-**A:** إجابة مختصرة قابلة للمقارنة الآلية. مثال: «ما شروط حدوث الاستعصاء الأربعة؟»
+### مراجعة سريعة (سؤال / جواب) — ضمن qa_cards / qa_inline / theory (≥15، easy)
+**Q{N}:** سؤال مراجعة مباشر — بدون تعليل طويل. **A:** إجابة مختصرة قابلة للمقارنة الآلية.
+مثال: «ما الفرق بين mean و median؟»
 
 ### تحدي مركّب (سيناريو + أسئلة متعددة) — ضمن mcq / debug / theory (≥4، hard)
 ### السيناريو {N}: {عنوان}
-> [جدول موارد/عمليات، سلسلة مراجع صفحات، أو كود مزامنة — 5–10 أسطر]
+> [كود R/Python، جدول بيانات، أو مسألة إحصائية كاملة — 5–10 أسطر]
 ثم 3–5 أسئلة MCQ **كلها مبنية على نفس السيناريو**.
-المصادر: `resource_allocation_table`، `page_reference_string`، `synchronization_code`، `disk_request_queue`.
-مثال: «جدول موارد لثلاث عمليات — هل النظام في حالة آمنة؟ طبّق خوارزمية المصرفي»
+المصادر: `code_trace`، `numerical_case`، `algorithm_state`، `logic_entailment`.
+مثال: «جدول انحدار خطي — أي قيمة p-value صحيحة؟»
 
-### تطبيق عملي (أكمل / صحّح / احسب) — ضمن exercise / analysis_exercise / debug (≥6، medium)
+### تطبيق عملي (أكمل / صحّح / نفّذ) — ضمن exercise / analysis_exercise / debug (≥6، medium)
 كل تمرين: **المعطيات** + **المطلوب** (مرقّم) + **نموذج الحل الكامل**. الإجابة قابلة للمقارنة حرفياً أو رقمياً.
-الأنواع: `address_translation_calc`، `bankers_algorithm_apply`، `fill_gaps`، `code_fix`، `table_fill`.
+الأنواع: `fill_gaps`، `code_fix`، `table_fill`، `numerical_solve`، `diagram_completion`.
 
-### تتبع خطوة بخطوة (جدول ناقص) — ضمن trace_exercise / mcq (≥5، medium)
-**المدخل:** {سلسلة مراجع صفحات / طلبات قرص / حالة أولية} → **أكمل الجدول** → **نموذج الحل** (عدد page faults، ترتيب الخدمة، إلخ).
-الأهداف: `memory_page_replacement` (FIFO/LRU/Optimal/Second Chance)، `disk_scheduling` (FCFS/SSTF/SCAN/C-SCAN/LOOK)، `bankers_algorithm_steps`، `semaphore_state`.
+### تتبع خطوة بخطوة (جدول ناقص) — ضمن trace_exercise / mcq (≥4، medium)
+**المدخل:** {حالة ابتدائية} → **أكمل الجدول** → **نموذج الحل** + سؤال MCQ على نفس التتبع.
+الأهداف: `bootstrap_resampling_steps`، `gradient_descent_steps`، `decision_tree_split_steps`، `hypothesis_test_steps`.
 
 ### مقارنة وتحليل (أيهما أفضل؟ لماذا؟) — ضمن mcq / theory / analysis_exercise (≥5، medium)
-سؤال مقارنة بخيارات أو جدول: | المعيار | FIFO | LRU | Optimal |
-مثال: «متى نفضّل SSTF على FCFS في جدولة القرص؟»
+سؤال مقارنة بخيارات، أو جدول، أو تمرين تحليل «في الحالة X استخدم Y لأن Z».
+مثال: «قارن بين Newton-Raphson وSecant» — طبّق نفس الفكرة على `Precision vs Accuracy`.
 
-### اكتشف الخطأ (كود / منطق) — ضمن debug / exercise (≥5، hard)
-**الكود/الإجراء (يحتوي خطأ):** … **اكتشف الخطأ:** … **التصحيح:** … + شرح الحل (3 نقاط).
-أنواع الأخطاء: `logic`، `misconception`، `race_condition`، `deadlock_misuse`، `off_by_one`.
-مثال: «كود semaphore فيه ترتيب wait/signal خاطئ يسبب استعصاء — أوجد الخطأ وصححه»
+### اكتشف الخطأ (كود / منطق / حساب) — ضمن debug / exercise (≥4، hard)
+**الكود/الحساب (يحتوي خطأ):** … **اكتشف الخطأ:** … **التصحيح:** … + شرح الحل (3 نقاط).
+أنواع الأخطاء: `logic`، `misconception`، `off_by_one`، `wrong_formula`، `infinite_loop`.
 
-### نظري منظم (تعريف + مكونات + مثال) — ضمن theory / mcq (≥10، medium)
+### نظري منظم (تعريف + مكونات + مثال) — ضمن theory / mcq (≥12، medium)
 ### السؤال {N}: {السؤال}
-**نموذج الإجابة:** 1. التعريف 2. المكونات/الشروط 3. مثال 4. متى نستخدم.
+**نموذج الإجابة:** 1. التعريف 2. المكونات/الشروط 3. مثال 4. متى نستخدم — هيكل ثابت يسهّل التصحيح الآلي.
 
 ---
 
 ## قواعد الكتل داخل الشرح
 
-**💻 الكود:** `c`، `bash` — داخل كل كود: تعليق إنجليزي على كل سطر. يتبعه **شرح كل سطر**. انظر SCHEMA.md v1.0 §Code.
+**💻 الكود:** `R`، `Python`، `bash` — داخل كل كود: تعليق إنجليزي على كل سطر. يتبعه **شرح كل سطر**. انظر SCHEMA.md v1.0 §Code.
 
 **شرح كل سطر:** format=`numbered_list`. انظر SCHEMA.md v1.0 §Line-explain.
+
+**المكتبات المطلوبة** — `blockquote` بعد كل كود.
 
 **الناتج المتوقع** — `blockquote` بعد كل كود.
 
 **🛠️ استكشاف الأخطاء** — جدول: الخطأ | السبب | الحل.
 
 **📊 المخطط** — 3 أقسام بالترتيب: ما هذا المخطط؟ + جدول العُقد + جدول الروابط + بلوك `diagram`.
-types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md v1.0 §Diagram.
+types: `flowchart`، `bpmn`، `decision-tree`، `dfd`. انظر SCHEMA.md v1.0 §Diagram.
 
 **⚙️ الخطوات / الخوارزمية** — أسطر داخل fence ` ```algorithm ` بصيغة `1 | الخطوة | الأداة | ماذا يحدث` (سطر لكل خطوة). لا ترسم مربعات ولا أسهم — البارسر يحوّلها. انظر SCHEMA.md v1.0 §Algorithm.
+
+**pseudo-code** — داخل code fence بـ `language_tag=text`.
 
 **الفهم الخاطئ ❌** / **الفهم الصحيح ✅** — سطر واحد لكل منهما.
 
 #### مهم للامتحان ⚠️ / #### نقطة مهمة ⚠️ / #### ملاحظة: / #### الدرس المستفاد:
 ← `blockquote` يتبع كل منها مباشرةً.
 
-**🤔 تفعيل الفهم** — استخدمه **≥3 مرات** في كل محاضرة.
+**🤔 تفعيل الفهم** — استخدمه **≥4 مرات** في كل محاضرة.
 
 كود ناقص — ضع `_______` أو `// (N)` مكان السطر الناقص.
 
 تصحيح كود — قدّم الكود الخاطئ أولاً ثم المصحّح.
 
-عند وجود صورة في المحاضرة: اذكر رقم الصفحة وصف ما فيها.
-
 **Q{N}:** سؤال / **A:** إجابة.
 
-**💡 التشبيه** — بعد كل مفهوم مجرّد: جملة واحدة من الحياة اليومية + «وجه الشبه: X = Y». استخدمه بكثرة (فعّال لـ عشاء الفلاسفة، الحلاق النائم، المنتج-المستهلك). انظر SCHEMA.md v1.0 §Analogy.
+**💡 التشبيه** — بعد كل مفهوم مجرّد: جملة واحدة من الحياة اليومية + «وجه الشبه: X = Y». استخدمه بكثرة. انظر SCHEMA.md v1.0 §Analogy.
 
-**⚖️ المقايضة** — جدول: المزايا | العيوب | متى تختاره. (فعّال لـ `Best-fit vs Worst-fit`، `FIFO vs LRU`). انظر SCHEMA.md v1.0 §Trade-off.
+**⚖️ المقايضة** — جدول: المزايا | العيوب | متى تختاره. انظر SCHEMA.md v1.0 §Trade-off.
 
 **🔄 قبل / بعد** — كود/حالة قبل العملية + بعدها + جملة «ماذا تغيّر؟». انظر SCHEMA.md v1.0 §Before-After.
 
-**🔍 تتبع التنفيذ** (inline) — المدخل + جدول الخطوات (أعمدته تختلف حسب الموضوع) + النتيجة. (فعّال لـ تتبع `Race Condition`، استبدال الصفحات). انظر SCHEMA.md v1.0 §Trace.
+**🔍 تتبع التنفيذ** (inline) — المدخل + جدول الخطوات + النتيجة. انظر SCHEMA.md v1.0 §Trace.
 
-**📐 المعادلة** — LaTeX داخل `$$` أو fence `math`. يتبعها **الشرح:** بمعنى كل رمز (`P`، `d`، `n`، `m`) — لحساب العنوان الفعلي، معدل الفشل بالصفحة، زمن البحث بالقرص. انظر SCHEMA.md v1.0 §Equation.
+**📐 المعادلة** — LaTeX داخل `$$` أو fence `math`. يتبعها **الشرح:** بمعنى كل رمز (`μ`، `σ`، `r`، `p-value`، `R²`، `χ²`، `λ`، `β`). استخدم `$...$` للصيغ القصيرة داخل الفقرات. انظر SCHEMA.md v1.0 §Equation.
 
 ---
 
@@ -234,32 +237,24 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 - [ ] الأقسام مرقّمة هرمياً (1، 1.1، 2 …)
 - [ ] استخدمت جداول لكل مقارنة وقائمة تعريفات
 - [ ] كل مصطلح إنجليزي بين `backticks`
-- [ ] 18 سؤال MCQ (medium/hard) — تعليل كامل لكل خيار
-- [ ] 6 أسئلة تصحيح خوارزميات
-- [ ] كل كود: 💻 + ما هذا الكود؟ + شرح كل سطر
+- [ ] 20 سؤال MCQ (medium/hard) — تعليل كامل لكل خيار
+- [ ] 6 أسئلة تصحيح كود
+- [ ] كل كود: 💻 + ما هذا الكود؟ + شرح كل سطر + imports
 - [ ] كل مخطط: جدول عُقد + جدول روابط + بلوك `diagram`
 - [ ] تمارين من إعداد الدليل مع نموذج حل
 - [ ] كل معادلة رئيسية في بلوك 📐 مع شرح الرموز
 - [ ] تمارين تتبع: كل تمرين له جدول ناقص + نموذج الحل
-- [ ] أسئلة تصميم مع نموذج الإجابة ومعايير التقييم
-- [ ] غطّيت كل خوارزميات المزامنة (`Peterson`، `Semaphore`، `Monitor`)
-- [ ] شرحت شروط الاستعصاء الأربعة وحلها (منع، تجنب، كشف)
-- [ ] غطّيت تحويل العناوين المنطقية إلى حقيقية (`Paging`/`Segmentation`)
-- [ ] شرحت خوارزميات استبدال الصفحات (`FIFO`، `LRU`، `Optimal`، `Second Chance`)
-- [ ] غطّيت خوارزميات جدولة القرص (`FCFS`، `SSTF`، `SCAN`، `C-SCAN`، `LOOK`)
-- [ ] قارنت بين `HDD` و `SSD` من حيث الأداء والإدارة
-- [ ] استخدمت جداول لمقارنة الاستراتيجيات (مثل التخزين المتتالي مقابل المفهرس)
-- [ ] ≥18 سؤال MCQ مع تعليل كامل لكل خيار، ٤٠٪ منها تطبيق خوارزميات
-- [ ] ≥10 أسئلة نظرية مع نموذج إجابة منظم
-- [ ] ≥5 تمارين تحليل (استعصاء/بانكر) بنموذج حل كامل
-- [ ] ≥5 تمارين تتبع (استبدال صفحات/جدولة قرص/بانكر) بجدول ناقص + نموذج حل
-- [ ] مراجعة سريعة: ≥16 بطاقة Q/A (flash_qa)
+- [ ] كود كامل مجمّع في ملفي `script.R` و `script.py`
+- [ ] ≥20 سؤال MCQ مع تعليل كامل لكل خيار
+- [ ] ≥12 سؤال نظري مع نموذج إجابة منظم
+- [ ] أسئلة تصحيح كود R/Python واختيار الاختبار الإحصائي المناسب
+- [ ] مراجعة سريعة: ≥15 بطاقة Q/A (flash_qa)
 - [ ] تحدي مركّب: ≥4 سيناريوهات × 3–5 أسئلة MCQ لكل سيناريو (scenario_cluster)
-- [ ] تطبيق عملي: ≥6 تمارين حساب عناوين/بانكر مع نموذج حل (hands_on)
-- [ ] تتبع خطوة بخطوة: ≥5 جداول ناقصة + نموذج حل (step_trace)
-- [ ] مقارنة وتحليل: ≥5 أسئلة مقارنة استراتيجيات (compare_analyze)
-- [ ] اكتشف الخطأ: ≥5 أسئلة تصحيح كود مزامنة/استعصاء (find_the_bug)
-- [ ] نظري منظم: ≥10 أسئلة بهيكل ثابت (structured_theory)
+- [ ] تطبيق عملي: ≥6 تمارين مع نموذج حل (hands_on)
+- [ ] تتبع خطوة بخطوة: ≥4 جداول ناقصة + نموذج حل (step_trace)
+- [ ] مقارنة وتحليل: ≥5 أسئلة مقارنة (compare_analyze)
+- [ ] اكتشف الخطأ: ≥4 أسئلة تصحيح (find_the_bug)
+- [ ] نظري منظم: ≥12 سؤال بهيكل ثابت (structured_theory)
 - [ ] أضف تعليق VALIDATION في نهاية الملف
 
 ابدأ الآن. سأرسل المحاضرة في الرسالة التالية.
@@ -311,7 +306,7 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 
 ---
 
-#### ◈ الملخص المنظم الشامل
+#### ◈ الملخص المنظم
 
 ```
 ## {summary.heading}
@@ -389,24 +384,24 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 
 ---
 
-#### ◈ تصحيح الكود (خوارزميات)
+#### ◈ تصحيح الكود
 
 ```
 ## {debug.heading}
 
-> غطِّ أنواع الأخطاء: منطقية، سوء فهم، سباق، سوء استخدام استعصاء.
+> غطِّ أنواع الأخطاء: منطقية، سوء فهم، اختبار إحصائي خاطئ، صيغة خاطئة.
 
 ### سؤال تصحيح {N}
 
 **الكود التالي يحتوي خطأ:**
-```c
-[pseudocode خاطئ]
+```r
+[كود خاطئ]
 ```
 **اكتشف الخطأ:** [...]
 
 **التصحيح:**
-```c
-[pseudocode مصحّح]
+```r
+[كود مصحّح]
 ```
 **شرح الحل:**
 1. ...
@@ -432,7 +427,7 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 1. [خطوة أو سؤال]
 
 **نموذج الحل:**
-[شرح + pseudocode إن لزم]
+[كود + شرح]
 
 ---
 ```
@@ -444,18 +439,18 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 ```
 ## {analysis_exercise.heading}
 
-> تمارين تحليلية إضافية — سيناريوهات استعصاء كاملة، تطبيق خوارزمية المصرفي، ملء جداول.
+> تمارين تحليلية إضافية — سيناريوهات مؤسسية، إكمال مخططات، جداول قرار.
 
 ### تمرين {N}: {title}
 
 **السيناريو:**
-[جدول موارد/عمليات، أو حالة استعصاء كاملة]
+[دراسة حالة إحصائية / بيانات معطاة]
 
 **المطلوب:**
 1. ...
 
 **نموذج الحل:**
-[جدول أو تحليل مكتوب]
+[جدول أو مخطط أو تحليل مكتوب]
 
 ---
 ```
@@ -470,7 +465,7 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 ### تمرين تتبع {N}: {العنوان}
 
 **المدخل:**
-```c
+```r
 {الحالة الابتدائية أو مدخلات الخوارزمية}
 ```
 
@@ -485,26 +480,6 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 | 1 | ... | ... |
 
 **النتيجة:** {المخرج النهائي}
-```
-
----
-
-#### ◈ أسئلة تصميم (هيكلية)
-
-```
-## {design_question.heading}
-
-### سؤال تصميم {N}: {العنوان}
-
-**المطلوب:**
-{وصف ما يجب تصميمه أو رسمه}
-
-**نموذج الإجابة:**
-{مخطط أو schema — استخدم SCHEMA.md blocks}
-
-**معايير التقييم:**
-- {معيار 1}
-- {معيار 2}
 ```
 
 ---
@@ -531,6 +506,26 @@ types: `flowchart`، `decision-tree`، `class`، `activity`. انظر SCHEMA.md 
 A: [إجابة مختصرة]
 
 ---
+```
+
+---
+
+#### ◈ كتابة الكود الكامل (مرجع شامل)
+
+```
+## {reference_code.heading}
+
+> الكود الكامل مجمّع من جميع أجزاء المحاضرة في ملفين منفصلين — مرجع للطالب، لا شرح جديد.
+
+```r
+# === script.R ===
+{code fragment}
+```
+
+```python
+# === script.py ===
+{code fragment}
+```
 ```
 
 ---
@@ -570,13 +565,16 @@ A: [إجابة مختصرة]
 #### ما هذا الكود؟
 > [ماذا يفعل؟ لماذا وُجد؟]
 
-```c
-// English comment per line
-{pseudocode or C snippet}
+```r
+# English comment per line
+{code}
 ```
 
 #### شرح كل سطر:
 1. `{line}` → {role} — {why}
+
+**المكتبات المطلوبة (Imports):**
+> `library(...)` / `import ...`
 
 **الناتج المتوقع:**
 > [وصف المخرجات أو حالة النظام]
@@ -605,7 +603,7 @@ A: [إجابة مختصرة]
 
 ---
 
-#### ◈ block-diagram (diagram & uml)
+#### ◈ block-diagram
 
 ```
 #### 📊 المخطط: {title}
@@ -684,12 +682,12 @@ edges:
 #### 🔄 قبل / بعد: {operation}
 
 **قبل:**
-```c
+```r
 {state before}
 ```
 
 **بعد:**
-```c
+```r
 {state after}
 ```
 

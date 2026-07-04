@@ -1,0 +1,325 @@
+# Subject Brief Template — Lecture Site Engine v1.0
+schema_version: "1.0"
+
+# ─── Subject identity ─────────────────────────────────────────────────────────
+subject:
+  id: discrete-mathematics
+  name_ar: "مقرر المتقطعة"
+  name_en: "Discrete Mathematics"
+  tagline: "مجموعات + منطق + علاقات + دوال"
+  section_label: "القسم النظري"
+
+# ─── Locale & terminology ─────────────────────────────────────────────────────
+locale:
+  language: ar
+  direction: rtl
+  terms_in_backticks: true
+  inline_code_comments: none
+  extra_explanation_tag: "(شرح زيادة للفهم)"
+  not_in_lecture_tag: "(غير مشروحة في المحاضرة)"
+
+# ─── Domain ───────────────────────────────────────────────────────────────────
+domain: analysis
+
+domain_profile:
+  content_types:
+    - theory
+    - pseudocode
+    - tables
+    - equations
+    - diagrams
+  forbid_adding:
+    - "Java"
+    - "Python"
+    - "Kotlin"
+    - "C++"
+  prerequisites:
+    - "الجبر الأساسي"
+    - "المجموعات"
+
+# ─── Lecture heading ──────────────────────────────────────────────────────────
+lecture:
+  unit_label: "المحاضرة"
+  split_regex: "^# المحاضرة "
+  title_pattern: "# {unit_label} {num} — {title_en} ({title_ar})"
+  intro_blockquote: true
+
+# ─── Parts ────────────────────────────────────────────────────────────────────
+parts:
+
+  integration_map:
+    enabled: true
+    heading: "📌 خريطة التكامل (أين تقع هذه المحاضرة في الدورة؟)"
+
+  detail:
+    enabled: true
+    heading: "الجزء الأول: الشرح التفصيلي (سطر بسطر / فقرة بفقرة)"
+    numbered_sections: true
+    require_per_section:
+      - original_quote
+      - simplified_explanation
+
+  summary:
+    enabled: true
+    heading: "الجزء الثاني: ملخص منظم"
+    subsections:
+      - definitions_table
+      - components_table
+      - comparisons_table
+      - glossary
+      - golden_points
+      - common_mistakes_table
+      - patterns
+      - main_ideas
+
+  mcq:
+    enabled: true
+    heading: "الجزء الثالث: أسئلة اختيار من متعدد (MCQ)"
+    count: 12
+    min_count: 10
+    difficulty: [medium, hard]
+    forbid_easy_literal: false
+    distribution:
+      comparisons: 30
+      application: 40         # تطبيق مباشر على مسألة (مجموعات، علاقات، دوال، رسوم بيانية)
+      proof_based: 30         # أي خطوة في البرهان صحيحة/خاطئة؟
+
+  debug:
+    enabled: true
+    heading: "الجزء الرابع: أسئلة تصحيح البراهين والاستنتاجات"
+    count: 5
+    cover: [logic, misconception, invalid_step, wrong_property]   # خطوة برهان خاطئة، خاصية مطبّقة بشكل غلط
+
+  # ── التركيز الأساسي للمادة: تمارين ومسائل بنمط الامتحان التحريري ──
+  # المادة تُقيَّم تحريرياً وليس أتمتة — المطلوب مسائل حقيقية تشبه أسلوب
+  # وصعوبة المسائل الواردة فعلاً في المحاضرة، وليس أسئلة اختيار من متعدد فقط.
+  exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين ومسائل تطبيقية (بنمط الامتحان التحريري)"
+    count_min: 8
+    count_max: 12
+    authored_by_guide: true
+    difficulty: [medium, hard]
+    note: "طابق نمط وصعوبة المسائل الموجودة فعلياً في المحاضرة — لا تخترع نمطاً جديداً. كل مسألة لها نموذج حل كامل خطوة بخطوة (بدون اختصار)."
+    types:
+      - set_proof                    # إثبات تساوي مجموعات، قوانين ديمورغان، إلخ
+      - relation_properties_check    # فحص انعكاسية/تماثل/تعدي/تكافؤ/ترتيب على علاقة معطاة
+      - function_classification      # هل الدالة متباينة/شاملة/تقابل؟ + إيجاد المعكوس
+      - truth_table_construction     # بناء جدول صواب لعبارة مركّبة والتحقق من تكافؤ منطقي
+      - boolean_algebra_simplification
+      - graph_property_calc          # درجات الرؤوس، عدد الحواف، الاتصال
+      - proof_by_induction           # برهان بالاستقراء الرياضي على متطابقة أو خاصية
+      - counting_combinatorics       # مسائل تباديل وتوافيق ومبدأ العد
+
+  analysis_exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين تحليل وبرهان رياضي (إضافية — من إعداد الدليل)"
+    count_min: 5
+    count_max: 8
+    difficulty: [medium, hard]
+    note: "مسائل تحليلية أطول — تجمع أكثر من مفهوم بمسألة واحدة، كما تُطرح بالامتحان"
+    types:
+      - euler_hamilton_check       # هل يوجد مسار/دائرة أويلر أو هاملتون؟ ولماذا
+      - graph_coloring             # عدد الألوان اللازمة وتوزيعها
+      - relation_matrix            # تمثيل علاقة بمصفوفة + استنتاج خصائصها
+      - proof_writing              # برهان مباشر أو بالتناقض على قضية معطاة
+      - written_analysis
+
+  trace_exercise:
+    enabled: true
+    heading: "الجزء الرابع: تمارين تتبع خوارزميات الرسوم البيانية"
+    count_min: 3
+    note: "خاص بخوارزميات الرسوم البيانية فقط (BFS، DFS، Dijkstra إن وردت) — مدخل + جدول تتبع ناقص + نموذج الحل"
+
+  design_question:
+    enabled: false
+    heading: "الجزء الرابع: أسئلة تصميم"
+    count_min: 1
+    types:
+      - er_diagram
+      - uml_design
+      - architecture
+      - schema_design
+
+  theory:
+    enabled: true
+    heading: "الجزء الخامس: أسئلة نظرية متوقعة بالامتحان"
+    count_min: 10
+
+  cheat_sheet:
+    enabled: true
+    heading: "الجزء السادس: ورقة المراجعة السريعة (Cheat Sheet)"
+    subsections:
+      - integration_map_table
+      - golden_rules_table
+      - quick_reference_tables
+
+  qa_cards:
+    enabled: true
+    heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
+    count_min: 14
+
+  reference_code:
+    enabled: false
+    heading: "الجزء الخامس: كتابة الكود الكامل (مرجع شامل)"
+    assemble_from_fragments: false
+    same_program_only: false
+    languages: []
+    note: ""
+
+  checklist:
+    enabled: true
+    heading: "الجزء السادس: قائمة فحص ذاتي قبل الامتحان ✅"
+
+# ─── Blocks ───────────────────────────────────────────────────────────────────
+blocks:
+
+  original_quote:
+    enabled: true
+
+  simplified_explanation:
+    enabled: true
+
+  code:
+    enabled: false
+    languages: []
+    require_line_explain: false
+
+  line_explain:
+    enabled: false
+    format: numbered_list
+
+  imports:
+    enabled: false
+
+  expected_output:
+    enabled: false
+
+  troubleshooting:
+    enabled: false
+
+  diagrams:
+    enabled: true
+    types: [flowchart, decision-tree, dfd]
+    require_node_table: true
+    require_edge_table: true
+
+  uml:
+    enabled: false
+    types: [usecase, class, activity, flowchart]
+
+  screen_description:
+    enabled: false
+
+  algorithm:
+    enabled: true
+
+  structured_english:
+    enabled: true
+
+  compare:
+    enabled: true
+
+  callouts:
+    enabled: true
+
+  think_prompt:
+    enabled: true
+    min_per_lecture: 4
+
+  tables:
+    enabled: true
+
+  fill_gaps:
+    enabled: true
+
+  code_fix:
+    enabled: true
+
+  images_note:
+    enabled: false
+
+  qa_inline:
+    enabled: true
+
+  analogy:
+    enabled: true
+
+  trade_off:
+    enabled: true
+
+  before_after:
+    enabled: true
+
+  trace:
+    enabled: true
+
+  equations:
+    enabled: true
+    display_mode: block
+    require_explanation: true
+    common_symbols:
+      - "∈"
+      - "⊆"
+      - "∪"
+      - "∩"
+      - "∅"
+      - "→"
+      - "↔"
+      - "¬"
+      - "∧"
+      - "∨"
+      - "⊕"
+      - "∀"
+      - "∃"
+
+# ─── Pedagogy flags ───────────────────────────────────────────────────────────
+pedagogy:
+  cover_every_line: true
+  complete_gaps: true
+  beginner_friendly: true
+  explain_why: true
+  daily_analogy_plus_example: true
+  follow_lecture_order: true
+  adapt_to_lecture_type: true
+
+  lecture_types:
+    - match: "المجموعات"
+      tools: ["∈", "⊆", "∪", "∩", "∅", "المجموعة الجزئية", "المجموعة الكلية"]
+    - match: "المنطق"
+      tools: ["¬", "∧", "∨", "→", "↔", "جدول الصواب", "العبارات الشرطية"]
+    - match: "العلاقات"
+      tools: ["العلاقة الثنائية", "العلاقة الانعكاسية", "العلاقة المتعدية", "علاقة تكافؤ", "علاقة ترتيب"]
+    - match: "الدوال"
+      tools: ["الدالة", "المجال", "المجال المقابل", "مدى الدالة", "دالة متباينة", "دالة شاملة"]
+    - match: "الرسوم البيانية"
+      tools: ["رأس", "حافة", "درجة الرأس", "رسم بياني متصل", "دائرة أويلر", "دائرة هاميلتون"]
+
+# ─── Assessment ───────────────────────────────────────────────────────────────
+assessment:
+  mcq_option_letters: arabic
+
+# ملاحظة: هذه المادة تُمتحن تحريرياً (مسائل + أسئلة نظرية) وليس بنظام أتمتة —
+# لذلك لا يوجد قسم automation_question_types هنا عمداً.
+# التركيز الكامل على parts.exercise و parts.analysis_exercise أعلاه (مسائل حقيقية بنمط الامتحان).
+
+# ─── Output ───────────────────────────────────────────────────────────────────
+output:
+  validation_footer: true
+  schema_reference: "SCHEMA.md v1.0"
+  closing_line: "ابدأ الآن. سأرسل المحاضرة في الرسالة التالية."
+
+  checklist_items:
+    - "غطّيت كل معلومة وردت في المحاضرة"
+    - "كل قسم يبدأ بـ «النص الأصلي يقول» + «الشرح المبسّط»"
+    - "الأقسام مرقّمة هرمياً (1، 1.1، 2 …)"
+    - "استخدمت جداول لكل مقارنة وقائمة تعريفات"
+    - "كل مصطلح إنجليزي بين backticks"
+    - "≥10 أسئلة نظرية مع نموذج إجابة منظم"
+    - "≥8 مسائل تطبيقية (exercise) بنفس نمط وصعوبة مسائل المحاضرة — ليست أسئلة اختيار من متعدد"
+    - "≥5 مسائل تحليل/برهان أطول (analysis_exercise) تجمع أكثر من مفهوم"
+    - "كل مسألة لها نموذج حل كامل خطوة بخطوة — لا اختصار ولا حذف خطوات"
+    - "تمارين تتبع خوارزميات الرسوم البيانية (إن وردت BFS/DFS) بجدول ناقص + نموذج حل"
+    - "تحققت من كل خاصية علاقة (انعكاسية، تماثل، تعدي) بمثال مضاد إن لم تتحقق"
+    - "برهان الاستقراء الرياضي مكتوب بخطواته الثلاث كاملة (الأساس، الفرض، الخطوة الاستقرائية)"
+    - "جداول الصواب مكتملة بكل الحالات (٢ⁿ صف)"

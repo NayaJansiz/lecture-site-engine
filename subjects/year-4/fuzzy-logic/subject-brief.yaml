@@ -1,11 +1,11 @@
 schema_version: "1.0"
 
 subject:
-  id: kdd
-  name_ar: "اكتشاف المعرفة في قواعد البيانات"
-  name_en: "Knowledge Discovery in Databases"
-  tagline: "تنقيب + تصنيف + تجميع + تنبؤ"
-  section_label: "القسم العملي"
+  id: fuzzy-logic
+  name_ar: "المنطق الترجيحي"
+  name_en: "Fuzzy Logic"
+  tagline: "منطق ضبابي تحليل نظم"
+  section_label: "القسم النظري"
 
 locale:
   language: ar
@@ -15,17 +15,16 @@ locale:
   extra_explanation_tag: "(شرح زيادة للفهم)"
   not_in_lecture_tag: "(غير مشروحة في المحاضرة)"
 
-domain: mixed
+domain: analysis
 
 domain_profile:
   content_types:
     - theory
-    - code
     - diagrams
     - tables
     - pseudocode
     - equations
-  forbid_adding: []
+  forbid_adding: ["Python", "Java", "C++"]
   prerequisites: []
 
 lecture:
@@ -35,6 +34,7 @@ lecture:
   intro_blockquote: true
 
 parts:
+
   integration_map:
     enabled: true
     heading: "📌 خريطة التكامل (أين تقع هذه المحاضرة في الدورة؟)"
@@ -69,55 +69,49 @@ parts:
     forbid_easy_literal: false
     distribution:
       comparisons: 25
-      code_scenario: 30      # Python/SQL + مخرجات خوارزمية
-      application: 30
-      algorithm_trace: 15    # تتبع Apriori، k-Means، Decision Tree
+      code_scenario: 5
+      application: 40
+      algorithm_trace: 30
 
   debug:
     enabled: true
-    heading: "الجزء الرابع: أسئلة تصحيح الكود"
-    count: 5
-    cover: [logic, misconception, return_check, dead_code]
+    heading: "الجزء الرابع: أسئلة تصحيح المنطق/المفاهيم"
+    count: 4
+    cover: [logic, misconception]
 
   exercise:
     enabled: true
-    heading: "الجزء الرابع: تمارين تطبيقية (من إعداد الدليل للتدريب)"
+    heading: "الجزء الرابع: تمارين إضافية (من إعداد الدليل للتدريب)"
     count_min: 5
     count_max: 8
     authored_by_guide: true
     types:
       - fill_gaps
-      - code_fix
       - scenario
-      - metric_calculation    # حساب Support, Confidence, Entropy, F1
-      - model_apply           # تطبيق k-Means أو Decision Tree على بيانات
 
   analysis_exercise:
     enabled: true
     heading: "الجزء الرابع: تمارين تحليل وتطبيق (إضافية — من إعداد الدليل)"
     count_min: 4
-    count_max: 8
+    count_max: 7
     types:
       - case_study
-      - table_fill            # confusion matrix، itemsets، iterations
+      - diagram_completion
+      - table_fill
       - written_analysis
-      - diagram_completion    # شجرة قرار، مخطط KDD pipeline
 
   trace_exercise:
     enabled: true
     heading: "الجزء الرابع: تمارين تتبع التنفيذ"
-    count_min: 5
-    note: "كل تمرين: بيانات/معطيات + جدول تكرارات ناقص + نموذج الحل — Apriori، k-Means، Gradient Descent، Decision Tree building"
+    count_min: 3
+    note: "كل تمرين: مدخل + جدول/شجرة ناقصة للطالب + نموذج الحل الكامل"
 
   design_question:
-    enabled: false
+    enabled: true
     heading: "الجزء الرابع: أسئلة تصميم"
-    count_min: 1
+    count_min: 2
     types:
-      - er_diagram
-      - uml_design
       - architecture
-      - schema_design
 
   theory:
     enabled: true
@@ -135,21 +129,22 @@ parts:
   qa_cards:
     enabled: true
     heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
-    count_min: 14
+    count_min: 12
 
   reference_code:
-    enabled: true
+    enabled: false
     heading: "الجزء الخامس: كتابة الكود الكامل (مرجع شامل)"
-    assemble_from_fragments: true
+    assemble_from_fragments: false
     same_program_only: false
-    languages: [python]
-    note: "يجمع كود المحاضرة: preprocessing، Apriori، regression، classification، clustering"
+    languages: []
+    note: ""
 
   checklist:
     enabled: true
-    heading: "الجزء التاسع: قائمة فحص ذاتي قبل الامتحان ✅"
+    heading: "الجزء السادس: قائمة فحص ذاتي قبل الامتحان ✅"
 
 blocks:
+
   original_quote:
     enabled: true
 
@@ -157,22 +152,22 @@ blocks:
     enabled: true
 
   code:
-    enabled: true
-    languages: [python, sql, r]
-    require_line_explain: true
+    enabled: false
+    languages: []
+    require_line_explain: false
 
   line_explain:
-    enabled: true
+    enabled: false
     format: numbered_list
 
   imports:
-    enabled: true
+    enabled: false
 
   expected_output:
-    enabled: true
+    enabled: false
 
   troubleshooting:
-    enabled: true
+    enabled: false
 
   diagrams:
     enabled: true
@@ -182,7 +177,7 @@ blocks:
 
   uml:
     enabled: false
-    types: [usecase, class, activity, flowchart]
+    types: []
 
   screen_description:
     enabled: false
@@ -210,7 +205,7 @@ blocks:
     enabled: true
 
   code_fix:
-    enabled: true
+    enabled: false
 
   images_note:
     enabled: false
@@ -234,21 +229,7 @@ blocks:
     enabled: true
     display_mode: block
     require_explanation: true
-    common_symbols:
-      - "Support"
-      - "Confidence"
-      - "Lift"
-      - "Entropy"
-      - "Information Gain"
-      - "Gini Index"
-      - "Gradient Descent"
-      - "RSS"
-      - "Bayes' Theorem"
-      - "Minkowski Distance"
-      - "Accuracy"
-      - "Precision"
-      - "Recall"
-      - "F1"
+    common_symbols: ["μ_A", "min", "max", "T-norm", "S-norm", "α-cut"]
 
 pedagogy:
   cover_every_line: true
@@ -257,21 +238,8 @@ pedagogy:
   explain_why: true
   daily_analogy_plus_example: true
   follow_lecture_order: true
-  adapt_to_lecture_type: true
-
-  lecture_types:
-    - match: "Association Rules & Frequent Patterns"
-      tools: ["Apriori", "support", "confidence", "lift", "itemset", "transaction", "FIM", "ARM"]
-    - match: "Regression"
-      tools: ["Linear Regression", "RSS", "Gradient Descent", "R²", "RMSE", "Multiple Regression", "Polynomial Regression"]
-    - match: "Classification"
-      tools: ["Decision Tree", "Entropy", "Information Gain", "Gini Index", "Naive Bayes", "kNN", "SVM", "Confusion Matrix", "Precision", "Recall", "F1"]
-    - match: "Clustering"
-      tools: ["k-Means", "k-Medoids", "PAM", "k-Modes", "Euclidean Distance", "Manhattan Distance", "Silhouette", "Within-Cluster Variation"]
-    - match: "Ensemble Methods"
-      tools: ["Bagging", "Boosting", "AdaBoost", "Random Forest", "Bootstrap", "Voting", "Weighted Voting"]
-    - match: "Data Preprocessing"
-      tools: ["Missing Values", "Noise", "Normalization", "Binning", "Correlation", "Chi-Square", "Discretization"]
+  adapt_to_lecture_type: false
+  lecture_types: []
 
 assessment:
   mcq_option_letters: arabic
@@ -282,108 +250,102 @@ automation_question_types:
     enabled: true
     label_ar: "مراجعة سريعة (سؤال / جواب)"
     difficulty: easy
-    count_min: 16
+    count_min: 12
     parts: [qa_cards, qa_inline, theory]
     blocks: [qa_inline, callouts]
     format: |
       **Q{N}:** سؤال مراجعة مباشر (تعريف، فرق، متى نستخدم)
       **A:** إجابة مختصرة قابلة للمقارنة الآلية (جملة أو جملتان)
+      — بدون تعليل طويل. مناسب للحفظ السريع قبل الامتحان.
     examples:
-      - "ما الفرق بين `Classification` و `Clustering`؟"
-      - "متى نستخدم `Precision` بدل `Accuracy`؟"
+      - "ما الفرق بين المجموعة التقليدية والضبابية؟"
+      - "متى نستخدم T-norm بدل S-norm؟"
 
   scenario_cluster:
     enabled: true
     label_ar: "تحدي مركّب (سيناريو + أسئلة متعددة)"
     difficulty: hard
-    count_min: 4
+    count_min: 3
     questions_per_scenario: 4
     parts: [mcq, debug, theory]
-    blocks: [code, trace, diagrams, tables, equations]
+    blocks: [code, trace, diagrams, tables, compare, equations]
     format: |
       ### السيناريو {N}: {عنوان}
-      > [بيانات/جدول/كود كامل — transactions لـ Apriori، نقاط لـ k-Means، أو Confusion Matrix]
-      ثم 3–5 أسئلة MCQ **كلها مبنية على نفس السيناريو**:
+      > [وصف الحالة: كود، جدول، مخطط، أو مسألة رياضية كاملة — 5–10 أسطر]
+      ثم 3–5 أسئلة MCQ **كلها مبنية على نفس السيناريو** (لا تكرر نفس الفكرة):
       ### السؤال {N}.1 (hard) … أ) ب) ج) د) + تعليل
+      كل سيناريو يختبر: فهم + تطبيق + قرار (أي خطوة تالية؟ أي ناتج؟ أين الخطأ؟)
     scenario_sources:
-      - code_trace
       - numerical_case
       - algorithm_state
+      - system_design
     examples:
-      - "جدول `Confusion Matrix` ناقص — احسب `F1`"
-      - "كود `Apriori` — أي itemset يُقصى في التكرار التالي؟"
-      - "بيانات `k-Means` — أي نقطة تنتقل لأي cluster؟"
+      - "جدول تكرارات خوارزمية FCM ناقص — أي قيمة في الخلية X؟"
+      - "نظام تحكم ضبابي — كيف يتغير الخرج إذا تغيرت زاوية الميل؟"
 
   hands_on:
     enabled: true
     label_ar: "تطبيق عملي (أكمل / صحّح / نفّذ)"
     difficulty: medium
-    count_min: 6
+    count_min: 5
     parts: [exercise, analysis_exercise, debug]
     blocks: [fill_gaps, code_fix, algorithm, expected_output, tables]
     types:
-      - fill_gaps
-      - code_fix
       - table_fill
-      - metric_calculation
-      - model_apply
+      - numerical_solve
+      - diagram_completion
     format: |
-      كل تمرين: **المعطيات** (بيانات/كود) + **المطلوب** (مرقّم) + **نموذج الحل الكامل**
-      الطالب يجيب بقيمة رقمية/كود/جدول — الإجابة قابلة للمقارنة حرفياً أو رقمياً.
+      كل تمرين: **المعطيات** + **المطلوب** (مرقّم) + **نموذج الحل الكامل**
+      الطالب يجيب بقيمة/جدول/كود — الإجابة قابلة للمقارنة حرفياً أو رقمياً.
 
   step_trace:
     enabled: true
     label_ar: "تتبع خطوة بخطوة (جدول ناقص)"
     difficulty: medium
-    count_min: 5
+    count_min: 3
     parts: [trace_exercise, mcq]
     blocks: [trace, algorithm, tables, diagrams]
     format: |
-      **المدخل:** {بيانات/transactions/نقاط ابتدائية}
+      **المدخل:** {حالة ابتدائية}
       **أكمل الجدول:**
-      | التكرار | العملية | الحالة |
+      | الخطوة | العملية | الحالة |
       | 1 | ... | ؟ |
       **نموذج الحل:** جدول مكتمل + **النتيجة النهائية**
+      + 1–2 سؤال MCQ على نفس التتبع (ماذا في الخطوة 3؟)
     trace_targets:
-      - apriori_iterations       # itemsets مرشحة → متكررة عبر كل تكرار
-      - kmeans_centroid_updates  # مواقع centroids عبر كل تكرار
-      - decision_tree_split      # اختيار خاصية التقسيم بالـ Entropy/Gini خطوة بخطوة
-      - gradient_descent_steps   # تحديث الأوزان عبر كل تكرار
+      - algorithm_iterations
+      - variable_state
 
   compare_analyze:
     enabled: true
-    label_ar: "مقارنة وتحليل"
+    label_ar: "مقارنة وتحليل (أيهما أفضل؟ لماذا؟)"
     difficulty: medium
-    count_min: 5
+    count_min: 4
     parts: [mcq, theory, analysis_exercise]
-    blocks: [compare, trade_off, tables]
+    blocks: [compare, trade_off, tables, analogy]
     format: |
       سؤال مقارنة بخيارات (أ، ب، ج، د) + تعليل لماذا الباقي خاطئ
-      أو جدول: | المعيار | Bagging | Boosting |
-    examples:
-      - "قارن بين `k-Means` و `k-Medoids` من حيث الحساسية للـ outliers"
-      - "متى تفضّل `Precision` على `Recall` في مسألة تصنيف طبي؟"
+      أو جدول: | المعيار | الخيار A | الخيار B |
+      أو تمرين تحليل: «في الحالة X استخدم Y لأن Z»
 
   find_the_bug:
     enabled: true
-    label_ar: "اكتشف الخطأ (كود / منطق / حساب)"
+    label_ar: "اكتشف الخطأ (منطق / حساب)"
     difficulty: hard
-    count_min: 5
+    count_min: 4
     parts: [debug, exercise]
-    blocks: [code_fix, troubleshooting]
-    bug_types: [logic, misconception, wrong_formula, off_by_one]
+    blocks: [code_fix, compare, troubleshooting]
+    bug_types: [logic, misconception, off_by_one, wrong_formula]
     format: |
       **الكود/الحساب (يحتوي خطأ):** …
       **اكتشف الخطأ:** [وصف موجز]
       **التصحيح:** … + **شرح الحل** (3 نقاط)
-    examples:
-      - "كود Python يحسب `Entropy` بصيغة خاطئة — أوجد الخطأ وصححه"
 
   structured_theory:
     enabled: true
-    label_ar: "نظري منظم"
+    label_ar: "نظري منظم (تعريف + مكونات + مثال)"
     difficulty: medium
-    count_min: 10
+    count_min: 8
     parts: [theory, mcq]
     blocks: [compare, tables, callouts]
     format: |
@@ -391,8 +353,9 @@ automation_question_types:
       **نموذج الإجابة:**
       1. التعريف: …
       2. المكونات/الشروط: …
-      3. مثال رقمي: …
+      3. مثال: …
       4. متى نستخدم: …
+      — هيكل ثابت يسهّل التصحيح الآلي بالكلمات المفتاحية.
 
 output:
   validation_footer: true
@@ -404,15 +367,15 @@ output:
     - "الأقسام مرقّمة هرمياً (1، 1.1، 2 …)"
     - "استخدمت جداول لكل مقارنة وقائمة تعريفات"
     - "كل مصطلح إنجليزي بين backticks"
-    - "≥16 سؤال MCQ مع تعليل كامل"
+    - "≥16 سؤال MCQ مع تعليل كامل لكل خيار"
     - "≥10 أسئلة نظرية مع نموذج إجابة منظم"
-    - "≥5 أسئلة تصحيح كود Python"
-    - "≥5 تمارين تتبع (Apriori، k-Means، Gradient Descent، Decision Tree)"
-    - "≥6 تمارين تطبيقية مع نموذج حل"
-    - "≥16 بطاقة Q/A مراجعة سريعة (flash_qa)"
-    - "≥4 سيناريوهات مركّبة × 4 أسئلة MCQ لكل سيناريو (scenario_cluster)"
-    - "≥5 أسئلة مقارنة وتحليل (compare_analyze)"
-    - "≥5 أسئلة اكتشاف خطأ في كود/حساب (find_the_bug)"
-    - "≥10 أسئلة نظرية منظمة (structured_theory)"
-    - "حسابات `Support`، `Confidence`، `Entropy`، `F1` مع أمثلة رقمية كاملة"
-    - "قارنت بين خوارزميات التصنيف والتجميع"
+    - "تمارين تتبع: كل تمرين له جدول ناقص + نموذج حل كامل"
+    - "تمارين تطبيقية من إعداد الدليل مع نموذج حل"
+    - "أسئلة تصحيح مفاهيم/منطق إن كانت المادة تحتوي تحليلات"
+    - "مراجعة سريعة: ≥12 بطاقة Q/A (flash_qa)"
+    - "تحدي مركّب: ≥3 سيناريوهات × 3–5 أسئلة MCQ لكل سيناريو (scenario_cluster)"
+    - "تطبيق عملي: ≥5 تمارين مع نموذج حل (hands_on)"
+    - "تتبع خطوة بخطوة: ≥3 جداول ناقصة + نموذج حل (step_trace)"
+    - "مقارنة وتحليل: ≥4 أسئلة مقارنة (compare_analyze)"
+    - "اكتشف الخطأ: ≥4 أسئلة تصحيح (find_the_bug)"
+    - "نظري منظم: ≥8 أسئلة بهيكل ثابت (structured_theory)"

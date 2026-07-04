@@ -108,6 +108,21 @@ Fill every `[...]` from SUBJECT_BRIEF. Process enabled items only.
 
 ---
 
+[ONLY IF automation_question_types has any entry with enabled:true:]
+## 🎯 أنواع أسئلة إضافية إلزامية للأتمتة (الفحص بالكامل آلي)
+> هذه الأنواع تُدمَج **ضمن** الأجزاء أعلاه (لا تُنشئ لها أقساماً ## منفصلة) — التزم بها عند توليد كل جزء لضمان كفاية وتنوّع الأسئلة القابلة للتصحيح الآلي.
+
+[FOR EACH enabled entry — fixed order: flash_qa → scenario_cluster → hands_on → step_trace → compare_analyze → find_the_bug → structured_theory:]
+### [label_ar] — ضمن [parts joined by " / "] (≥[count_min], [difficulty])
+[format block verbatim if present, else one-line description]
+[if types present:] الأنواع: [types joined by ", "]
+[if bug_types present:] أنواع الأخطاء: [bug_types joined by ", "]
+[if trace_targets present:] الأهداف: [trace_targets joined by ", "]
+[if scenario_sources present:] المصادر: [scenario_sources joined by ", "]
+[max 1 example if present]
+
+---
+
 ## قواعد الكتل داخل الشرح
 [FOR EACH enabled block (skip disabled):]
 [code:] **💻 الكود:** [languages: list] — داخل كل كود: تعليق إنجليزي لكل سطر. [if require_line_explain:] يتبعه **شرح كل سطر**. انظر SCHEMA.md §Code.
@@ -145,10 +160,11 @@ Fill every `[...]` from SUBJECT_BRIEF. Process enabled items only.
 [if code block enabled:] - [ ] كل كود: 💻 + ما هذا الكود؟ + شرح كل سطر
 [if diagrams or uml enabled:] - [ ] كل مخطط: جدول عُقد + جدول روابط + بلوك diagram
 [if exercise or analysis_exercise enabled:] - [ ] تمارين من إعداد الدليل مع نموذج حل
-[if reference_code.enabled:] - [ ] كود كامل مجمّع (إن وُجد برنامج واحد مُجزّأ في الشرح)
+ [if reference_code.enabled:] - [ ] كود كامل مجمّع (إن وُجد برنامج واحد مُجزّأ في الشرح)
 [if equations.enabled:] - [ ] كل معادلة رئيسية في بلوك 📐 مع شرح الرموز
 [if trace_exercise.enabled:] - [ ] تمارين تتبع: كل تمرين له جدول ناقص + نموذج الحل
 [if design_question.enabled:] - [ ] أسئلة تصميم مع نموذج الإجابة ومعايير التقييم
+[APPEND every item in output.checklist_items verbatim as additional "- [ ]" bullets here — these are subject-specific and already phrased in Arabic]
 [if output.validation_footer:] - [ ] أضف تعليق VALIDATION في نهاية الملف
 
 [output.closing_line]

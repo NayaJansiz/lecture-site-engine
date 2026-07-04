@@ -102,7 +102,7 @@ parts:
   trace_exercise:
     enabled: true
     heading: "الجزء الرابع: تمارين تتبع الخوارزميات (خطوة بخطوة)"
-    count_min: 3   # أساسي لـ: Bisection, Newton-Raphson, Gauss Elimination, Interpolation, Integration rules
+    count_min: 4   # أساسي لـ: Bisection, Newton-Raphson, Gauss Elimination, Interpolation, Integration rules
     note: "كل تمرين: المعطيات + جدول تكرارات ناقص للطالب + نموذج الحل الكامل"
 
   design_question:
@@ -118,7 +118,7 @@ parts:
   theory:
     enabled: true
     heading: "الجزء الخامس: أسئلة نظرية متوقعة بالامتحان"
-    count_min: 8   # مشتق، برهان، مقارنة طرق، شروط التقارب
+    count_min: 10   # مشتق، برهان، مقارنة طرق، شروط التقارب
 
   cheat_sheet:
     enabled: true
@@ -131,7 +131,7 @@ parts:
   qa_cards:
     enabled: true
     heading: "الجزء الرابع: بطاقات سؤال وجواب (Q&A Cards)"
-    count_min: 12
+    count_min: 14
 
   reference_code:
     enabled: false
@@ -259,9 +259,12 @@ automation_question_types:
     enabled: true
     label_ar: "مراجعة سريعة (سؤال / جواب)"
     difficulty: easy
-    count_min: 12
+    count_min: 14
     parts: [qa_cards, qa_inline, theory]
     blocks: [qa_inline, callouts]
+    format: |
+      **Q{N}:** سؤال مراجعة مباشر (تعريف، فرق، متى نستخدم)
+      **A:** إجابة مختصرة قابلة للمقارنة الآلية (جملة أو جملتان)
     examples:
       - "ما الفرق بين الخطأ المطلق والنسبي؟"
       - "متى نستخدم `Newton-Raphson` بدل `Bisection`؟"
@@ -270,10 +273,15 @@ automation_question_types:
     enabled: true
     label_ar: "تحدي مركّب (مسألة + أسئلة متعددة)"
     difficulty: hard
-    count_min: 3
+    count_min: 4
     questions_per_scenario: 4
     parts: [mcq, debug, theory]
     blocks: [trace, algorithm, tables, equations]
+    format: |
+      ### السيناريو {N}: {عنوان}
+      > [مسألة عددية كاملة: دالة + نقطة ابتدائية، أو جدول بيانات للاستيفاء — 5–10 أسطر]
+      ثم 3–5 أسئلة MCQ **كلها مبنية على نفس المسألة**:
+      ### السؤال {N}.1 (hard) … أ) ب) ج) د) + تعليل
     scenario_sources:
       - numerical_case
       - algorithm_state
@@ -285,7 +293,7 @@ automation_question_types:
     enabled: true
     label_ar: "تطبيق عملي (حساب / إكمال)"
     difficulty: medium
-    count_min: 5
+    count_min: 6
     parts: [exercise, analysis_exercise, debug]
     blocks: [fill_gaps, algorithm, tables, equations]
     types:
@@ -294,41 +302,68 @@ automation_question_types:
       - error_calculation
       - table_fill
       - formula_derivation
+    format: |
+      كل تمرين: **المعطيات** (دالة/جدول) + **المطلوب** (مرقّم) + **نموذج الحل الكامل** خطوة بخطوة
+      الطالب يجيب بقيمة رقمية دقيقة — الإجابة قابلة للمقارنة رقمياً.
 
   step_trace:
     enabled: true
     label_ar: "تتبع خطوة بخطوة (جدول ناقص)"
     difficulty: medium
-    count_min: 3
+    count_min: 4
     parts: [trace_exercise, mcq]
     blocks: [trace, algorithm, tables]
+    format: |
+      **المدخل:** {دالة/نقطة ابتدائية/نظام معادلات}
+      **أكمل الجدول:**
+      | التكرار | xₙ | f(xₙ) | الخطأ |
+      | 1 | ... | ... | ؟ |
+      **نموذج الحل:** جدول مكتمل + **القيمة النهائية بعد التقارب**
     trace_targets:
-      - algorithm_iterations
+      - algorithm_iterations       # Bisection / Newton-Raphson / Secant
+      - gauss_elimination_steps    # خطوات الحذف والتعويض الخلفي
+      - interpolation_table_build  # بناء جدول الفروق المنتهية
 
   compare_analyze:
     enabled: true
     label_ar: "مقارنة وتحليل"
     difficulty: medium
-    count_min: 4
+    count_min: 5
     parts: [mcq, theory, analysis_exercise]
     blocks: [compare, trade_off, tables]
+    format: |
+      سؤال مقارنة بخيارات (أ، ب، ج، د) + تعليل لماذا الباقي خاطئ
+      أو جدول: | المعيار | Bisection | Newton-Raphson |
+    examples:
+      - "قارن بين `Newton-Raphson` و `Secant` من حيث سرعة التقارب والاشتقاق المطلوب"
 
   find_the_bug:
     enabled: true
     label_ar: "اكتشف الخطأ (صيغة / حساب)"
     difficulty: hard
-    count_min: 4
+    count_min: 5
     parts: [debug, exercise]
     blocks: [code_fix, compare]
     bug_types: [wrong_formula, off_by_one, misconception, logic]
+    format: |
+      **الحساب/الخوارزمية (يحتوي خطأ):** …
+      **اكتشف الخطأ:** [وصف موجز]
+      **التصحيح:** … + **شرح الحل** (3 نقاط)
 
   structured_theory:
     enabled: true
     label_ar: "نظري منظم"
     difficulty: medium
-    count_min: 8
+    count_min: 10
     parts: [theory, mcq]
     blocks: [compare, tables, equations]
+    format: |
+      ### السؤال {N}: {السؤال}
+      **نموذج الإجابة:**
+      1. التعريف: …
+      2. الصيغة/الشروط: …
+      3. مثال رقمي: …
+      4. متى نستخدم: …
 
 output:
   validation_footer: true
@@ -346,8 +381,11 @@ output:
     - "غطّيت حساب الأخطاء (مطلق، نسبي، تقريبي) مع أمثلة"
     - "قارنت بين الطرق (السرعة، الدقة، شروط التقارب، سهولة التطبيق)"
     - "≥16 سؤال MCQ مع تعليل كامل"
-    - "≥3 سيناريوهات مركّبة × 4 أسئلة MCQ"
-    - "≥5 تمارين تطبيقية حسابية مع نموذج حل"
-    - "≥3 تمارين تتبع بجدول ناقص + نموذج حل"
-    - "≥4 أسئلة اكتشف الخطأ في الصيغة/الحساب"
-    - "≥12 بطاقة Q/A مراجعة سريعة"
+    - "≥10 أسئلة نظرية مع نموذج إجابة منظم"
+    - "≥4 سيناريوهات مركّبة × 4 أسئلة MCQ (scenario_cluster)"
+    - "≥6 تمارين تطبيقية حسابية مع نموذج حل (hands_on)"
+    - "≥4 تمارين تتبع بجدول ناقص + نموذج حل (step_trace)"
+    - "≥5 أسئلة مقارنة بين الطرق (compare_analyze)"
+    - "≥5 أسئلة اكتشف الخطأ في الصيغة/الحساب (find_the_bug)"
+    - "≥10 أسئلة نظرية منظمة (structured_theory)"
+    - "≥14 بطاقة Q/A مراجعة سريعة (flash_qa)"

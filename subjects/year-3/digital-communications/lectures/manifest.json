@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "الاتصالات الرقمية",
+    "subjectNameEn": "Digital Communications",
+    "year": "2025-2026",
+    "academicYear": 3,
+    "theme": "amber-default",
+    "department": "النظري"
+  },
+  "title": "الاتصالات الرقمية — Digital Communications",
+  "subtitle": "تمثيل + تعديل + تضمين + تحليل",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

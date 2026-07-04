@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "المنطق الترجيحي",
+    "subjectNameEn": "Fuzzy Logic",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "المنطق الترجيحي — Fuzzy Logic",
+  "subtitle": "منطق ضبابي تحليل نظم",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

@@ -9,7 +9,15 @@
   },
   "title": "نظم التشغيل 2 (النظري الكامل) — Operating Systems 2 (Full Theory)",
   "subtitle": "تزامن استعصاء ذاكرة ملفات",
-  "files": [],
+  "files": [
+    {
+      "path": "par1-sec1.md",
+      "num": 1,
+      "icon": "📌",
+      "matIcon": "school",
+      "badge": "المحاضرة ١ — جزء ١"
+    }
+  ],
   "lectureIcons": [
     "📌",
     "📖",

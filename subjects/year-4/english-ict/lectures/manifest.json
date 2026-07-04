@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "اللغة الإنجليزية لتكنولوجيا المعلومات والاتصالات",
+    "subjectNameEn": "English for ICT",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "اللغة الإنجليزية لتكنولوجيا المعلومات والاتصالات — English for ICT",
+  "subtitle": "مفردات + قواعد + وظائف لغوية",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

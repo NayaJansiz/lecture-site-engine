@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "الدارات الإلكترونية 2",
+    "subjectNameEn": "Electronic Circuits 2",
+    "year": "2025-2026",
+    "academicYear": 1,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "الدارات الإلكترونية 2 — Electronic Circuits 2",
+  "subtitle": "BJT MOSFET Solar Power Batteries",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

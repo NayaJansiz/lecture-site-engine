@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "لغات البرمجة",
+    "subjectNameEn": "Programming Languages",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "programming-blue-lavender",
+    "department": "نظري"
+  },
+  "title": "لغات البرمجة — Programming Languages",
+  "subtitle": "مفاهيم + تصميم + تنفيذ",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

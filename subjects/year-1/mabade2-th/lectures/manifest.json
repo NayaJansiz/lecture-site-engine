@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "مبادئ عمل الحواسيب 2",
+    "subjectNameEn": "Computer Principles 2",
+    "year": "2025-2026",
+    "academicYear": 1,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "مبادئ عمل الحواسيب 2 — Computer Principles 2",
+  "subtitle": "معمارية + خوارزميات + شبكات + أمن",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "الشبكات وأمن البيانات",
+    "subjectNameEn": "Computer Networks and Data Security",
+    "year": "2025-2026",
+    "academicYear": 3,
+    "theme": "amber-default",
+    "department": "نظري"
+  },
+  "title": "الشبكات وأمن البيانات — Computer Networks and Data Security",
+  "subtitle": "شبكات + ترميز + تكامل + أمن",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

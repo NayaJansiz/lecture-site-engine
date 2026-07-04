@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "مبادئ المترجمات",
+    "subjectNameEn": "Compiler Principles",
+    "year": "2025-2026",
+    "academicYear": 3,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "مبادئ المترجمات — Compiler Principles",
+  "subtitle": "تحليل · توليد · تحسين · تشغيل",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

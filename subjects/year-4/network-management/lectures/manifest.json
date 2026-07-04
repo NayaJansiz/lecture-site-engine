@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "إدارة الشبكات الحاسوبية",
+    "subjectNameEn": "Computer Network Management",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "إدارة الشبكات الحاسوبية — Computer Network Management",
+  "subtitle": "إدارة + شبكات + مراقبة + SNMP",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

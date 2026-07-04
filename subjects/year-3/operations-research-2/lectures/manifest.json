@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "بحوث العمليات 2",
+    "subjectNameEn": "Operations Research 2",
+    "year": "2025-2026",
+    "academicYear": 3,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "بحوث العمليات 2 — Operations Research 2",
+  "subtitle": "نقل + إسناد + أرتال + ديناميكية",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

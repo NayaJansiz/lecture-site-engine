@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "إنتراكتشنز 1: القراءة والكتابة (الوحدات 6–9)",
+    "subjectNameEn": "Interactions 1: Reading and Writing (Units 6–9)",
+    "year": "2025-2026",
+    "academicYear": 1,
+    "theme": "amber-default",
+    "department": "القسم النظري والعملي"
+  },
+  "title": "إنتراكتشنز 1: القراءة والكتابة (الوحدات 6–9) — Interactions 1: Reading and Writing (Units 6–9)",
+  "subtitle": "ثقافة + صحة + إعلام + حياة اجتماعية",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

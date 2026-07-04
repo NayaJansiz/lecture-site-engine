@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "الشبكات العصبية والتعلم العميق",
+    "subjectNameEn": "Neural Networks and Deep Learning",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "الشبكات العصبية والتعلم العميق — Neural Networks and Deep Learning",
+  "subtitle": "عصبونات + تعلم + خوارزميات + عمق",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

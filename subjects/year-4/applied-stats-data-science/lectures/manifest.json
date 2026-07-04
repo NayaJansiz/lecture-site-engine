@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "applied-stats-data-science",
+    "subjectNameEn": "applied-stats-data-science",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم"
+  },
+  "title": "applied-stats-data-science — applied-stats-data-science",
+  "subtitle": "دليل دراسي تفاعلي",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

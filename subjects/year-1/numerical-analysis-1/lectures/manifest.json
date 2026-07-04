@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "التحليل العددي 1",
+    "subjectNameEn": "Numerical Analysis 1",
+    "year": "2025-2026",
+    "academicYear": 1,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "التحليل العددي 1 — Numerical Analysis 1",
+  "subtitle": "أخطاء + فروق + استيفاء + معادلات",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "تطوير تطبيقات الويب",
+    "subjectNameEn": "Web Applications",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم العملي"
+  },
+  "title": "تطوير تطبيقات الويب — Web Applications",
+  "subtitle": "بروتوكول + خادم + واجهات + تفاعل",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

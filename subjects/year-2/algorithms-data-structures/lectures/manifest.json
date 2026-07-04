@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "خوارزميات وبنى المعطيات",
+    "subjectNameEn": "Algorithms and Data Structures",
+    "year": "2025-2026",
+    "academicYear": 2,
+    "theme": "amber-default",
+    "department": "نظري"
+  },
+  "title": "خوارزميات وبنى المعطيات — Algorithms and Data Structures",
+  "subtitle": "تقسيم + بيان + شرهة + ديناميكية",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

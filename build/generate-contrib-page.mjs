@@ -112,11 +112,11 @@ async function main() {
   <div class="wrap">
     <a class="back" href="../">← الصفحة الرئيسية</a>
     <h1>📤 رفع محاضرة</h1>
-    <p class="lead">زر واحد → GitHub يعمل <strong>Fork</strong> تلقائياً → تحفظ → <strong>Pull Request</strong>. بدون صلاحية على المستودع.</p>
+    <p class="lead">Fork (مرة واحدة) → رفع المحاضرة → Pull Request. لازم يكونوا <strong>مسجّlin على GitHub</strong>.</p>
 
     <div class="note--ok">
-      <strong>ما بتحتاجي تضيفيهم Collaborator.</strong> المستودع Public + هالواجهة كافية.
-      <code>main</code> و <code>dev</code> محميين — التعديل بيوصل بس عبر PR وأنتِ بتوافقي.
+      <strong>ما بتحتاجي Collaborator.</strong> المستودع Public + Fork + PR يكفي.
+      عند الحفظ: اختاروا <strong>Propose changes</strong> / <strong>Create a new branch and start a pull request</strong> — مو حفظ مباشر على <code>main</code>.
     </div>
 
     <div class="panel">
@@ -139,19 +139,22 @@ async function main() {
       <h2 class="card__title" id="cardTitle"></h2>
       <p class="card__path" id="cardPath"></p>
       <div class="actions">
-        <a class="btn btn--primary is-disabled" id="btnSubmit" href="#" target="_blank" rel="noopener">📤 Fork ورفع المحاضرة</a>
+        <a class="btn btn--primary is-disabled" id="btnFork" href="#" target="_blank" rel="noopener">① Fork المستودع (مرة واحدة)</a>
+        <a class="btn btn--primary is-disabled" id="btnSubmit" href="#" target="_blank" rel="noopener">② رفع محاضرة (parN.md)</a>
+        <a class="btn is-disabled" id="btnPr" href="#" target="_blank" rel="noopener">③ فتح Pull Request</a>
         <a class="btn btn--ghost is-disabled" id="btnFolder" href="#" target="_blank" rel="noopener">📁 عرض مجلد المحاضرات</a>
       </div>
     </article>
 
     <div class="steps">
-      <strong>شو بيصير لما يضغطوا الزر:</strong>
+      <strong>الخطوات بالترتيب:</strong>
       <ol>
-        <li>يفتح GitHub — إذا أول مرة يطلب <strong>Fork this repository</strong> → يضغطوا Fork</li>
-        <li>يفتح محرّر ملف جديد — يسمّوه <code>parN.md</code> ويلصقوا المحتوى</li>
-        <li>عند الحفظ: يختاروا <strong>Propose changes</strong> / <strong>Create a new branch and start a pull request</strong></li>
-        <li>GitHub يفتح Pull Request نحو <code>main</code> — يضغطوا Create</li>
-        <li>بعد نجاح CI → أنتِ Merge → الموقع يتحدّث</li>
+        <li>سجّل دخول على <a href="https://github.com/login" target="_blank" rel="noopener">GitHub</a></li>
+        <li>① <strong>Fork المستودع</strong> — مرة واحدة لكل حساب</li>
+        <li>② <strong>رفع محاضرة</strong> — يفتح محرّر؛ غيّروا <code>parN.md</code> لرقم المحاضرة</li>
+        <li>الصقوا المحتوى → Commit → اختاروا <strong>Propose changes</strong> / <strong>start a pull request</strong></li>
+        <li>③ أو اضغطوا <strong>فتح Pull Request</strong> بعد الحفظ</li>
+        <li>بعد CI → أنتِ Merge → الموقع يتحدّث</li>
       </ol>
       <div class="naming">
         <strong>تسمية الملف:</strong><br>
@@ -177,20 +180,24 @@ async function main() {
     const card = document.getElementById('subjectCard');
     const cardTitle = document.getElementById('cardTitle');
     const cardPath = document.getElementById('cardPath');
+    const btnFork = document.getElementById('btnFork');
     const btnSubmit = document.getElementById('btnSubmit');
+    const btnPr = document.getElementById('btnPr');
     const btnFolder = document.getElementById('btnFolder');
 
     function encPath(folder) {
       return folder.split('/').map(encodeURIComponent).join('/');
     }
 
-    /**
-     * Upstream /new/main/... — GitHub prompts Fork for users without write access,
-     * then edits on their fork and offers PR to main.
-     */
-    function forkSubmitUrl(s) {
-      const enc = encPath(s.path);
-      return GH + '/new/' + encodeURIComponent(MAIN_BRANCH) + '/' + enc + '?filename=parN.md';
+    /** Full file path in URL — works even when lectures/ was just scaffolded. */
+    function contribUrls(s) {
+      const filePath = s.path + '/parN.md';
+      return {
+        fork: GH + '/fork',
+        newPar: GH + '/new/' + encodeURIComponent(MAIN_BRANCH) + '/' + encPath(filePath),
+        openPr: GH + '/compare/' + encodeURIComponent(MAIN_BRANCH) + '?expand=1',
+        folder: GH + '/tree/' + encodeURIComponent(MAIN_BRANCH) + '/' + encPath(s.path),
+      };
     }
 
     function setBtn(btn, href, on) {
@@ -200,15 +207,20 @@ async function main() {
 
     function hideCard() {
       card.classList.remove('is-visible');
+      setBtn(btnFork, '#', false);
       setBtn(btnSubmit, '#', false);
+      setBtn(btnPr, '#', false);
       setBtn(btnFolder, '#', false);
     }
 
     function showSubject(s) {
+      const urls = contribUrls(s);
       cardTitle.textContent = s.title;
-      cardPath.textContent = s.path + '/';
-      setBtn(btnSubmit, forkSubmitUrl(s), true);
-      setBtn(btnFolder, GH + '/tree/' + encodeURIComponent(MAIN_BRANCH) + '/' + encPath(s.path), true);
+      cardPath.textContent = s.path + '/parN.md';
+      setBtn(btnFork, urls.fork, true);
+      setBtn(btnSubmit, urls.newPar, true);
+      setBtn(btnPr, urls.openPr, true);
+      setBtn(btnFolder, urls.folder, true);
       card.classList.add('is-visible');
     }
 

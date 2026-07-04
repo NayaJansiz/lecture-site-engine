@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "نظم المعلومات",
+    "subjectNameEn": "Information Systems",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "نظري"
+  },
+  "title": "نظم المعلومات — Information Systems",
+  "subtitle": "مفاهيم + تحليل + تصميم + تطوير",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

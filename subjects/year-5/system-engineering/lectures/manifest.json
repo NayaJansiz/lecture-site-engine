@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "هندسة نظم المعلومات",
+    "subjectNameEn": "Information Systems Engineering",
+    "year": "2025-2026",
+    "academicYear": 5,
+    "theme": "amber-default",
+    "department": "نظري وعملي"
+  },
+  "title": "هندسة نظم المعلومات — Information Systems Engineering",
+  "subtitle": "أنظمة معلومات تخطيط موارد نمذجة عمليات",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

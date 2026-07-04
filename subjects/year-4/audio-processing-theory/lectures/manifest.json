@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "معالجة الصوت النظري",
+    "subjectNameEn": "Audio Processing Theory",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "amber-default",
+    "department": "القسم النظري"
+  },
+  "title": "معالجة الصوت النظري — Audio Processing Theory",
+  "subtitle": "إشارة + تحويل + ميزات + تعلم",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

@@ -1,14 +1,14 @@
 {
   "settings": {
-    "subjectName": "تطوير تطبيقات الويب",
-    "subjectNameEn": "Web Applications",
+    "subjectName": "الشبكات المعلوماتية 2",
+    "subjectNameEn": "Computer Networks 2",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "amber-default",
-    "department": "القسم العملي"
+    "department": "القسم النظري"
   },
-  "title": "تطوير تطبيقات الويب — Web Applications",
-  "subtitle": "بروتوكول + خادم + واجهات + تفاعل",
+  "title": "الشبكات المعلوماتية 2 — Computer Networks 2",
+  "subtitle": "موجهات بروتوكولات عنونة تشفير",
   "files": [],
   "lectureIcons": [
     "📌",

@@ -3,7 +3,7 @@ schema_version: "1.0"
 # ─── Subject identity ─────────────────────────────────────────────────────────
 subject:
   id: audio-processing-theory
-  name_ar: "معالجة الصوت النظري"
+  name_ar: "برمجة منطقية (ذكاء اصطناعي)"
   name_en: "Audio Processing Theory"
   tagline: "إشارة + تحويل + ميزات + تعلم"
   section_label: "القسم النظري"

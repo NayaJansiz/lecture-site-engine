@@ -2,15 +2,15 @@
  * Auto-scaffolded from subject-brief.yaml — edit as needed.
  */
 export const GUIDE_CONFIG = {
-  storagePrefix: 'english-ict',
-  defaultTitle: 'اللغة الإنجليزية لتكنولوجيا المعلومات والاتصالات',
+  storagePrefix: 'computer-networks',
+  defaultTitle: 'computer-networks',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
-  defaultSubtitle: 'مفردات + قواعد + وظائف لغوية',
+  defaultSubtitle: 'دليل دراسي تفاعلي',
 
   showRoadmapCard: false,
 
-  lectureSplit: /(?=^# الوحدة)/m,
-  lectureHeading: /^# الوحدة/,
+  lectureSplit: /(?=^# المحاضرة )/m,
+  lectureHeading: /^# المحاضرة /,
 
   sectionRefPattern: /(?:par\d+(?:-sec\d+)?\.md\s*)?§(\d+(?:\.\d+)*)/g,
 

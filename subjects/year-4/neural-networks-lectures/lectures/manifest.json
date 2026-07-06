@@ -1,13 +1,13 @@
 {
   "settings": {
-    "subjectName": "الشبكات العصبية والتعلم العميق",
+    "subjectName": "برمجة شرطية(ذكاء اصطناعي)",
     "subjectNameEn": "Neural Networks and Deep Learning",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "amber-default",
     "department": "القسم النظري"
   },
-  "title": "الشبكات العصبية والتعلم العميق — Neural Networks and Deep Learning",
+  "title": "برمجة شرطية(ذكاء اصطناعي) — Conditional Programming (AI)",
   "subtitle": "عصبونات + تعلم + خوارزميات + عمق",
   "files": [],
   "lectureIcons": [

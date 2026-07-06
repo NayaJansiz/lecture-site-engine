@@ -1,13 +1,13 @@
 {
   "settings": {
-    "subjectName": "نظم التشغيل 2 (النظري الكامل)",
-    "subjectNameEn": "Operating Systems 2 (Full Theory)",
+    "subjectName": "نظم التشغيل 2",
+    "subjectNameEn": "Operating Systems 2",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "parallel-teal",
-    "department": "نظري"
+    "department": "تصميم"
   },
-  "title": "نظم التشغيل 2 (النظري الكامل) — Operating Systems 2 (Full Theory)",
+  "title": "نظم التشغيل 2 — Operating Systems 2",
   "subtitle": "تزامن استعصاء ذاكرة ملفات",
   "files": [
     {

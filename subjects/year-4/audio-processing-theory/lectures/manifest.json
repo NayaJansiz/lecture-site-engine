@@ -1,13 +1,13 @@
 {
   "settings": {
-    "subjectName": "معالجة الصوت النظري",
+    "subjectName": "معالجة الصوت (ذكاء اصطناعي)",
     "subjectNameEn": "Audio Processing Theory",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "amber-default",
     "department": "القسم النظري"
   },
-  "title": "معالجة الصوت النظري — Audio Processing Theory",
+  "title": "معالجة الصوت (ذكاء اصطناعي) — Audio Processing Theory",
   "subtitle": "إشارة + تحويل + ميزات + تعلم",
   "files": [],
   "lectureIcons": [

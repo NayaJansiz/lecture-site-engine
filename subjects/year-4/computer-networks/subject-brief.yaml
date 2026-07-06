@@ -1,10 +1,10 @@
 schema_version: "1.0"
 
 subject:
-  id: english-ict
-  name_ar: "اللغة الإنجليزية لتكنولوجيا المعلومات والاتصالات"
-  name_en: "English for ICT"
-  tagline: "مفردات + قواعد + وظائف لغوية"
+  id: computer-networks-2
+  name_ar: "الشبكات المعلوماتية 2"
+  name_en: "Computer Networks 2"
+  tagline: "موجهات بروتوكولات عنونة تشفير"
   section_label: "القسم النظري"
 
 locale:
@@ -15,19 +15,25 @@ locale:
   extra_explanation_tag: "(شرح زيادة للفهم)"
   not_in_lecture_tag: "(غير مشروحة في المحاضرة)"
 
-domain: theory
+domain: mixed
 
 domain_profile:
   content_types:
     - theory
-    - tables
+    - code
     - diagrams
+    - commands
+    - tables
+    - pseudocode
+    - equations
   forbid_adding: []
-  prerequisites: []
+  prerequisites:
+    - "مفاهيم أساسية في الشبكات"
+    - "عنونة IP"
 
 lecture:
-  unit_label: "الوحدة"
-  split_regex: "^# الوحدة "
+  unit_label: "المحاضرة"
+  split_regex: "^# المحاضرة "
   title_pattern: "# {unit_label} {num} — {title_en} ({title_ar})"
   intro_blockquote: true
 
@@ -65,12 +71,13 @@ parts:
     difficulty: [medium, hard]
     forbid_easy_literal: false
     distribution:
-      definitions: 30
-      application: 40
-      troubleshooting: 30
+      comparisons: 25
+      code_scenario: 30
+      application: 30
+      algorithm_trace: 15
 
   debug:
-    enabled: false
+    enabled: true
     heading: "الجزء الرابع: أسئلة تصحيح الكود"
     count: 5
     cover: [logic, misconception, return_check, dead_code]
@@ -83,6 +90,7 @@ parts:
     authored_by_guide: true
     types:
       - fill_gaps
+      - code_fix
       - scenario
 
   analysis_exercise:
@@ -92,6 +100,7 @@ parts:
     count_max: 6
     types:
       - case_study
+      - diagram_completion
       - table_fill
       - written_analysis
 
@@ -132,8 +141,8 @@ parts:
   reference_code:
     enabled: false
     heading: "الجزء الخامس: كتابة الكود الكامل (مرجع شامل)"
-    assemble_from_fragments: false
-    same_program_only: false
+    assemble_from_fragments: true
+    same_program_only: true
     languages: []
     note: ""
 
@@ -149,26 +158,26 @@ blocks:
     enabled: true
 
   code:
-    enabled: false
-    languages: []
-    require_line_explain: false
+    enabled: true
+    languages: ["cisco-ios"]
+    require_line_explain: true
 
   line_explain:
-    enabled: false
+    enabled: true
     format: numbered_list
 
   imports:
     enabled: false
 
   expected_output:
-    enabled: false
+    enabled: true
 
   troubleshooting:
     enabled: true
 
   diagrams:
     enabled: true
-    types: [flowchart, bpmn, decision-tree, dfd]
+    types: [flowchart, decision-tree, dfd]
     require_node_table: true
     require_edge_table: true
 
@@ -177,13 +186,13 @@ blocks:
     types: [usecase, class, activity, flowchart]
 
   screen_description:
-    enabled: false
+    enabled: true
 
   algorithm:
-    enabled: false
+    enabled: true
 
   structured_english:
-    enabled: false
+    enabled: true
 
   compare:
     enabled: true
@@ -202,7 +211,7 @@ blocks:
     enabled: true
 
   code_fix:
-    enabled: false
+    enabled: true
 
   images_note:
     enabled: false
@@ -223,10 +232,15 @@ blocks:
     enabled: true
 
   equations:
-    enabled: false
+    enabled: true
     display_mode: block
     require_explanation: true
-    common_symbols: []
+    common_symbols:
+      - "قناع الشبكة"
+      - "عدد المضيفين"
+      - "البادئة"
+      - "المسار"
+      - "التكلفة"
 
 pedagogy:
   cover_every_line: true
@@ -235,7 +249,7 @@ pedagogy:
   explain_why: true
   daily_analogy_plus_example: true
   follow_lecture_order: true
-  adapt_to_lecture_type: false
+  adapt_to_lecture_type: true
   lecture_types: []
 
 assessment:
@@ -253,7 +267,9 @@ automation_question_types:
       **Q{N}:** سؤال مراجعة مباشر (تعريف، فرق، متى نستخدم)
       **A:** إجابة مختصرة قابلة للمقارنة الآلية (جملة أو جملتان)
       — بدون تعليل طويل. مناسب للحفظ السريع قبل الامتحان.
-    examples: []
+    examples:
+      - "ما الفرق بين `BFS` و `DFS`؟"
+      - "متى نستخدم `LRU` بدل `FIFO`؟"
 
   scenario_cluster:
     enabled: true
@@ -261,33 +277,40 @@ automation_question_types:
     difficulty: hard
     count_min: 3
     questions_per_scenario: 4
-    parts: [mcq, theory]
-    blocks: [trace, diagrams, tables, compare]
+    parts: [mcq, debug, theory]
+    blocks: [code, trace, diagrams, tables, compare, equations]
     format: |
       ### السيناريو {N}: {عنوان}
-      > [وصف الحالة: جدول، مخطط، أو مسألة لغوية/تقنية كاملة — 5–10 أسطر]
+      > [وصف الحالة: كود، جدول، مخطط، أو مسألة رياضية كاملة — 5–10 أسطر]
       ثم 3–5 أسئلة MCQ **كلها مبنية على نفس السيناريو** (لا تكرر نفس الفكرة):
       ### السؤال {N}.1 (hard) … أ) ب) ج) د) + تعليل
-      كل سيناريو يختبر: فهم + تطبيق + قرار.
+      كل سيناريو يختبر: فهم + تطبيق + قرار (أي خطوة تالية؟ أي ناتج؟ أين الخطأ؟)
     scenario_sources:
-      - system_design
+      - code_trace
+      - numerical_case
+      - algorithm_state
       - logic_entailment
-    examples: []
+      - system_design
+    examples:
+      - "جدول تكرارات `Newton-Raphson` ناقص — أي قيمة في الخلية X؟"
+      - "كود `Minimax` مع alpha-beta — أي عقدة تُقصى؟"
 
   hands_on:
     enabled: true
     label_ar: "تطبيق عملي (أكمل / صحّح / نفّذ)"
     difficulty: medium
     count_min: 5
-    parts: [exercise, analysis_exercise]
-    blocks: [fill_gaps, tables]
+    parts: [exercise, analysis_exercise, debug]
+    blocks: [fill_gaps, code_fix, algorithm, expected_output, tables]
     types:
       - fill_gaps
+      - code_fix
       - table_fill
+      - numerical_solve
       - diagram_completion
     format: |
       كل تمرين: **المعطيات** + **المطلوب** (مرقّم) + **نموذج الحل الكامل**
-      الطالب يجيب بقيمة/جدول/نص — الإجابة قابلة للمقارنة حرفياً.
+      الطالب يجيب بقيمة/جدول/كود — الإجابة قابلة للمقارنة حرفياً أو رقمياً.
 
   step_trace:
     enabled: true
@@ -295,16 +318,19 @@ automation_question_types:
     difficulty: medium
     count_min: 3
     parts: [trace_exercise, mcq]
-    blocks: [trace, tables, diagrams]
+    blocks: [trace, algorithm, tables, diagrams]
     format: |
       **المدخل:** {حالة ابتدائية}
       **أكمل الجدول:**
       | الخطوة | العملية | الحالة |
       | 1 | ... | ؟ |
       **نموذج الحل:** جدول مكتمل + **النتيجة النهائية**
-      + 1–2 سؤال MCQ على نفس التتبع.
+      + 1–2 سؤال MCQ على نفس التتبع (ماذا في الخطوة 3؟)
     trace_targets:
+      - algorithm_iterations
       - variable_state
+      - search_tree_expansion
+      - memory_page_replacement
 
   compare_analyze:
     enabled: true
@@ -320,14 +346,14 @@ automation_question_types:
 
   find_the_bug:
     enabled: true
-    label_ar: "اكتشف الخطأ (منطق / مصطلح / استخدام)"
+    label_ar: "اكتشف الخطأ (كود / منطق / حساب)"
     difficulty: hard
     count_min: 4
-    parts: [exercise]
-    blocks: [compare, troubleshooting]
-    bug_types: [misconception, logic]
+    parts: [debug, exercise]
+    blocks: [code_fix, compare, troubleshooting]
+    bug_types: [logic, misconception, off_by_one, wrong_formula, race_condition, infinite_loop]
     format: |
-      **النص/المثال (يحتوي خطأ):** …
+      **الكود/الحساب (يحتوي خطأ):** …
       **اكتشف الخطأ:** [وصف موجز]
       **التصحيح:** … + **شرح الحل** (3 نقاط)
 
@@ -361,6 +387,7 @@ output:
     - "≥8 أسئلة نظرية مع نموذج إجابة منظم"
     - "تمارين تتبع: كل تمرين له جدول ناقص + نموذج حل كامل"
     - "تمارين تطبيقية من إعداد الدليل مع نموذج حل"
+    - "أسئلة تصحيح كود/pseudocode إن كانت المادة تحتوي خوارزميات"
     - "مراجعة سريعة: ≥12 بطاقة Q/A (flash_qa)"
     - "تحدي مركّب: ≥3 سيناريوهات × 3–5 أسئلة MCQ لكل سيناريو (scenario_cluster)"
     - "تطبيق عملي: ≥5 تمارين مع نموذج حل (hands_on)"

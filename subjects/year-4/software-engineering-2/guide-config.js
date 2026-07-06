@@ -2,15 +2,15 @@
  * Auto-scaffolded from subject-brief.yaml — edit as needed.
  */
 export const GUIDE_CONFIG = {
-  storagePrefix: 'web-applications',
-  defaultTitle: 'تطوير تطبيقات الويب',
+  storagePrefix: 'software-engineering-2',
+  defaultTitle: 'software-engineering-2',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
-  defaultSubtitle: 'بروتوكول + خادم + واجهات + تفاعل',
+  defaultSubtitle: 'دليل دراسي تفاعلي',
 
   showRoadmapCard: false,
 
-  lectureSplit: /(?=^# المحاضرة)/m,
-  lectureHeading: /^# المحاضرة/,
+  lectureSplit: /(?=^# المحاضرة )/m,
+  lectureHeading: /^# المحاضرة /,
 
   sectionRefPattern: /(?:par\d+(?:-sec\d+)?\.md\s*)?§(\d+(?:\.\d+)*)/g,
 

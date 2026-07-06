@@ -3,7 +3,7 @@
  */
 export const GUIDE_CONFIG = {
   storagePrefix: 'network-analysis-design',
-  defaultTitle: 'تحليل وتصميم النظم والشبكات الحاسوبية',
+  defaultTitle: 'تحليل وتصميم النظم (شبكات)',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
   defaultSubtitle: 'تبديل توجيه توفر تصميم',
 

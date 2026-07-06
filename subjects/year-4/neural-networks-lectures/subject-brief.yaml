@@ -2,8 +2,8 @@ schema_version: "1.0"
 
 subject:
   id: neural-networks-lectures
-  name_ar: "الشبكات العصبية والتعلم العميق"
-  name_en: "Neural Networks and Deep Learning"
+  name_ar: "برمجة شرطية(ذكاء اصطناعي)"
+  name_en: "Conditional Programming (AI)"
   tagline: "عصبونات + تعلم + خوارزميات + عمق"
   section_label: "القسم النظري"
 

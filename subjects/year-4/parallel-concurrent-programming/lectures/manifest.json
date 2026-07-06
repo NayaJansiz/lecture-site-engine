@@ -1,13 +1,13 @@
 {
   "settings": {
-    "subjectName": "البرمجة المتوازية والمتزامنة",
+    "subjectName": "البرمجة التفرعية",
     "subjectNameEn": "Parallel and Concurrent Programming",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "parallel-teal",
     "department": "نظري"
   },
-  "title": "البرمجة المتوازية والمتزامنة — Parallel and Concurrent Programming",
+  "title": "البرمجة التفرعية — Parallel and Concurrent Programming",
   "subtitle": "توازي تزامن خيوط مسيرات",
   "files": [
     {

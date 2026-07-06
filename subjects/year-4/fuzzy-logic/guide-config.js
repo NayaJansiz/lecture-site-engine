@@ -3,7 +3,7 @@
  */
 export const GUIDE_CONFIG = {
   storagePrefix: 'fuzzy-logic',
-  defaultTitle: 'المنطق الترجيحي',
+  defaultTitle: 'المنطق العائم',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
   defaultSubtitle: 'منطق ضبابي تحليل نظم',
 

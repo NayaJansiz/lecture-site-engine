@@ -3,7 +3,7 @@
  */
 export const GUIDE_CONFIG = {
   storagePrefix: 'os-2-theory',
-  defaultTitle: 'os-2-theory',
+  defaultTitle: 'نظم التشغيل 2',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
   defaultSubtitle: 'دليل دراسي تفاعلي',
 

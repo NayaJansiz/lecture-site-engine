@@ -1,14 +1,14 @@
 {
   "settings": {
-    "subjectName": "المنطق العائم",
-    "subjectNameEn": "Fuzzy Logic",
+    "subjectName": "software-engineering",
+    "subjectNameEn": "software-engineering",
     "year": "2025-2026",
     "academicYear": 4,
-    "theme": "amber-default",
-    "department": "القسم النظري"
+    "theme": "software-purple",
+    "department": "القسم"
   },
-  "title": "المنطق العائم — Fuzzy Logic",
-  "subtitle": "منطق ضبابي تحليل نظم",
+  "title": "software-engineering — software-engineering",
+  "subtitle": "دليل دراسي تفاعلي",
   "files": [],
   "lectureIcons": [
     "📌",

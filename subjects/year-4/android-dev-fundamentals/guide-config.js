@@ -3,7 +3,7 @@
  */
 export const GUIDE_CONFIG = {
   storagePrefix: 'android-dev-fundamentals',
-  defaultTitle: 'android-dev-fundamentals',
+  defaultTitle: ' 2 - اللغة الانجليزية التخصصية',
   homeHeaderBrand: 'فريق TTM الأكاديمي',
   defaultSubtitle: 'دليل دراسي تفاعلي',
 

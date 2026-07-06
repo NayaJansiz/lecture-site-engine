@@ -1,13 +1,13 @@
 {
   "settings": {
-    "subjectName": "تحليل وتصميم النظم والشبكات الحاسوبية",
+    "subjectName": "تحليل وتصميم النظم (شبكات)",
     "subjectNameEn": "Networks Analysis and Design",
     "year": "2025-2026",
     "academicYear": 4,
     "theme": "amber-default",
-    "department": "قسم النظري"
+    "department": "تصميم"
   },
-  "title": "تحليل وتصميم النظم والشبكات الحاسوبية — Networks Analysis and Design",
+  "title": "تحليل وتصميم النظم (شبكات) — Networks Analysis and Design",
   "subtitle": "تبديل توجيه توفر تصميم",
   "files": [],
   "lectureIcons": [

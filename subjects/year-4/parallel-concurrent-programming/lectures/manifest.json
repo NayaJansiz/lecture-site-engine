@@ -9,7 +9,14 @@
   },
   "title": "البرمجة المتوازية والمتزامنة — Parallel and Concurrent Programming",
   "subtitle": "توازي تزامن خيوط مسيرات",
-  "files": [],
+  "files": [
+    {
+      "path": "par4.md",
+      "num": 4,
+      "icon": "📌",
+      "matIcon": "school"
+    }
+  ],
   "lectureIcons": [
     "📌",
     "📖",

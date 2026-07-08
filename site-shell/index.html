@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-storage-prefix="study-guide">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljsTheme">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script>
+    (function () {
+      try {
+        var prefix = document.documentElement.getAttribute("data-storage-prefix") || "study-guide";
+        var saved = localStorage.getItem(prefix + "-theme");
+        var dark = saved ? saved === "dark" : true;
+        document.documentElement.classList.toggle("dark", dark);
+        document.documentElement.style.colorScheme = dark ? "dark" : "light";
+      } catch {
+        document.documentElement.classList.toggle("dark", true);
+        document.documentElement.style.colorScheme = "dark";
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="themes/tokens-base.css">
   <link id="siteTheme" rel="stylesheet" href="themes/amber-default.css">
   <script src="css/tailwind-config.js"></script>
@@ -24,21 +38,25 @@
     </script>
 </head>
 <body class="bg-background text-on-surface scroll-smooth">
-  <header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
-    <div class="flex items-center gap-md">
-      <button type="button" id="backToHomeBtn" class="hidden p-base rounded-full hover:bg-surface-variant transition-all" aria-label="العودة للمحاضرات">
-        <span class="material-symbols-outlined text-primary">arrow_forward</span>
+    <header class="site-navbar bg-surface border-b border-outline-variant w-full px-lg sticky top-0 z-50">
+      <div class="site-navbar__brand">
+        <button type="button" id="backToHomeBtn" class="hidden p-base rounded-full hover:bg-surface-variant transition-all" aria-label="العودة للمحاضرات">
+          <span class="material-symbols-outlined text-primary">arrow_forward</span>
       </button>
-      <button type="button" id="brandBtn" class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary hover:opacity-80 transition-opacity text-right">
+        <button type="button" id="brandBtn" class="site-navbar__brand-btn font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary hover:opacity-80 transition-opacity text-right">
         <span id="appBrand">Study Guide</span>
       </button>
     </div>
-    <div class="hidden md:flex items-center gap-md text-on-surface-variant font-label-md">
-      <span id="heroSub">دليل دراسي تفاعلي</span>
+      <nav class="site-navbar__links hidden md:flex items-center gap-sm text-on-surface-variant font-label-md" aria-label="روابط أساسية">
+        <a class="site-navbar__link" href="#home">الرئيسية</a>
+        <a class="site-navbar__link" href="../../index.html">السنوات الدراسية</a>
+      </nav>
+      <div class="site-navbar__actions">
+        <span class="hidden md:inline-flex items-center text-on-surface-variant font-label-md" id="heroSub">دليل دراسي تفاعلي</span>
+        <button type="button" id="themeToggle" class="site-navbar__toggle p-base rounded-full hover:bg-surface-variant transition-all" aria-label="تبديل الوضع">
+          <span class="material-symbols-outlined text-on-surface-variant" id="themeIcon">dark_mode</span>
+        </button>
     </div>
-    <button type="button" id="themeToggle" class="p-base rounded-full hover:bg-surface-variant transition-all" aria-label="تبديل الوضع">
-      <span class="material-symbols-outlined text-on-surface-variant" id="themeIcon">dark_mode</span>
-    </button>
   </header>
 
   <div id="homeView" class="min-h-[calc(100vh-64px)]">

@@ -2,6 +2,15 @@
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+:root {
+  --site-scroll-offset: 4rem; /* sticky header height (top-16) */
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--site-scroll-offset);
+}
+
 body {
   font-family: 'IBM Plex Sans Arabic', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -13,15 +22,64 @@ body {
   background-attachment: fixed;
 }
 
-header {
+.site-navbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
   background: color-mix(in srgb, var(--color-surface) 88%, var(--color-primary-fixed)) !important;
   backdrop-filter: blur(14px);
   border-bottom-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-outline-variant)) !important;
 }
 
-.dark header {
+.dark .site-navbar {
   background: color-mix(in srgb, var(--dm-surface) 90%, var(--dm-elevated-2)) !important;
   border-bottom-color: color-mix(in srgb, var(--color-primary) 22%, var(--dm-border)) !important;
+}
+
+.site-navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.site-navbar__brand-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: min(42vw, 20rem);
+}
+
+.site-navbar__links {
+  justify-content: center;
+}
+
+.site-navbar__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  color: var(--color-on-surface-variant);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.site-navbar__link:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.site-navbar__actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.site-navbar__toggle {
+  flex-shrink: 0;
 }
 
 .hero-badge {
@@ -195,7 +253,7 @@ header {
 .box-animate {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
               transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -212,7 +270,7 @@ header {
 }
 
 .box-hover {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
               box-shadow 0.35s ease,
               border-color 0.25s ease;
 }
@@ -1577,11 +1635,7 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
   border-right: 3px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
   background: var(--color-surface-container-lowest);
   box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.32s ease,
-    border-color 0.32s ease,
-    background 0.32s ease;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.32s ease, border-color 0.32s ease, background 0.32s ease;
   animation: line-explain-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--line-delay, 0s);
 }
@@ -2187,21 +2241,63 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
   opacity: 0.9;
 }
 
-.roadmap-cat--concept { background: #e0f2fe; color: #0369a1; }
-.roadmap-cat--build { background: #dbeafe; color: #1d4ed8; }
-.roadmap-cat--integrate { background: #fce7f3; color: #be185d; }
-.roadmap-cat--test { background: #fef3c7; color: #b45309; }
-.roadmap-cat--debug { background: #fee2e2; color: #b91c1c; }
-.roadmap-cat--fix { background: #d1fae5; color: #047857; }
-.roadmap-cat--exercise { background: #fce7f3; color: #be185d; }
+.roadmap-cat--concept {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.roadmap-cat--build {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.roadmap-cat--integrate {
+  background: #e0f2fe;
+  color: #1d4ed8;
+}
+.roadmap-cat--test {
+  background: #e2e8f0;
+  color: #334155;
+}
+.roadmap-cat--debug {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.roadmap-cat--fix {
+  background: #d1fae5;
+  color: #047857;
+}
+.roadmap-cat--exercise {
+  background: #e0f2fe;
+  color: #1d4ed8;
+}
 
-.dark .roadmap-cat--concept { background: #0c4a6e; color: #7dd3fc; }
-.dark .roadmap-cat--build { background: #1e3a8a; color: #93c5fd; }
-.dark .roadmap-cat--integrate { background: #831843; color: #f9a8d4; }
-.dark .roadmap-cat--test { background: #78350f; color: #fcd34d; }
-.dark .roadmap-cat--debug { background: #7f1d1d; color: #fca5a5; }
-.dark .roadmap-cat--fix { background: #064e3b; color: #6ee7b7; }
-.dark .roadmap-cat--exercise { background: #831843; color: #f9a8d4; }
+.dark .roadmap-cat--concept {
+  background: #0c4a6e;
+  color: #7dd3fc;
+}
+.dark .roadmap-cat--build {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+.dark .roadmap-cat--integrate {
+  background: #111827;
+  color: #93c5fd;
+}
+.dark .roadmap-cat--test {
+  background: #1f2937;
+  color: #bfdbfe;
+}
+.dark .roadmap-cat--debug {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+.dark .roadmap-cat--fix {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+.dark .roadmap-cat--exercise {
+  background: #111827;
+  color: #93c5fd;
+}
 
 .roadmap-tracks {
   display: flex;
@@ -2660,8 +2756,8 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: #fef3c7;
-  color: #b45309;
+  background: #e0f2fe;
+  color: #1d4ed8;
   white-space: nowrap;
 }
 
@@ -2731,8 +2827,8 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
 }
 
 .dark .roadmap-term__rare {
-  background: #78350f;
-  color: #fcd34d;
+  background: #111827;
+  color: #93c5fd;
 }
 
 /* ── Roadmap extras (lecture exercise alternatives) ── */
@@ -2783,13 +2879,13 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
   text-transform: uppercase;
   padding: 0.125rem 0.5rem;
   border-radius: 999px;
-  background: #fef3c7;
-  color: #b45309;
+  background: #e0f2fe;
+  color: #1d4ed8;
 }
 
 .dark .roadmap-extra__badge {
-  background: #78350f;
-  color: #fcd34d;
+  background: #111827;
+  color: #93c5fd;
 }
 
 .roadmap-extra__body {

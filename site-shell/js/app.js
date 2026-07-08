@@ -16,20 +16,25 @@ const STORAGE_LAST_LECTURE = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-las
 const {
   renderLecture,
   buildTocData,
-  shortLectureTitle,
   initInteractivity,
   setRefContext,
   clearRefContext,
-  PART_MAT_ICONS,
   ms,
+  shortLectureTitle,
 } = createRenderer({ config: GUIDE_CONFIG });
 
-/** @type {{ manifest: object|null, items: Array }} */
-const appState = { manifest: null, items: [] };
+/** Matches sticky header height (`top-16` / 4rem) — keep in sync with styles.css */
+const SCROLL_OFFSET_PX = 64;
+
+let appState = {
+  manifest: null,
+  items: [],
+};
+let siteTitle = "";
 let currentLectureIndex = -1;
-let siteTitle = GUIDE_CONFIG.defaultTitle || 'Study Guide';
-let scrollAnimObserver = null;
 let routeLock = false;
+let scrollAnimObserver = null;
+let sidebarObserver = null;
 
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -45,16 +50,26 @@ function lectureStats(lec) {
   };
 }
 
+function applyDarkMode(dark) {
+  document.documentElement.classList.toggle("dark", dark);
+  document.body?.classList.toggle("dark", dark);
+  document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  const icon = document.getElementById("themeIcon");
+  if (icon) icon.textContent = dark ? "light_mode" : "dark_mode";
+}
+
 function initTheme() {
   const saved = localStorage.getItem(STORAGE_THEME);
-  const dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  document.documentElement.classList.toggle('dark', dark);
-  const icon = document.getElementById('themeIcon');
-  if (icon) icon.textContent = dark ? 'light_mode' : 'dark_mode';
-  document.getElementById('themeToggle')?.addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
+  const dark = saved ? saved === "dark" : true;
+  applyDarkMode(dark);
+
+  const toggle = document.getElementById("themeToggle");
+  if (!toggle || toggle.dataset.bound === "1") return;
+  toggle.dataset.bound = "1";
+  toggle.addEventListener("click", () => {
+    const isDark = !document.documentElement.classList.contains("dark");
+    applyDarkMode(isDark);
     localStorage.setItem(STORAGE_THEME, isDark ? 'dark' : 'light');
-    if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
     refreshDiagrams();
   });
 }
@@ -135,17 +150,29 @@ function revealAnimated(el) {
   targets.forEach(node => node.classList.add('is-visible'));
 }
 
-function scrollToAnchor(anchorHash) {
+function scrollToAnchor(anchorHash, attempt = 0) {
   if (!anchorHash) return;
   const id = anchorIdFromHash(anchorHash);
-  requestAnimationFrame(() => {
     const el = document.getElementById(id);
-    if (!el) return;
+  if (!el) {
+    if (attempt < 8) {
+      requestAnimationFrame(() => scrollToAnchor(anchorHash, attempt + 1));
+    }
+    return;
+  }
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     revealAnimated(el);
     el.classList.add('anchor-flash');
     setTimeout(() => el.classList.remove('anchor-flash'), 2200);
-  });
+}
+
+function scrollAfterLectureLoad(hashPart, item) {
+  const scroll = () => {
+    if (hashPointsToSection(hashPart, item)) scrollToAnchor(hashPart);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  // Wait for layout after innerHTML, diagrams, KaTeX, and hljs.
+  requestAnimationFrame(() => requestAnimationFrame(scroll));
 }
 
 function setActiveNavLink(activeEl) {
@@ -162,6 +189,11 @@ function setActiveNavLink(activeEl) {
 function buildSidebar(toc) {
   const container = document.getElementById('sidebarToc');
   if (!container || !toc) return;
+
+  if (sidebarObserver) {
+    sidebarObserver.disconnect();
+    sidebarObserver = null;
+  }
 
   container.innerHTML = '';
   const allLinks = [];
@@ -197,17 +229,24 @@ function buildSidebar(toc) {
 
   if (allLinks.length) setActiveNavLink(allLinks[0].el);
 
-  const observer = new IntersectionObserver(entries => {
-    const visible = entries.filter(e => e.isIntersecting)
+  sidebarObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
       .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
     if (visible.length) {
       const link = allLinks.find(l => l.target === visible[0].target)?.el;
       if (link) setActiveNavLink(link);
     }
-  }, { rootMargin: '-20% 0px -65% 0px', threshold: [0, 0.1, 0.25] });
+    },
+    {
+      rootMargin: `-${SCROLL_OFFSET_PX + 8}px 0px -65% 0px`,
+      threshold: [0, 0.1, 0.25],
+    },
+  );
 
   allLinks.forEach(item => {
-    if (item.target) observer.observe(item.target);
+    if (item.target) sidebarObserver.observe(item.target);
     item.el.addEventListener('click', e => {
       e.preventDefault();
       const id = anchorIdFromHash(item.el.hash);
@@ -291,13 +330,9 @@ function loadLectureView(idx, hashPart) {
   if (location.hash !== `#${hash}`) location.hash = hash;
   routeLock = false;
 
-  const scrollAfterLoad = () => {
-    if (hashPointsToSection(hashPart, item)) scrollToAnchor(hashPart);
+  if (needsRender) scrollAfterLectureLoad(hashPart, item);
+  else if (hashPointsToSection(hashPart, item)) scrollToAnchor(hashPart);
     else window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (needsRender) requestAnimationFrame(scrollAfterLoad);
-  else scrollAfterLoad();
 }
 
 function initJumpQuiz() {

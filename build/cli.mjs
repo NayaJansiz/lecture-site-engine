@@ -14,7 +14,7 @@ import { createParser } from '../parser/index.js';
 import { runSchemaChecks, hasErrors } from './lib/schema-checks.mjs';
 import { ensureSubjectScaffold } from './lib/scaffold-subject.mjs';
 import { normalizeLectureMd } from './lib/normalize-lecture-md.mjs';
-import { patchSubjectIndexHtml } from './lib/patch-subject-index.mjs';
+import { patchSubjectIndexHtml, patchSubjectStoragePrefix } from './lib/patch-subject-index.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -131,6 +131,8 @@ async function main() {
   } else {
     await cp(path.join(ENGINE_ROOT, 'subjects/_template/guide-config.js'), guideDest);
   }
+
+  await patchSubjectStoragePrefix(outDir);
 
   // Parse lectures → JSON
   const lecturesOut = path.join(outDir, 'lectures');

@@ -34,7 +34,7 @@ function renderPartSection(part, pi, lectureId, deps) {
   const isMcq = part.type === 'mcq';
   const isReference = part.type === 'reference';
 
-  let html = `<div class="section-block mb-xl scroll-mt-24 box-animate" id="${partId}" data-part-type="${part.type}">
+  let html = `<div class="section-block mb-xl scroll-mt-16 box-animate" id="${partId}" data-part-type="${part.type}">
     <div class="flex items-center gap-md mb-lg">
       <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
         ${ms(pIcon, false, 'text-primary')}
@@ -68,7 +68,7 @@ export function renderReview(review, icon, deps) {
     const pIcon = PART_MAT_ICONS[part.type] || 'article';
     const isCheat = part.type === 'cheat';
 
-    html += `<div class="section-block mb-xl scroll-mt-24 box-animate" id="${partId}" data-part-type="${part.type}">
+    html += `<div class="section-block mb-xl scroll-mt-16 box-animate" id="${partId}" data-part-type="${part.type}">
       <div class="flex items-center gap-md mb-lg">
         <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
           ${ms(pIcon, false, 'text-primary')}
@@ -103,7 +103,7 @@ export function renderCodeGuide(guide, deps) {
     const partId = `${guide.id}-p${pi + 1}`;
     const pIcon = PART_MAT_ICONS[part.type] || 'article';
 
-    html += `<div class="section-block mb-xl scroll-mt-24 box-animate" id="${partId}" data-part-type="${part.type}">
+    html += `<div class="section-block mb-xl scroll-mt-16 box-animate" id="${partId}" data-part-type="${part.type}">
       <div class="flex items-center gap-md mb-lg">
         <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
           ${ms(pIcon, false, 'text-primary')}

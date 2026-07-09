@@ -7,6 +7,31 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { ENGINE_ROOT } from './subject-paths.mjs';
 import { patchSubjectIndexHtml, patchSubjectStoragePrefix } from './patch-subject-index.mjs';
+import { patchBuildMeta } from './patch-build-meta.mjs';
+import { generateServiceWorker } from './generate-sw.mjs';
+
+/** Fresh cache version after shell copy so SW does not serve stale assets. */
+async function bumpShellCache(outDir) {
+  const buildId = new Date().toISOString();
+  await patchBuildMeta(outDir, buildId);
+
+  const manifestPath = path.join(outDir, 'lectures/manifest.json');
+  if (existsSync(manifestPath)) {
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+    manifest.settings = { ...(manifest.settings || {}), buildId };
+    await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  }
+
+  const guidePath = path.join(outDir, 'js/guide-config.js');
+  let cachePrefix = 'study-guide';
+  if (existsSync(guidePath)) {
+    const guideText = await readFile(guidePath, 'utf8');
+    const match = guideText.match(/storagePrefix:\s*['"]([^'"]+)['"]/);
+    if (match?.[1]) cachePrefix = match[1];
+  }
+
+  await generateServiceWorker(outDir, { buildId, cachePrefix });
+}
 
 async function listBuiltSubjects() {
   /** @type {string[]} */
@@ -50,6 +75,7 @@ async function syncOne(subjectRel) {
 
   await patchSubjectIndexHtml(outDir, subjectRel);
   await patchSubjectStoragePrefix(outDir);
+  await bumpShellCache(outDir);
 }
 
 export async function syncSiteShellToAllDist() {

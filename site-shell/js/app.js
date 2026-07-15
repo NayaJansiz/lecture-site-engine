@@ -18,6 +18,8 @@ import {
 } from './analytics.js';
 import { initLaserPointer } from './laser-pointer.js';
 import { createProgressTracker, lectureIdFromPath, resolveSubjectKeyFromPath } from './progress_tracker.js';
+import { createQuizStats } from './quiz-stats.js';
+import { createExamMode } from './exam.js';
 import { search, snippet } from './search.js';
 
 /** Set true when lecture notes localStorage behaviour is ready. */
@@ -43,6 +45,7 @@ const LEGACY_DEFAULT_WIDTHS = new Set(['30', '50', '70', '100']);
 const {
   renderLecture,
   renderReview,
+  renderMCQ,
   buildTocData,
   initInteractivity,
   setRefContext,
@@ -60,6 +63,8 @@ let appState = {
   reviewManifest: null,
   reviewItems: [],
   progressTracker: null,
+  quizStats: null,
+  examMode: null,
   subjectKey: '',
   progressUnsubscribe: null,
 };
@@ -420,14 +425,15 @@ function goToSubjectHome() {
 }
 
 function handleBrandClick() {
-  if (currentView === 'lecture') goToSubjectHome();
-  else goToHubHome();
+  if (currentView === 'home') goToHubHome();
+  else goToSubjectHome();
 }
 
 function showView(name) {
   currentView = name;
   document.getElementById('homeView')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureView')?.classList.toggle('hidden', name !== 'lecture');
+  document.getElementById('examView')?.classList.toggle('hidden', name !== 'exam');
   document.getElementById('backToHomeBtn')?.classList.toggle('hidden', name === 'home');
   document.getElementById('backToHubBtn')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureWidthControl')?.classList.toggle('hidden', name !== 'lecture');
@@ -436,7 +442,7 @@ function showView(name) {
   document.documentElement.classList.toggle('is-lecture-view', name === 'lecture');
   const brandBtn = document.getElementById('brandBtn');
   if (brandBtn) {
-    brandBtn.title = name === 'lecture'
+    brandBtn.title = name !== 'home'
       ? 'العودة لقائمة المحاضرات'
       : 'العودة للسنوات الدراسية';
   }
@@ -527,7 +533,7 @@ async function ensureLectureLoaded(idx) {
 
 function renderHomeGrid() {
   const grid = document.getElementById('lectureGrid');
-  if (!grid) return;
+  if (!grid || !appState.items.length) return;
 
   grid.innerHTML = appState.items.map((item, i) => {
     const stats = itemStats(item);
@@ -538,6 +544,9 @@ function renderHomeGrid() {
     const lectureId = lectureStableId(item, i);
     const isDone = appState.progressTracker?.isLectureCompleted(lectureId) || false;
     const doneLabel = isDone ? 'مكتملة' : 'غير مكتملة';
+    const mastered = stats.mcq
+      ? Math.min(appState.quizStats?.getMasteredCount(lectureId) || 0, stats.mcq)
+      : 0;
     return `
       <article class="lecture-picker-card group text-right bg-surface-container-lowest border border-outline-variant rounded-xl p-lg custom-shadow box-hover w-full"
                data-lecture-card="${i}" aria-label="${esc(title)}">
@@ -562,6 +571,9 @@ function renderHomeGrid() {
           </span>
           ${stats.mcq ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
             ${ms('quiz', false, 'text-sm text-secondary')} ${stats.mcq} سؤال
+          </span>` : ''}
+          ${mastered ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-primary-container text-on-primary-container rounded-full font-label-md text-label-md" title="أسئلة أجبت عنها صحيحاً ولو مرة">
+            ${ms('workspace_premium', false, 'text-sm')} إتقان ${mastered}/${stats.mcq}
           </span>` : ''}
           ${stats.sections ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
             ${ms('format_list_bulleted', false, 'text-sm text-tertiary')} ${stats.sections} أقسام
@@ -1118,6 +1130,13 @@ function resolveRoute() {
   if (routeLock) return;
   const hash = anchorIdFromHash(location.hash);
 
+  if (appState.examMode?.open(hash)) {
+    currentLectureIndex = -1;
+    currentReviewIndex = -1;
+    return;
+  }
+  appState.examMode?.teardown();
+
   const reviewIdx = getReviewIndexFromHash(hash);
   if (reviewIdx >= 0) {
     loadReviewView(reviewIdx, hash);
@@ -1130,6 +1149,10 @@ function resolveRoute() {
   } else {
     currentLectureIndex = -1;
     currentReviewIndex = -1;
+    // Mastery chips and the exam entry card depend on quiz stats that may
+    // have changed since the grid was last rendered.
+    renderHomeGrid();
+    appState.examMode?.renderHomeEntry();
     showView('home');
     trackHomeView();
     if (hash === 'home' || !hash) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1335,6 +1358,24 @@ async function init() {
 
     appState.subjectKey = resolveSubjectKeyFromPath(location.pathname);
     appState.progressTracker = createProgressTracker({ subjectKey: appState.subjectKey });
+    appState.quizStats = createQuizStats({ subjectKey: appState.subjectKey });
+    appState.examMode = createExamMode({
+      getItems: () => appState.items,
+      ensureLectureLoaded,
+      lectureStableId,
+      itemStats,
+      getCurrentLectureIndex: () => currentLectureIndex,
+      showView,
+      quizStats: appState.quizStats,
+      renderMCQ,
+      initEquations,
+      ms,
+      shortLectureTitle,
+      onStatsChanged: () => {
+        renderHomeGrid();
+        appState.examMode?.renderHomeEntry();
+      },
+    });
     if (appState.progressUnsubscribe) appState.progressUnsubscribe();
     appState.progressUnsubscribe = appState.progressTracker.onChange(() => {
       renderSubjectProgressTracker();
@@ -1358,6 +1399,7 @@ async function init() {
       console.warn('Review guides not loaded:', reviewErr);
     }
     renderReviewFeatured();
+    appState.examMode.renderHomeEntry();
 
     resolveRoute();
   } catch (err) {

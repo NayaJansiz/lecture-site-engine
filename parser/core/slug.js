@@ -1,5 +1,5 @@
 export function slugify(text) {
-  return String(text).replace(/[^\w؀-ۿ]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+  return String(text).replace(/[^\w\u0600-\u06FF]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
 }
 
 export function subsectionLevel(text) {
@@ -10,11 +10,7 @@ export function subsectionLevel(text) {
 
 export function extractSubsections(body) {
   const subs = [];
-  // Split on \r\n or \n — Windows-authored .md files (CRLF) left a trailing
-  // \r on every line when we split on '\n' only, which silently broke the
-  // heading regex below (its trailing $ could never match past the stray \r),
-  // so numbered ### headings in CRLF files never became sidebar subsections.
-  for (const line of body.split(/\r?\n/)) {
+  for (const line of body.split('\n')) {
     const m = line.match(/^### (\d+(?:\.\d+)*\.?\s*.+)$/);
     if (m) {
       const text = m[1].trim();

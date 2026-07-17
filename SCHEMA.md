@@ -81,6 +81,7 @@ Use `####` heading + blockquote on next lines:
 | Marker | Example |
 | --- | --- |
 | Exam | `#### مهم للامتحان ⚠️:` |
+| Reminder | `#### تذكرة:` (same visual as exam callout; optional inside MCQ `**التعليل:**` — colloquial rephrase of the idea from one or more `النص الأصلي يقول` paragraphs, **not** a verbatim quote; omit when nothing clear to reinforce) |
 | Important | `#### نقطة مهمة ⚠️:` or `**⚠️ ملاحظة هامة**` + blockquote |
 | Note | `#### ملاحظة:` |
 | Lesson | `#### الدرس المستفاد:` |
@@ -361,10 +362,20 @@ Author against `templates/part-mcq.md` (lecture guides) or `templates/part-past-
 ج) option
 د) option
 **الإجابة الصحيحة: ب**
-**التعليل:** [explain all options]
+**التعليل:**
+[why correct — line-broken, not one dense paragraph]
+
+أ) [why wrong]
+ج) [why wrong]
+
+#### تذكرة:
+> من المحاضرة {N} §{X.Y}: [colloquial idea — not a slide quote]
+> [why that idea makes the answer click — **optional** block; omit if no clear lecture idea]
 ```
 
 Difficulty in parentheses: `سهل` | `متوسط` | `صعب`. Options: Arabic letters `أ) ب) ج) د)` (one per line or all on one line).
+
+Optional `#### تذكرة:` inside `**التعليل:**` uses the same callout style as `مهم للامتحان`. Ground it in one or more `النص الأصلي يقول` paragraphs, but rewrite the idea in friendly عامّية so the student actually gets it — never paste a quote. Skip it when the question is general knowledge or has no clean lecture idea to reinforce.
 
 **Past-exam** (`part-past-exam-mcq.md`): same question body, plus optional `**المصدر:** [نمط …]` on the line *above* `### السؤال`, and Case-2 shared-stimulus groups (`### السؤال N–M` + `**السؤال N:**` sub-questions). See that template for the full shape.
 

@@ -50,12 +50,8 @@ jobs:
               try {
                 await github.rest.pulls.updateBranch({ owner, repo, pull_number: pr.number });
               } catch (err) {
+                // Branch protection (required + strict status checks) already blocks merging
+                // this PR while it's behind — no need to nag the contributor here.
                 console.error(`Failed to update PR #${pr.number}: ${err.message}`);
-                await github.rest.issues.createComment({
-                  owner,
-                  repo,
-                  issue_number: pr.number,
-                  body: `⚠️ هذا الـ PR متأخر ${compare.ahead_by} commit عن main ولم أتمكن من تحديثه تلقائيًا (${err.message}). فعّل خيار "Allow edits by maintainers" أو حدّث الفرع يدويًا.`,
-                });
               }
             }

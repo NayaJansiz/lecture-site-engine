@@ -254,38 +254,58 @@ function parseMcqGroup(afterHeading, subMatches, arabicKey) {
 }
 
 /** @param {string} text @param {object} config */
+/**
+ * Splits text into `{ section, body }` groups on "## <label>" dividers —
+ * used to group a past-exam bank's questions by which lecture their answer
+ * came from ("## محاضرة 1: ..."). A "##" divider sits ABOVE the "###"/"**"
+ * question-split layer parseMCQ runs next, so it never collides with any
+ * question boundary. Text before the first "## " divider (or the whole text,
+ * if there are no dividers at all) gets section: ''.
+ */
+function splitMcqSections(text) {
+  const chunks = text.split(/(?=^## )/m);
+  return chunks.map(chunk => {
+    const hm = chunk.match(/^## ([^\n]+)\n?/);
+    if (!hm) return { section: '', body: chunk };
+    return { section: hm[1].trim(), body: chunk.slice(hm[0].length) };
+  });
+}
+
+/** @param {string} text @param {object} config */
 export function parseMCQ(text, config) {
   const arabicKey = config.arabicKey || {};
 
-  return moveSourceTagAfterHeading(text)
-    // templates/part-mcq.md + templates/part-past-exam-mcq.md only:
-    //   "### السؤال 1 (متوسط)" / "**السؤال 1 (متوسط)**"
-    // The bold (non-###) alternative requires a following "(" so it can't
-    // match the "**السؤال N:**" (colon) inner marker used by Case-2 groups
-    // below — "###" headings never use the colon form, so that alternative
-    // is left unrestricted (some real lecture files omit the "(difficulty)"
-    // entirely on a "###" heading).
-    .split(/(?=^(?:#{3,4} السؤال \d+|\*\*السؤال \d+ ?\())/m)
-    .filter(c => /^(?:#{3,4} السؤال \d+|\*\*السؤال \d+ ?\()/.test(c.trim()))
-    .map(chunk => {
-      const { source, rest: cleanedChunk } = extractSource(chunk);
+  return splitMcqSections(text).flatMap(({ section, body }) =>
+    moveSourceTagAfterHeading(body)
+      // templates/part-mcq.md + templates/part-past-exam-mcq.md only:
+      //   "### السؤال 1 (متوسط)" / "**السؤال 1 (متوسط)**"
+      // The bold (non-###) alternative requires a following "(" so it can't
+      // match the "**السؤال N:**" (colon) inner marker used by Case-2 groups
+      // below — "###" headings never use the colon form, so that alternative
+      // is left unrestricted (some real lecture files omit the "(difficulty)"
+      // entirely on a "###" heading).
+      .split(/(?=^(?:#{3,4} السؤال \d+|\*\*السؤال \d+ ?\())/m)
+      .filter(c => /^(?:#{3,4} السؤال \d+|\*\*السؤال \d+ ?\()/.test(c.trim()))
+      .map(chunk => {
+        const { source, rest: cleanedChunk } = extractSource(chunk);
 
-      // "\d+" only matched plain numbers, so sub-numbered questions like
-      // "### السؤال 1.1 (hard): ..." (used for multi-part scenarios) fell
-      // through to num='?'. "[\d.]+" also accepts "1.1", "2.3", etc.
-      const hm = cleanedChunk.match(/^(?:#{3,4} |\*\*)السؤال ([\d.]+)(?:[–-][\d.]+)? ?\((.+?)\)(?:\*\*)?/);
-      const num = hm ? hm[1] : '?';
-      const difficulty = hm ? hm[2].trim() : 'متوسط';
-      const afterHeading = cleanedChunk.replace(/^(?:#{3,4} |\*\*)السؤال .+\n/m, '');
+        // "\d+" only matched plain numbers, so sub-numbered questions like
+        // "### السؤال 1.1 (hard): ..." (used for multi-part scenarios) fell
+        // through to num='?'. "[\d.]+" also accepts "1.1", "2.3", etc.
+        const hm = cleanedChunk.match(/^(?:#{3,4} |\*\*)السؤال ([\d.]+)(?:[–-][\d.]+)? ?\((.+?)\)(?:\*\*)?/);
+        const num = hm ? hm[1] : '?';
+        const difficulty = hm ? hm[2].trim() : 'متوسط';
+        const afterHeading = cleanedChunk.replace(/^(?:#{3,4} |\*\*)السؤال .+\n/m, '');
 
-      const subMatches = [...afterHeading.matchAll(/^\*\*السؤال [\d.]+:\*\*/gm)];
-      if (subMatches.length) {
-        const { stimulus, questions } = parseMcqGroup(afterHeading, subMatches, arabicKey);
-        return { type: 'group', num, difficulty, source, stimulus, questions };
-      }
+        const subMatches = [...afterHeading.matchAll(/^\*\*السؤال [\d.]+:\*\*/gm)];
+        if (subMatches.length) {
+          const { stimulus, questions } = parseMcqGroup(afterHeading, subMatches, arabicKey);
+          return { type: 'group', num, difficulty, source, section, stimulus, questions };
+        }
 
-      return { num, difficulty, source, ...parseQuestionContent(afterHeading, arabicKey) };
-    });
+        return { num, difficulty, source, section, ...parseQuestionContent(afterHeading, arabicKey) };
+      }),
+  );
 }
 
 /** @param {string} text @param {{ parseBlocksFn: Function }} ctx */

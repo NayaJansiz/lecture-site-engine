@@ -100,7 +100,20 @@ export function renderMCQ(questions, partId) {
   </div>
   <div class="space-y-lg">`;
 
+  let lastSection = null;
   questions.forEach(q => {
+    // "## <label>" dividers in the source (e.g. grouping a past-exam bank's
+    // questions by which lecture their answer came from) come through as a
+    // `section` string on every question — insert a heading whenever it
+    // changes so consecutive questions from the same section stay grouped
+    // visually without repeating the label on every card.
+    if (q.section && q.section !== lastSection) {
+      html += `<h3 class="font-headline-md text-headline-md text-primary dark:text-inverse-primary flex items-center gap-sm pt-md first:pt-0">
+        ${ms('menu_book', false, 'text-lg')} ${esc(q.section)}
+      </h3>`;
+    }
+    lastSection = q.section || lastSection;
+
     if (q.type === 'group') {
       html += renderMcqGroup(q, partId);
       return;

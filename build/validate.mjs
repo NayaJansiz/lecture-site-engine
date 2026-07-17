@@ -7,7 +7,7 @@
  *   node build/validate.mjs --subject subjects/year-3/kotlin
  *   npm run validate -- --subject subjects/year-3/kotlin
  */
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,6 +15,7 @@ import { createParser } from '../parser/index.js';
 import { runSchemaChecks, formatIssues, hasErrors } from './lib/schema-checks.mjs';
 import { ensureSubjectScaffold } from './lib/scaffold-subject.mjs';
 import { normalizeLectureMd } from './lib/normalize-lecture-md.mjs';
+import { listLectureMarkdownFiles } from './lib/subject-paths.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -44,11 +45,8 @@ function pathToFileUrl(p) {
 async function collectLectureFiles(subjectDir) {
   const lecturesDir = path.join(subjectDir, 'lectures');
   if (!existsSync(lecturesDir)) throw new Error(`No lectures/ in ${subjectDir}`);
-  const names = await readdir(lecturesDir);
-  return names
-    .filter(n => /^par.+\.md$/i.test(n))
-    .sort()
-    .map(n => path.join(lecturesDir, n));
+  return (await listLectureMarkdownFiles(lecturesDir))
+    .map(name => path.join(lecturesDir, name));
 }
 
 async function validateFile(filePath, parser) {

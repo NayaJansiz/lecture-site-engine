@@ -1,0 +1,108 @@
+{
+  "settings": {
+    "subjectName": "دارات الكترونية 1",
+    "subjectNameEn": "Electronic Circuits 1",
+    "year": "2025-2026",
+    "academicYear": 1,
+    "theme": "programming-blue-lavender",
+    "enabledLectures": true,
+    "hubTag": "مادة حملة",
+    "department": "تصميم"
+  },
+  "title": "دارات الكترونية 1 — Electronic Circuits 1",
+  "subtitle": "ملخص سريع للمحاضرات النظرية والعملية",
+  "sections": [
+    {
+      "key": "theory",
+      "label": "النظري",
+      "icon": "📖"
+    },
+    {
+      "key": "lab",
+      "label": "العملي",
+      "icon": "🔧"
+    }
+  ],
+  "files": [
+    {
+      "path": "lab/par1.md",
+      "section": "lab",
+      "num": 1,
+      "icon": "🔧",
+      "matIcon": "build",
+      "badge": "عملي ١"
+    },
+    {
+      "path": "lab/par2.md",
+      "section": "lab",
+      "num": 2,
+      "icon": "🔬",
+      "matIcon": "science",
+      "badge": "عملي ٢"
+    },
+    {
+      "path": "lab/par3.md",
+      "section": "lab",
+      "num": 3,
+      "icon": "⚙️",
+      "matIcon": "settings",
+      "badge": "عملي ٣"
+    },
+    {
+      "path": "lab/par4.md",
+      "section": "lab",
+      "num": 4,
+      "icon": "🧪",
+      "matIcon": "biotech",
+      "badge": "عملي ٤"
+    },
+    {
+      "path": "theory/par1.md",
+      "section": "theory",
+      "num": 1,
+      "icon": "📌",
+      "matIcon": "school",
+      "badge": "نظري ١"
+    },
+    {
+      "path": "theory/par2.md",
+      "section": "theory",
+      "num": 2,
+      "icon": "📖",
+      "matIcon": "menu_book",
+      "badge": "نظري ٢"
+    },
+    {
+      "path": "theory/par3.md",
+      "section": "theory",
+      "num": 3,
+      "icon": "💻",
+      "matIcon": "code",
+      "badge": "نظري ٣"
+    },
+    {
+      "path": "theory/par4.md",
+      "section": "theory",
+      "num": 4,
+      "icon": "🎯",
+      "matIcon": "quiz",
+      "badge": "نظري ٤"
+    },
+    {
+      "path": "theory/par5.md",
+      "section": "theory",
+      "num": 5,
+      "icon": "📝",
+      "matIcon": "description",
+      "badge": "نظري ٥"
+    },
+    {
+      "path": "theory/Par6.md",
+      "section": "theory",
+      "num": 6,
+      "icon": "📌",
+      "matIcon": "school",
+      "badge": "نظري ٦"
+    }
+  ]
+}

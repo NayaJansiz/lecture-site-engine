@@ -67,6 +67,7 @@ let appState = {
   examMode: null,
   subjectKey: '',
   progressUnsubscribe: null,
+  activeSection: '',
 };
 let siteTitle = "";
 let currentLectureIndex = -1;
@@ -506,7 +507,7 @@ async function loadLectureJson(path) {
 function createItemStub(file, i, manifest) {
   const defaultIcons = manifest.lectureIcons || ['📌'];
   const defaultMatIcons = manifest.lectureMatIcons || ['school'];
-  const fileStem = String(file.path).replace(/\.json$/i, '').replace(/\.md$/i, '');
+  const fileStem = lectureIdFromPath(String(file.path));
   const summary = file.summary || {};
   const stubId = summary.id || fileStem || `lec${i + 1}`;
   return {
@@ -538,7 +539,7 @@ async function ensureLectureLoaded(idx) {
     const doc = await loadLectureJson(item.fileMeta.path);
     const lec = doc.lectures?.[0];
     if (!lec) throw new Error(`لا محتوى في ${item.fileMeta.path}`);
-    const fileStem = String(item.fileMeta.path).replace(/\.json$/i, '').replace(/\.md$/i, '');
+    const fileStem = lectureIdFromPath(String(item.fileMeta.path));
     lec.id = fileStem || lec.id || item.lec.id;
     item.lec = lec;
     item.sectionIndex = doc.sectionIndex || {};
@@ -561,7 +562,35 @@ function renderHomeGrid() {
   const grid = document.getElementById('lectureGrid');
   if (!grid || !appState.items.length) return;
 
-  grid.innerHTML = appState.items.map((item, i) => {
+  const sections = appState.manifest?.sections || [];
+  let tabs = document.getElementById('lectureSectionTabs');
+  if (sections.length > 1) {
+    if (!tabs) {
+      tabs = document.createElement('div');
+      tabs.id = 'lectureSectionTabs';
+      tabs.className = 'flex gap-sm mb-lg';
+      grid.before(tabs);
+    }
+    tabs.innerHTML = sections.map(section => `
+      <button type="button" data-lecture-section="${escAttr(section.key)}"
+        class="flex-1 px-lg py-md rounded-xl border font-label-md font-bold transition-all ${appState.activeSection === section.key
+    ? 'bg-primary text-on-primary border-primary'
+    : 'bg-surface-container-lowest text-on-surface border-outline-variant'}">
+        ${esc(section.icon || '')} ${esc(section.label)}
+      </button>`).join('');
+    tabs.querySelectorAll('[data-lecture-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        appState.activeSection = btn.dataset.lectureSection;
+        renderHomeGrid();
+      });
+    });
+  }
+
+  const visibleItems = appState.items
+    .map((item, i) => ({ item, i }))
+    .filter(({ item }) => !appState.activeSection || item.fileMeta?.section === appState.activeSection);
+
+  grid.innerHTML = visibleItems.map(({ item, i }) => {
     const stats = itemStats(item);
     const title = shortLectureTitle(item.lec.title);
     const num = item.fileMeta?.num ?? item.lec.title.match(/المحاضرة\s+(\d+)/)?.[1] ?? String(i + 1);
@@ -1365,6 +1394,7 @@ async function init() {
   try {
     const manifest = await loadManifest();
     appState.manifest = manifest;
+    appState.activeSection = manifest.sections?.[0]?.key || '';
     resetHtmlCacheIfStale(manifest.settings?.buildId || readBuildId());
 
     applySiteSettings(manifest, { guideConfig: GUIDE_CONFIG, basePath: 'themes/' });

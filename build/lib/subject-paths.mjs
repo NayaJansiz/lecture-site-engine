@@ -45,12 +45,26 @@ export function subjectHasLectures(subjectRel) {
   return true;
 }
 
+/** Recursively list lecture Markdown paths relative to lectures/. */
+export async function listLectureMarkdownFiles(lecturesDir, prefix = '') {
+  if (!existsSync(lecturesDir)) return [];
+  const entries = await readdir(lecturesDir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      files.push(...await listLectureMarkdownFiles(path.join(lecturesDir, entry.name), rel));
+    } else if (/^par.+\.md$/i.test(entry.name)) {
+      files.push(rel);
+    }
+  }
+  return files.sort();
+}
+
 /** True when subject has lectures/par*.md ready to build or validate. */
 export async function subjectHasBuildableLectures(subjectRel) {
   const lecturesDir = path.join(subjectDir(subjectRel), 'lectures');
-  if (!existsSync(lecturesDir)) return false;
-  const files = await readdir(lecturesDir);
-  return files.some(f => /^par.+\.md$/i.test(f));
+  return (await listLectureMarkdownFiles(lecturesDir)).length > 0;
 }
 
 /** Dist missing parsed review JSON while source has review.md in manifest. */

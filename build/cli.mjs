@@ -6,7 +6,7 @@
  *   node build/cli.mjs --subject year-1/kotlin
  *   node build/cli.mjs --subject subjects/year-1/kotlin --output dist/year-1/kotlin
  */
-import { readFile, writeFile, mkdir, cp, readdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +19,7 @@ import { patchBuildMeta } from './lib/patch-build-meta.mjs';
 import { generateServiceWorker } from './lib/generate-sw.mjs';
 import { lectureSummaryFromLec } from './lib/lecture-summary.mjs';
 import { generateSearchIndex } from './lib/generate-search-index.mjs';
+import { listLectureMarkdownFiles } from './lib/subject-paths.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -55,7 +56,7 @@ async function loadGuideConfig(subjectDir) {
 
 async function validateSubject(subjectDir, parser) {
   const lecturesDir = path.join(subjectDir, 'lectures');
-  const names = (await readdir(lecturesDir)).filter(n => /^par.+\.md$/i.test(n)).sort();
+  const names = await listLectureMarkdownFiles(lecturesDir);
   let errorCount = 0;
   for (const name of names) {
     const filePath = path.join(lecturesDir, name);
@@ -157,7 +158,7 @@ async function main() {
   const lecturesDir = path.join(subjectDir, 'lectures');
   const hasLectureDir = existsSync(lecturesDir);
   const mdFiles = args.skipValidate && hasLectureDir
-    ? (await readdir(lecturesDir)).filter(n => /^par.+\.md$/i.test(n)).sort()
+    ? await listLectureMarkdownFiles(lecturesDir)
     : hasLectureDir
       ? await validateSubject(subjectDir, parser)
       : [];
@@ -210,11 +211,12 @@ async function main() {
     const text = normalizeLectureMd(await readFile(path.join(subjectDir, 'lectures', name), 'utf8'));
     const doc = parser.parseDocument(text);
     const lec = doc.lectures[0];
-    if (lec) lec.id = name.replace(/\.md$/i, '');
+    if (lec) lec.id = name.replace(/\.md$/i, '').replace(/[\\/]+/g, '-');
     if (lec) allParsedLecs.push(lec);
     const sectionIndex = lec ? parser.buildSectionIndex(lec) : {};
     const parsedAt = new Date().toISOString();
     const jsonName = name.replace(/\.md$/i, '.json');
+    await mkdir(path.dirname(path.join(lecturesOut, jsonName)), { recursive: true });
     await writeFile(
       path.join(lecturesOut, jsonName),
       JSON.stringify({

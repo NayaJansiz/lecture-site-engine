@@ -130,6 +130,63 @@ async function buildReviewJson(subjectDir, reviewsOut, parser) {
   await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 }
 
+/**
+ * "دورات" (past-exam MCQ archive) — one manifest + one or more .md files per
+ * subject, each shaped like a normal lecture's MCQ part (starts with
+ * "## أسئلة اختيار من متعدد (MCQ)"). Mirrors buildReviewJson's structure, but
+ * uses parser.parsePart (not parseReviewGuide) so the mcq-typed part comes
+ * back as {title, type:'mcq', questions:[...]} — the shape renderCodeGuide /
+ * renderMCQ expect, not the generic {blocks:[...]} shape reviews use.
+ */
+async function buildExamsJson(subjectDir, examsOut, parser) {
+  const manifestPath = path.join(examsOut, 'manifest.json');
+  if (!existsSync(manifestPath)) return;
+
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  if (!manifest.files?.length) return;
+
+  const updatedFiles = [];
+  for (const file of manifest.files) {
+    const entry = typeof file === 'string' ? { path: file } : { ...file };
+    const srcPath = entry.path;
+    if (!srcPath) continue;
+
+    if (/\.md$/i.test(srcPath)) {
+      const mdPath = path.join(subjectDir, 'exams', srcPath);
+      if (!existsSync(mdPath)) {
+        console.warn(`  exam source missing: exams/${srcPath}`);
+        continue;
+      }
+      const md = await readFile(mdPath, 'utf8');
+      const mcqPart = parser.parsePart(`## أسئلة اختيار من متعدد (MCQ)\n${md}`);
+      const exam = {
+        id: entry.id || srcPath.replace(/\.md$/i, ''),
+        title: entry.label || manifest.title || 'دورات سنوات سابقة',
+        tag: manifest.subtitle || '',
+        parts: [mcqPart],
+      };
+      const jsonName = srcPath.replace(/\.md$/i, '.json');
+      const parsedAt = new Date().toISOString();
+      await writeFile(
+        path.join(examsOut, jsonName),
+        JSON.stringify({
+          schemaVersion: '1.0',
+          source: srcPath,
+          parsedAt,
+          exam,
+        }, null, 2),
+      );
+      updatedFiles.push({ ...entry, path: jsonName, source: srcPath, parsedAt });
+      console.log(`  parsed → exams/${jsonName}`);
+    } else {
+      updatedFiles.push(entry);
+    }
+  }
+
+  manifest.files = updatedFiles;
+  await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   if (!args.subject) {
@@ -192,6 +249,13 @@ async function main() {
     const reviewsOut = path.join(outDir, 'reviews');
     await cp(reviewsSrc, reviewsOut, { recursive: true });
     await buildReviewJson(subjectDir, reviewsOut, parser);
+  }
+
+  const examsSrc = path.join(subjectDir, 'exams');
+  if (existsSync(examsSrc)) {
+    const examsOut = path.join(outDir, 'exams');
+    await cp(examsSrc, examsOut, { recursive: true });
+    await buildExamsJson(subjectDir, examsOut, parser);
   }
 
   // Parse lectures → JSON

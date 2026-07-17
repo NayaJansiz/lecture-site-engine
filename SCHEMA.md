@@ -349,15 +349,24 @@ Walk through execution showing state at each step. Adjust column names to match 
 
 ### MCQ (`## ... MCQ`)
 
+Author against `templates/part-mcq.md` (lecture guides) or `templates/part-past-exam-mcq.md` (past-paper banks). The parser accepts only those shapes.
+
+**Standard** (`part-mcq.md`):
+
 ```markdown
 ### السؤال 1 (متوسط)
 [question text]
-أ) option  ب) option  ج) option  د) option
+أ) option
+ب) option
+ج) option
+د) option
 **الإجابة الصحيحة: ب**
 **التعليل:** [explain all options]
 ```
 
-Difficulty in parentheses: `سهل` | `متوسط` | `صعب`. Options: Arabic letters `أ) ب) ج) د)` or `a) b) c) d)`.
+Difficulty in parentheses: `سهل` | `متوسط` | `صعب`. Options: Arabic letters `أ) ب) ج) د)` (one per line or all on one line).
+
+**Past-exam** (`part-past-exam-mcq.md`): same question body, plus optional `**المصدر:** [نمط …]` on the line *above* `### السؤال`, and Case-2 shared-stimulus groups (`### السؤال N–M` + `**السؤال N:**` sub-questions). See that template for the full shape.
 
 ### Debug (`## ... تصحيح`)
 

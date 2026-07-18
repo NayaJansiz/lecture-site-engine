@@ -2129,6 +2129,11 @@ body.laser-pointer-enabled button {
   padding: 0.875rem 1rem 1rem;
 }
 
+.source-quote__body[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
 .source-quote__body p {
   margin: 0 0 0.625rem;
   font-size: 1rem;

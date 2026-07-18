@@ -6,7 +6,7 @@
  *   node build/cli.mjs --subject year-1/kotlin
  *   node build/cli.mjs --subject subjects/year-1/kotlin --output dist/year-1/kotlin
  */
-import { readFile, writeFile, mkdir, cp, readdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +19,7 @@ import { patchBuildMeta } from './lib/patch-build-meta.mjs';
 import { generateServiceWorker } from './lib/generate-sw.mjs';
 import { lectureSummaryFromLec } from './lib/lecture-summary.mjs';
 import { generateSearchIndex } from './lib/generate-search-index.mjs';
+import { listLectureMarkdownFiles } from './lib/subject-paths.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -55,7 +56,7 @@ async function loadGuideConfig(subjectDir) {
 
 async function validateSubject(subjectDir, parser) {
   const lecturesDir = path.join(subjectDir, 'lectures');
-  const names = (await readdir(lecturesDir)).filter(n => /^par.+\.md$/i.test(n)).sort();
+  const names = await listLectureMarkdownFiles(lecturesDir);
   let errorCount = 0;
   for (const name of names) {
     const filePath = path.join(lecturesDir, name);
@@ -67,13 +68,15 @@ async function validateSubject(subjectDir, parser) {
     } catch (err) {
       issues.push({ severity: 'error', line: 1, message: `parse failed: ${err.message}` });
     }
-    if (issues.length) {
-      const errors = issues.filter(i => i.severity === 'error');
+    // Warnings are counted but not printed — too noisy during builds.
+    const errors = issues.filter(i => i.severity === 'error');
+    if (errors.length) {
       errorCount += errors.length;
       console.error(`✗ ${rel}: ${errors.length} error(s), ${issues.length - errors.length} warning(s)`);
-      for (const i of issues) console.error(`  L${i.line} ${i.severity}: ${i.message}`);
+      for (const i of errors) console.error(`  L${i.line} ${i.severity}: ${i.message}`);
     } else {
-      console.log(`✓ ${rel}`);
+      const warnNote = issues.length ? ` (${issues.length} warning(s) hidden)` : '';
+      console.log(`✓ ${rel}${warnNote}`);
     }
   }
   if (errorCount) throw new Error(`Validation failed with ${errorCount} error(s)`);
@@ -129,6 +132,63 @@ async function buildReviewJson(subjectDir, reviewsOut, parser) {
   await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 }
 
+/**
+ * "دورات" (past-exam MCQ archive) — one manifest + one or more .md files per
+ * subject, each shaped like a normal lecture's MCQ part (starts with
+ * "## أسئلة اختيار من متعدد (MCQ)"). Mirrors buildReviewJson's structure, but
+ * uses parser.parsePart (not parseReviewGuide) so the mcq-typed part comes
+ * back as {title, type:'mcq', questions:[...]} — the shape renderCodeGuide /
+ * renderMCQ expect, not the generic {blocks:[...]} shape reviews use.
+ */
+async function buildExamsJson(subjectDir, examsOut, parser) {
+  const manifestPath = path.join(examsOut, 'manifest.json');
+  if (!existsSync(manifestPath)) return;
+
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  if (!manifest.files?.length) return;
+
+  const updatedFiles = [];
+  for (const file of manifest.files) {
+    const entry = typeof file === 'string' ? { path: file } : { ...file };
+    const srcPath = entry.path;
+    if (!srcPath) continue;
+
+    if (/\.md$/i.test(srcPath)) {
+      const mdPath = path.join(subjectDir, 'DAWRAT', srcPath);
+      if (!existsSync(mdPath)) {
+        console.warn(`  exam source missing: DAWRAT/${srcPath}`);
+        continue;
+      }
+      const md = await readFile(mdPath, 'utf8');
+      const mcqPart = parser.parsePart(`## أسئلة اختيار من متعدد (MCQ)\n${md}`);
+      const exam = {
+        id: entry.id || srcPath.replace(/\.md$/i, ''),
+        title: entry.label || manifest.title || 'دورات سنوات سابقة',
+        tag: manifest.subtitle || '',
+        parts: [mcqPart],
+      };
+      const jsonName = srcPath.replace(/\.md$/i, '.json');
+      const parsedAt = new Date().toISOString();
+      await writeFile(
+        path.join(examsOut, jsonName),
+        JSON.stringify({
+          schemaVersion: '1.0',
+          source: srcPath,
+          parsedAt,
+          exam,
+        }, null, 2),
+      );
+      updatedFiles.push({ ...entry, path: jsonName, source: srcPath, parsedAt });
+      console.log(`  parsed → DAWRAT/${jsonName}`);
+    } else {
+      updatedFiles.push(entry);
+    }
+  }
+
+  manifest.files = updatedFiles;
+  await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   if (!args.subject) {
@@ -157,7 +217,7 @@ async function main() {
   const lecturesDir = path.join(subjectDir, 'lectures');
   const hasLectureDir = existsSync(lecturesDir);
   const mdFiles = args.skipValidate && hasLectureDir
-    ? (await readdir(lecturesDir)).filter(n => /^par.+\.md$/i.test(n)).sort()
+    ? await listLectureMarkdownFiles(lecturesDir)
     : hasLectureDir
       ? await validateSubject(subjectDir, parser)
       : [];
@@ -193,6 +253,13 @@ async function main() {
     await buildReviewJson(subjectDir, reviewsOut, parser);
   }
 
+  const examsSrc = path.join(subjectDir, 'DAWRAT');
+  if (existsSync(examsSrc)) {
+    const examsOut = path.join(outDir, 'DAWRAT');
+    await cp(examsSrc, examsOut, { recursive: true });
+    await buildExamsJson(subjectDir, examsOut, parser);
+  }
+
   // Parse lectures → JSON
   const lecturesOut = path.join(outDir, 'lectures');
   await mkdir(lecturesOut, { recursive: true });
@@ -210,11 +277,12 @@ async function main() {
     const text = normalizeLectureMd(await readFile(path.join(subjectDir, 'lectures', name), 'utf8'));
     const doc = parser.parseDocument(text);
     const lec = doc.lectures[0];
-    if (lec) lec.id = name.replace(/\.md$/i, '');
+    if (lec) lec.id = name.replace(/\.md$/i, '').replace(/[\\/]+/g, '-');
     if (lec) allParsedLecs.push(lec);
     const sectionIndex = lec ? parser.buildSectionIndex(lec) : {};
     const parsedAt = new Date().toISOString();
     const jsonName = name.replace(/\.md$/i, '.json');
+    await mkdir(path.dirname(path.join(lecturesOut, jsonName)), { recursive: true });
     await writeFile(
       path.join(lecturesOut, jsonName),
       JSON.stringify({

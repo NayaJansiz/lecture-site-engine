@@ -18,6 +18,8 @@ import {
 } from './analytics.js';
 import { initLaserPointer } from './laser-pointer.js';
 import { createProgressTracker, lectureIdFromPath, resolveSubjectKeyFromPath } from './progress_tracker.js';
+import { createQuizStats } from './quiz-stats.js';
+import { createExamMode } from './exam.js';
 import { search, snippet } from './search.js';
 
 /** Set true when lecture notes localStorage behaviour is ready. */
@@ -43,6 +45,8 @@ const LEGACY_DEFAULT_WIDTHS = new Set(['30', '50', '70', '100']);
 const {
   renderLecture,
   renderReview,
+  renderMCQ,
+  renderCodeGuide,
   buildTocData,
   initInteractivity,
   setRefContext,
@@ -59,13 +63,19 @@ let appState = {
   items: [],
   reviewManifest: null,
   reviewItems: [],
+  examManifest: null,
+  examItems: [],
   progressTracker: null,
+  quizStats: null,
+  examMode: null,
   subjectKey: '',
   progressUnsubscribe: null,
+  activeSection: '',
 };
 let siteTitle = "";
 let currentLectureIndex = -1;
 let currentReviewIndex = -1;
+let currentExamIndex = -1;
 let routeLock = false;
 let scrollAnimObserver = null;
 let sidebarObserver = null;
@@ -135,11 +145,62 @@ function getReviewIndexFromHash(hash) {
   return appState.reviewItems.findIndex(it => hash.startsWith(`${it.review.id}-`));
 }
 
+async function loadExamManifest() {
+  const res = await fetch(versionedUrl('DAWRAT/manifest.json'), { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function loadExamJson(path) {
+  const res = await fetch(versionedUrl(`DAWRAT/${path}`), { cache: 'no-store' });
+  if (!res.ok) throw new Error(`تعذّر تحميل ${path}`);
+  return res.json();
+}
+
+function examFromJson(data, fileId) {
+  const exam = data.exam || data;
+  if (fileId && exam && !exam.id) exam.id = fileId;
+  return exam;
+}
+
+function getExamIndexFromHash(hash) {
+  if (!hash || hash === 'home') return -1;
+  let idx = appState.examItems.findIndex(it => it.exam.id === hash);
+  if (idx >= 0) return idx;
+  return appState.examItems.findIndex(it => hash.startsWith(`${it.exam.id}-`));
+}
+
 function reviewStats(review) {
   const codeBlocks = review.parts?.reduce((n, p) => {
     return n + (p.blocks?.filter(b => b.type === 'code').length || 0);
   }, 0) || 0;
   return { sections: review.parts?.length || 0, codeBlocks };
+}
+
+function renderUpdatedPdfBanner() {
+  const section = document.getElementById('updatedPdfBanner');
+  if (!section) return;
+
+  const url = appState.manifest?.settings?.updatedPdfUrl;
+  if (!url) {
+    section.classList.add('hidden');
+    section.innerHTML = '';
+    return;
+  }
+
+  const note = appState.manifest?.settings?.updatedPdfNote
+    || 'تم تحديث محتوى المحاضرات — يمكنك تحميل نسخة PDF الشاملة (القديمة في حال كنت تدرس منها) من هنا.';
+
+  section.classList.remove('hidden');
+  section.innerHTML = `
+    <div class="flex flex-col md:flex-row md:items-center gap-md bg-secondary-container/40 border border-primary/30 rounded-2xl p-lg">
+      <span class="material-symbols-outlined text-primary shrink-0" aria-hidden="true">picture_as_pdf</span>
+      <p class="flex-1 font-body-md text-body-md text-on-surface">${esc(note)}</p>
+      <a href="${escAttr(url)}" target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center justify-center gap-sm px-lg py-sm bg-primary text-on-primary rounded-full font-label-md font-bold hover:opacity-90 transition-all shrink-0">
+        ${ms('download', false, 'text-lg')} تحميل PDF
+      </a>
+    </div>`;
 }
 
 function renderReviewFeatured() {
@@ -189,6 +250,60 @@ function renderReviewFeatured() {
   document.getElementById('reviewFeaturedBtn')?.addEventListener('click', () => {
     const id = appState.reviewItems[0]?.review.id;
     if (id) location.hash = id;
+  });
+}
+
+function examStats(exam) {
+  const mcqPart = exam.parts?.find(p => p.type === 'mcq');
+  const count = mcqPart?.questions?.reduce((n, q) => n + (q.type === 'group' ? q.questions.length : 1), 0) || 0;
+  return { count };
+}
+
+/** Unlike renderReviewFeatured (always just item[0]), a subject can have
+ * more than one دورات file — render one card per item, in a grid that reads
+ * fine whether there's one card or several. */
+function renderExamArchiveSection() {
+  const section = document.getElementById('examArchive');
+  if (!section) return;
+
+  if (!appState.examItems.length) {
+    section.classList.add('hidden');
+    section.innerHTML = '';
+    return;
+  }
+
+  section.classList.remove('hidden');
+  const cardsHtml = appState.examItems.map((item, i) => {
+    const stats = examStats(item.exam);
+    return `<button type="button" class="lecture-picker-card group text-right w-full bg-gradient-to-l from-tertiary-container/40 to-secondary-container/30 border-2 border-tertiary/30 rounded-2xl p-lg custom-shadow box-hover" data-exam-index="${i}" aria-label="فتح ${escAttr(item.exam.title)}">
+      <div class="flex items-center gap-md">
+        <div class="picker-icon-wrap w-14 h-14 rounded-xl bg-tertiary flex items-center justify-center text-on-tertiary shrink-0">
+          ${ms(item.matIcon, true, 'text-2xl')}
+        </div>
+        <div class="flex-1 text-right">
+          <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">${esc(item.exam.title)}</h3>
+          <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
+            ${ms('quiz', false, 'text-sm text-tertiary')} ${stats.count} سؤال
+          </span>
+        </div>
+        ${ms('arrow_back', false, 'text-on-surface-variant shrink-0')}
+      </div>
+    </button>`;
+  }).join('');
+
+  section.innerHTML = `
+    <div class="flex items-center gap-md mb-lg">
+      ${ms('history_edu', false, 'text-tertiary')}
+      <h2 class="font-headline-md text-headline-md text-on-surface">دورات سنوات سابقة</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">${cardsHtml}</div>`;
+
+  section.querySelectorAll('[data-exam-index]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.examIndex);
+      const id = appState.examItems[idx]?.exam.id;
+      if (id) location.hash = id;
+    });
   });
 }
 
@@ -252,6 +367,40 @@ function loadReviewView(index, anchorHash) {
   else if (needsRender) window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function loadExamView(index, anchorHash) {
+  const item = appState.examItems[index];
+  if (!item) return;
+
+  currentLectureIndex = -1;
+  showView('lecture');
+  setJumpQuizVisible(false);
+
+  const needsRender = currentExamIndex !== index || !document.getElementById(item.exam.id);
+
+  if (needsRender) {
+    currentExamIndex = index;
+    mountReviewHtml(item, renderCodeGuide(item.exam, '📝 دورات سنوات سابقة'));
+
+    document.getElementById('sidebarCourseTitle').textContent = shortLectureTitle(item.exam.title);
+    document.getElementById('sidebarCourseSub').textContent = item.exam.tag || '';
+    document.getElementById('sidebarMatIcon').textContent = item.matIcon || 'history_edu';
+    document.getElementById('mobileTocCourseTitle').textContent = shortLectureTitle(item.exam.title);
+    document.getElementById('mobileTocCourseSub').textContent = item.exam.tag || '';
+    document.getElementById('mobileTocMatIcon').textContent = item.matIcon || 'history_edu';
+  } else {
+    buildSidebar(item.toc);
+    showView('lecture');
+  }
+
+  const hash = anchorHash && anchorHash !== item.exam.id ? anchorHash : item.exam.id;
+  routeLock = true;
+  if (location.hash !== `#${hash}`) location.hash = hash;
+  routeLock = false;
+
+  if (anchorHash && anchorHash !== item.exam.id) scrollToAnchor(anchorHash);
+  else if (needsRender) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 async function loadReviews() {
   const reviewManifest = await loadReviewManifest();
   if (!reviewManifest?.files?.length) return;
@@ -268,6 +417,26 @@ async function loadReviews() {
       icon: file.icon || '📚',
       matIcon: file.matIcon || 'menu_book',
       toc: buildTocData([review])[0],
+    });
+  }
+}
+
+async function loadExams() {
+  const examManifest = await loadExamManifest();
+  if (!examManifest?.files?.length) return;
+
+  appState.examManifest = examManifest;
+  for (const file of examManifest.files) {
+    const path = typeof file === 'string' ? file : file.path;
+    if (!path) continue;
+    const data = await loadExamJson(path);
+    const exam = examFromJson(data, file.id);
+    if (!exam?.parts?.length) continue;
+    appState.examItems.push({
+      exam,
+      icon: file.icon || '📝',
+      matIcon: file.matIcon || 'history_edu',
+      toc: buildTocData([exam])[0],
     });
   }
 }
@@ -433,14 +602,15 @@ function goToSubjectHome() {
 }
 
 function handleBrandClick() {
-  if (currentView === 'lecture') goToSubjectHome();
-  else goToHubHome();
+  if (currentView === 'home') goToHubHome();
+  else goToSubjectHome();
 }
 
 function showView(name) {
   currentView = name;
   document.getElementById('homeView')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureView')?.classList.toggle('hidden', name !== 'lecture');
+  document.getElementById('examView')?.classList.toggle('hidden', name !== 'exam');
   document.getElementById('backToHomeBtn')?.classList.toggle('hidden', name === 'home');
   document.getElementById('backToHubBtn')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureWidthControl')?.classList.toggle('hidden', name !== 'lecture');
@@ -449,7 +619,7 @@ function showView(name) {
   document.documentElement.classList.toggle('is-lecture-view', name === 'lecture');
   const brandBtn = document.getElementById('brandBtn');
   if (brandBtn) {
-    brandBtn.title = name === 'lecture'
+    brandBtn.title = name !== 'home'
       ? 'العودة لقائمة المحاضرات'
       : 'العودة للسنوات الدراسية';
   }
@@ -487,7 +657,7 @@ async function loadLectureJson(path) {
 function createItemStub(file, i, manifest) {
   const defaultIcons = manifest.lectureIcons || ['📌'];
   const defaultMatIcons = manifest.lectureMatIcons || ['school'];
-  const fileStem = String(file.path).replace(/\.json$/i, '').replace(/\.md$/i, '');
+  const fileStem = lectureIdFromPath(String(file.path));
   const summary = file.summary || {};
   const stubId = summary.id || fileStem || `lec${i + 1}`;
   return {
@@ -519,7 +689,7 @@ async function ensureLectureLoaded(idx) {
     const doc = await loadLectureJson(item.fileMeta.path);
     const lec = doc.lectures?.[0];
     if (!lec) throw new Error(`لا محتوى في ${item.fileMeta.path}`);
-    const fileStem = String(item.fileMeta.path).replace(/\.json$/i, '').replace(/\.md$/i, '');
+    const fileStem = lectureIdFromPath(String(item.fileMeta.path));
     lec.id = fileStem || lec.id || item.lec.id;
     item.lec = lec;
     item.sectionIndex = doc.sectionIndex || {};
@@ -540,9 +710,37 @@ async function ensureLectureLoaded(idx) {
 
 function renderHomeGrid() {
   const grid = document.getElementById('lectureGrid');
-  if (!grid) return;
+  if (!grid || !appState.items.length) return;
 
-  grid.innerHTML = appState.items.map((item, i) => {
+  const sections = appState.manifest?.sections || [];
+  let tabs = document.getElementById('lectureSectionTabs');
+  if (sections.length > 1) {
+    if (!tabs) {
+      tabs = document.createElement('div');
+      tabs.id = 'lectureSectionTabs';
+      tabs.className = 'flex gap-sm mb-lg';
+      grid.before(tabs);
+    }
+    tabs.innerHTML = sections.map(section => `
+      <button type="button" data-lecture-section="${escAttr(section.key)}"
+        class="flex-1 px-lg py-md rounded-xl border font-label-md font-bold transition-all ${appState.activeSection === section.key
+    ? 'bg-primary text-on-primary border-primary'
+    : 'bg-surface-container-lowest text-on-surface border-outline-variant'}">
+        ${esc(section.icon || '')} ${esc(section.label)}
+      </button>`).join('');
+    tabs.querySelectorAll('[data-lecture-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        appState.activeSection = btn.dataset.lectureSection;
+        renderHomeGrid();
+      });
+    });
+  }
+
+  const visibleItems = appState.items
+    .map((item, i) => ({ item, i }))
+    .filter(({ item }) => !appState.activeSection || item.fileMeta?.section === appState.activeSection);
+
+  grid.innerHTML = visibleItems.map(({ item, i }) => {
     const stats = itemStats(item);
     const title = shortLectureTitle(item.lec.title);
     const num = item.fileMeta?.num ?? item.lec.title.match(/المحاضرة\s+(\d+)/)?.[1] ?? String(i + 1);
@@ -551,6 +749,9 @@ function renderHomeGrid() {
     const lectureId = lectureStableId(item, i);
     const isDone = appState.progressTracker?.isLectureCompleted(lectureId) || false;
     const doneLabel = isDone ? 'مكتملة' : 'غير مكتملة';
+    const mastered = stats.mcq
+      ? Math.min(appState.quizStats?.getMasteredCount(lectureId) || 0, stats.mcq)
+      : 0;
     return `
       <article class="lecture-picker-card group text-right bg-surface-container-lowest border border-outline-variant rounded-xl p-lg custom-shadow box-hover w-full"
                data-lecture-card="${i}" aria-label="${esc(title)}">
@@ -575,6 +776,9 @@ function renderHomeGrid() {
           </span>
           ${stats.mcq ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
             ${ms('quiz', false, 'text-sm text-secondary')} ${stats.mcq} سؤال
+          </span>` : ''}
+          ${mastered ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-primary-container text-on-primary-container rounded-full font-label-md text-label-md" title="أسئلة أجبت عنها صحيحاً ولو مرة">
+            ${ms('workspace_premium', false, 'text-sm')} إتقان ${mastered}/${stats.mcq}
           </span>` : ''}
           ${stats.sections ? `<span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
             ${ms('format_list_bulleted', false, 'text-sm text-tertiary')} ${stats.sections} أقسام
@@ -1204,9 +1408,22 @@ function resolveRoute() {
   if (routeLock) return;
   const hash = anchorIdFromHash(location.hash);
 
+  if (appState.examMode?.open(hash)) {
+    currentLectureIndex = -1;
+    currentReviewIndex = -1;
+    return;
+  }
+  appState.examMode?.teardown();
+
   const reviewIdx = getReviewIndexFromHash(hash);
   if (reviewIdx >= 0) {
     loadReviewView(reviewIdx, hash);
+    return;
+  }
+
+  const examIdx = getExamIndexFromHash(hash);
+  if (examIdx >= 0) {
+    loadExamView(examIdx, hash);
     return;
   }
 
@@ -1216,6 +1433,11 @@ function resolveRoute() {
   } else {
     currentLectureIndex = -1;
     currentReviewIndex = -1;
+    currentExamIndex = -1;
+    // Mastery chips and the exam entry card depend on quiz stats that may
+    // have changed since the grid was last rendered.
+    renderHomeGrid();
+    appState.examMode?.renderHomeEntry();
     showView('home');
     trackHomeView();
     if (hash === 'home' || !hash) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1404,6 +1626,7 @@ async function init() {
   try {
     const manifest = await loadManifest();
     appState.manifest = manifest;
+    appState.activeSection = manifest.sections?.[0]?.key || '';
     resetHtmlCacheIfStale(manifest.settings?.buildId || readBuildId());
 
     applySiteSettings(manifest, { guideConfig: GUIDE_CONFIG, basePath: 'themes/' });
@@ -1423,6 +1646,24 @@ async function init() {
 
     appState.subjectKey = resolveSubjectKeyFromPath(location.pathname);
     appState.progressTracker = createProgressTracker({ subjectKey: appState.subjectKey });
+    appState.quizStats = createQuizStats({ subjectKey: appState.subjectKey });
+    appState.examMode = createExamMode({
+      getItems: () => appState.items,
+      ensureLectureLoaded,
+      lectureStableId,
+      itemStats,
+      getCurrentLectureIndex: () => currentLectureIndex,
+      showView,
+      quizStats: appState.quizStats,
+      renderMCQ,
+      initEquations,
+      ms,
+      shortLectureTitle,
+      onStatsChanged: () => {
+        renderHomeGrid();
+        appState.examMode?.renderHomeEntry();
+      },
+    });
     if (appState.progressUnsubscribe) appState.progressUnsubscribe();
     appState.progressUnsubscribe = appState.progressTracker.onChange(() => {
       renderSubjectProgressTracker();
@@ -1439,6 +1680,7 @@ async function init() {
       renderHomeGrid();
     }
     renderSubjectProgressTracker();
+    renderUpdatedPdfBanner();
 
     try {
       await loadReviews();
@@ -1446,6 +1688,14 @@ async function init() {
       console.warn('Review guides not loaded:', reviewErr);
     }
     renderReviewFeatured();
+    appState.examMode.renderHomeEntry();
+
+    try {
+      await loadExams();
+    } catch (examErr) {
+      console.warn('دورات archive not loaded:', examErr);
+    }
+    renderExamArchiveSection();
 
     resolveRoute();
   } catch (err) {

@@ -42,8 +42,11 @@ function normalizeSubjectState(raw) {
 
 export function lectureIdFromPath(filePath) {
   if (!filePath || typeof filePath !== 'string') return '';
-  const normalized = filePath.replace(/\\/g, '/').split('/').pop() || '';
-  return normalized.replace(/\.(json|md)$/i, '');
+  return filePath
+    .replace(/\\/g, '/')
+    .replace(/\.(json|md)$/i, '')
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/\/+/g, '-');
 }
 
 export function resolveSubjectKeyFromPath(pathname = window.location.pathname) {

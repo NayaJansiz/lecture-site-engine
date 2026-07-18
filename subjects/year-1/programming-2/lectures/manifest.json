@@ -19,6 +19,13 @@
       "badge": "المحاضرة ١"
     },
     {
+      "path": "par2.md",
+      "num": 2,
+      "icon": "📝",
+      "matIcon": "description",
+      "badge": "المحاضرة ٢"
+    },
+    {
       "path": "par3.md",
       "num": 3,
       "icon": "📌",

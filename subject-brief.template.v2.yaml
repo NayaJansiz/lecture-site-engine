@@ -130,15 +130,9 @@ parts:
     enabled: false
     heading: "📌 خريطة التكامل (أين تقع هذه المحاضرة في الدورة؟)"
 
-  detail:
-    enabled: true
-    heading: "الجزء الأول: الشرح التفصيلي (سطر بسطر / فقرة بفقرة)"
-    numbered_sections: true
-    require_per_section: []  # NOW EMPTY (v2.0) — النص الأصلي موجود في <details>
-
   summary:
     enabled: true
-    heading: "الجزء الثاني: ملخص منظم"
+    heading: "الجزء الأول: ملخص منظم (ابدأ من هنا!)"
     subsections:
       - definitions_table
       - components_table
@@ -148,6 +142,12 @@ parts:
       - common_mistakes_table
       - patterns
       - main_ideas
+
+  detail:
+    enabled: true
+    heading: "الجزء الثاني: الشرح التفصيلي (سطر بسطر / فقرة بفقرة)"
+    numbered_sections: true
+    require_per_section: []  # NOW EMPTY (v2.0) — النص الأصلي موجود في <details>
 
   mcq:
     enabled: true

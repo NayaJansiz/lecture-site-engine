@@ -8,60 +8,7 @@
 
 ## قوالب الأجزاء (Part Templates)
 
-### ◈ الشرح التفصيلي (part-detail)
-
-```markdown
-## {detail.heading}
-
-### {N}. {section_title}
-
-<!-- @render: {type: "prose-first", visualization: "none", coverage: "XX%"} -->
-<!-- @connectivity: {prerequisite: "section_N-1"} -->
-
-#### 📍 أين نحن الآن؟
-[One sentence context]
-
-#### ⬅️ الربط مع السابق
-[Connection to previous topic — يحل محل "النص الأصلي يقول"]
-
-#### 💡 الفكرة الأساسية
-**[One sentence core idea — BOLD]**
-
----
-
-#### 📖 الشرح
-[2-4 short paragraphs, chunked for readability]
-
-#### 🎯 الملخص السريع
-- Point 1
-- Point 2
-- Point 3
-
-#### 📚 التطبيق
-[Where is this used next?]
-
-#### ⚠️ أخطاء شائعة
-- ❌ Misconception
-- ✅ Correct concept
-
-#### 📄 النص الأصلي من المحاضرة
-<details>
-<summary>عرض النص الأصلي (coverage: XX%)</summary>
-
-**النص الأصلي يقول:**
-> [EXACT QUOTE from lecture]
-
-**ملاحظة على التغطية:**
-- ✓ تم شرح: [what was covered]
-- ⚠️ غير مشروح بالكامل: [what wasn't]
-- ℹ️ إضافة من الدليل: [what was added]
-
-</details>
-```
-
----
-
-### ◈ ملخص منظم (part-summary)
+### ◈ ملخص منظم (part-summary) — PART 1: ابدأ من هنا!
 
 ```markdown
 ## {summary.heading}
@@ -127,7 +74,60 @@
 
 ---
 
-### ◈ أسئلة اختيار من متعدد (part-mcq)
+### ◈ الشرح التفصيلي (part-detail) — PART 2
+
+```markdown
+## {detail.heading}
+
+### {N}. {section_title}
+
+<!-- @render: {type: "prose-first", visualization: "none", coverage: "XX%"} -->
+<!-- @connectivity: {prerequisite: "section_N-1"} -->
+
+#### 📍 أين نحن الآن؟
+[One sentence context]
+
+#### ⬅️ الربط مع السابق
+[Connection to previous topic — يحل محل "النص الأصلي يقول"]
+
+#### 💡 الفكرة الأساسية
+**[One sentence core idea — BOLD]**
+
+---
+
+#### 📖 الشرح
+[2-4 short paragraphs, chunked for readability]
+
+#### 🎯 الملخص السريع
+- Point 1
+- Point 2
+- Point 3
+
+#### 📚 التطبيق
+[Where is this used next?]
+
+#### ⚠️ أخطاء شائعة
+- ❌ Misconception
+- ✅ Correct concept
+
+#### 📄 النص الأصلي من المحاضرة
+<details>
+<summary>عرض النص الأصلي (coverage: XX%)</summary>
+
+**النص الأصلي يقول:**
+> [EXACT QUOTE from lecture]
+
+**ملاحظة على التغطية:**
+- ✓ تم شرح: [what was covered]
+- ⚠️ غير مشروح بالكامل: [what wasn't]
+- ℹ️ إضافة من الدليل: [what was added]
+
+</details>
+```
+
+---
+
+### ◈ أسئلة اختيار من متعدد (part-mcq) — PART 3
 
 ```markdown
 ## {mcq.heading}
@@ -154,7 +154,7 @@
 
 ---
 
-### ◈ بطاقات سؤال وجواب (part-qa-cards)
+### ◈ بطاقات سؤال وجواب (part-qa-cards) — PART 4
 
 ```markdown
 ## {qa_cards.heading}
@@ -172,7 +172,7 @@
 
 ---
 
-### ◈ ورقة المراجعة السريعة (part-cheat-sheet)
+### ◈ ورقة المراجعة السريعة (part-cheat-sheet) — PART 5
 
 ```markdown
 ## {cheat_sheet.heading}

@@ -149,6 +149,21 @@ export function renderOriginalText(title, content) {
   </div>`;
 }
 
+export function renderOriginalTextCollapsible(block, ctx) {
+  const inner = block.blocks?.length && ctx.renderBlocks
+    ? ctx.renderBlocks(block.blocks, { ...ctx, nested: true, codeCounterRef: ctx.codeCounterRef || { n: 0 } })
+    : '';
+  const summary = block.summary || block.title || 'عرض النص الأصلي';
+  return `<details class="original-text-collapsible accordion-card group bg-surface-container-lowest dark:bg-[#161b30] border border-outline-variant dark:border-[#1e40af] rounded-xl mb-lg overflow-hidden custom-shadow box-animate box-hover">
+    <summary class="flex items-center gap-md p-lg cursor-pointer list-none hover:bg-surface-container-high dark:hover:bg-[#1c2440] transition-colors">
+      ${ms('record_voice_over', false, 'text-secondary shrink-0')}
+      <span class="acc-title flex-1 font-headline-sm text-headline-sm text-on-surface">${inlineMd(summary)}</span>
+      ${ms('expand_more', false, 'text-on-surface-variant acc-chevron transition-transform shrink-0')}
+    </summary>
+    <div class="acc-body p-lg pt-0 border-t border-outline-variant prose-content">${inner}</div>
+  </details>`;
+}
+
 function plainTableLabel(text) {
   return String(text).replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`/g, '').trim();
 }
@@ -315,6 +330,17 @@ function renderAnalogy(block) {
       ${block.title ? `<h5 class="font-headline-sm text-headline-sm text-primary mb-sm">${inlineMd(block.title)}</h5>` : ''}
       <div class="font-body-md text-on-surface-variant leading-relaxed">${inlineMd(block.content).replace(/\n/g, '<br>')}</div>
     </div>
+  </div>`;
+}
+
+function renderCoreIdea(block) {
+  const label = String(block.title || '💡 الفكرة الأساسية').trim();
+  return `<div class="core-idea mb-md">
+    <div class="flex items-center gap-sm mb-xs mt-md">
+      ${ms('lightbulb', false, 'text-primary text-lg shrink-0')}
+      <h5 class="font-label-md text-label-md font-bold text-on-surface-variant">${inlineMd(label)}</h5>
+    </div>
+    <p class="core-idea__text">${inlineMd(block.content)}</p>
   </div>`;
 }
 
@@ -575,6 +601,7 @@ export function createDefaultBlockHandlers(extraHandlers = []) {
         </div>
       </div>
     </article>` },
+  { id: 'core-idea', match: b => b.type === 'core-idea', render: renderCoreIdea },
   { id: 'analogy', match: b => b.type === 'analogy', render: renderAnalogy },
   { id: 'equation', match: b => b.type === 'equation', render: renderEquation },
   { id: 'trade-off', match: b => b.type === 'trade-off', render: renderTradeOff },

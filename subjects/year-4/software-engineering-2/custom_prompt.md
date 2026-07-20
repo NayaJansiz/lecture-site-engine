@@ -10,6 +10,28 @@
 
 ---
 
+## ⚡ استراتيجية المخططات (Diagram Strategy)
+
+**هذا الموضوع مليان مخططات UML.** بدل الـ PDFs والصور، استخدم **Mermaid** — تُرجّم مباشرة في المتصفح:
+
+✅ **Mermaid هو الحل:**
+- Lightweight وسريع (ما يحتاج rendering خارجي)
+- Markdown-native (بس نسخ الكود)
+- يدعم: Class Diagrams, Use Cases, Sequence, Activity, Component
+- سهل التعديل (لو المحاضرة اتغيرت، بس عدّل الكود)
+
+❌ **ما تستخدم:**
+- صور PNG/JPG (ما في اسم معين)
+- PlantUML أو Graphviz (معقد للـ browser)
+- ASCII art (غير احترافي)
+
+**كل مخطط يتضمن:**
+1. Mermaid code block
+2. شرح عناصر المخطط (كل box/element ليه شرح)
+3. شرح الروابط (الأسهم والعلاقات = ايش معناها؟)
+
+---
+
 ## طبيعة المادة
 
 | النوع | الاستخدام | أمثلة |
@@ -291,28 +313,212 @@ coverage % = (عدد النقاط المشروحة / عدد النقاط في ا
 
 ## قواعس الكتل داخل الشرح
 
-### 📊 المخططات (Diagrams)
-- **متى تُستخدم:** لرسم البنية، التفاعلات، الأنماط المعمارية
-- **الأنواع المدعومة:** flowchart, uml, activity diagram, usecase diagram, class diagram, component diagram
-- **الشكل:**
-  ```markdown
-  #### المخطط: اسم المخطط
-  ```
-  [البيان التوضيحي أو الكود]
-  ```
-  ```
-  (اختياري) جدول العُقد والروابط
-  ```
+### 📊 المخططات (Diagrams) — Mermaid + Code Snippet
 
-### 📐 مخططات UML
-- **الأنواع:** usecase, class, activity, component, sequence
-- **الشكل:**
-  ```markdown
-  #### UML Diagram: Class Diagram
-  ```
-  [الكود]
-  ```
-  ```
+**لماذا Mermaid؟** تُرجّم مباشرة في المتصفح (efficient، بدون server)، Markdown-native، وسهل التحديث.
+
+---
+
+#### **نموذج عام لكل diagram:**
+
+```markdown
+#### 📊 المخطط: [اسم المخطط]
+
+```mermaid
+[كود Mermaid]
+```
+
+**شرح عناصر المخطط:**
+- **Element A:** [تعريف]
+- **Element B:** [تعريف]
+- **الرابط من A إلى B:** [معنى العلاقة]
+```
+
+---
+
+### **1. Class Diagram (مخطط الفئات)**
+
+```markdown
+#### 📊 المخطط: WeatherStation Class Diagram
+
+```mermaid
+classDiagram
+    class WeatherStation {
+        -id: String
+        -location: String
+        +reportWeather()
+        +powerSave()
+        +remoteControl()
+    }
+    
+    class WeatherData {
+        -airTemperatures: float[]
+        -groundTemperatures: float[]
+        -windSpeeds: float[]
+        +collect()
+        +summarize()
+    }
+    
+    class Instrument {
+        -id: String
+        +get()
+        +test()
+    }
+    
+    WeatherStation "1" --> "*" Instrument
+    WeatherStation "1" --> "*" WeatherData
+```
+
+**شرح العناصر:**
+- **WeatherStation:** الفئة الرئيسية تدير محطة الطقس
+- **WeatherData:** تجميع البيانات المختلفة (درجات حرارة، سرعات الرياح)
+- **Instrument:** كل أداة قياس (ترمومتر، أنيمومتر، إلخ)
+- **الروابط:** 
+  - WeatherStation لديها عدة أدوات (1 إلى *)
+  - WeatherStation تجمع عدة بيانات (1 إلى *)
+```
+
+---
+
+### **2. Component Diagram (مخطط المكونات)**
+
+```markdown
+#### 📊 المخطط: WeatherStation System Architecture
+
+```mermaid
+graph TB
+    subgraph Top["Management Layer"]
+        FM["Fault Manager"]
+        CM["Configuration Manager"]
+        PM["Power Manager"]
+    end
+    
+    subgraph Middle["Communication"]
+        CL["Communication Link"]
+    end
+    
+    subgraph Bottom["Sensors"]
+        COMM["Communications"]
+        DC["Data Collection"]
+        INST["Instruments"]
+    end
+    
+    FM --> CL
+    CM --> CL
+    PM --> CL
+    
+    CL --> COMM
+    CL --> DC
+    CL --> INST
+```
+
+**شرح المكونات:**
+- **Management Layer:** يدير الأخطاء، الإعدادات، والطاقة
+- **Communication Link:** الوسيط الرئيسي بين الطبقات
+- **Sensors Layer:** جمع البيانات والاتصالات
+- **الاتجاهات:** كل مكون علوي يتصل عبر Communication Link بالمكونات السفلية
+```
+
+---
+
+### **3. Use Case Diagram (مخطط حالات الاستخدام)**
+
+```markdown
+#### 📊 المخطط: Weather Station Use Cases
+
+```mermaid
+graph LR
+    A["Operator"]
+    B["System"]
+    
+    A -->|Report Weather| B
+    A -->|Power Save| B
+    A -->|Remote Control| B
+    B -->|Collect Data| A
+```
+
+**شرح الحالات:**
+- **Report Weather:** المشغّل يطلب تقرير الطقس الحالي
+- **Power Save:** تفعيل وضع توفير الطاقة
+- **Remote Control:** التحكم عن بعد في الأدوات
+- **Collect Data:** النظام يجمع البيانات تلقائياً
+```
+
+---
+
+### **4. Sequence Diagram (مخطط التسلسل)**
+
+```markdown
+#### 📊 المخطط: Data Collection Sequence
+
+```mermaid
+sequenceDiagram
+    Operator->>Station: Start Collection
+    activate Station
+    Station->>Instruments: Request Data
+    activate Instruments
+    Instruments-->>Station: Send Readings
+    deactivate Instruments
+    Station->>WeatherData: Process & Store
+    activate WeatherData
+    WeatherData-->>Station: Stored OK
+    deactivate WeatherData
+    Station-->>Operator: Report Ready
+    deactivate Station
+```
+
+**شرح التسلسل:**
+1. **Operator → Station:** بدء جمع البيانات
+2. **Station → Instruments:** طلب القراءات من الأدوات
+3. **Instruments → Station:** إرسال البيانات
+4. **Station → WeatherData:** معالجة وتخزين البيانات
+5. **Station → Operator:** إبلاغ اكتمال العملية
+```
+
+---
+
+### **5. Activity Diagram (مخطط النشاطات)**
+
+```markdown
+#### 📊 المخطط: Weather Station Operation Flow
+
+```mermaid
+graph TD
+    Start([Start]) --> Init["Initialize System"]
+    Init --> Collect["Collect Data from Instruments"]
+    Collect --> Process["Process Data"]
+    Process --> Decide{Error Detected?}
+    Decide -->|Yes| Fault["Fault Manager"]
+    Fault --> Report
+    Decide -->|No| Report["Report Status"]
+    Report --> Save["Save to Database"]
+    Save --> Loop{Continue?}
+    Loop -->|Yes| Collect
+    Loop -->|No| End([End])
+```
+
+**شرح الخطوات:**
+1. **Initialize:** تشغيل النظام
+2. **Collect:** جمع البيانات من الأدوات
+3. **Process:** معالجة البيانات
+4. **Error Check:** هل حدث خطأ؟
+5. **Fault Manager:** إذا كان هناك خطأ، استدعِ مدير الأخطاء
+6. **Report:** إرسال التقرير
+7. **Save:** حفظ في قاعدة البيانات
+8. **Loop:** الاستمرار أم الإيقاف؟
+```
+
+---
+
+### **نصائح لـ Mermaid:**
+
+✅ **استخدم الكود النظيف والبسيط**
+
+✅ **أضف دائماً شرح بعد الرسم** — الرسم وحده غير كافي
+
+✅ **استخدم أسماء واضحة** — `WeatherStation` أفضل من `WS`
+
+✅ **كل عنصر يجب أن يكون له شرح في السطور التالية**
 
 ### 💡 التشبيه (Analogy)
 - **الشكل:** جملة يومية + "وجه الشبه: X = Y"
@@ -381,58 +587,133 @@ coverage % = (عدد النقاط المشروحة / عدد النقاط في ا
 
 ## مرجع القوالب (Templates Reference)
 
-### 1. قالب القسم الكامل (Section Template)
+### 1. قالب القسم الكامل — مع Mermaid (Section Template)
 
 ```markdown
-### 1.1. اسم الموضوع (English Name)
-<!-- @render: {type: "diagram-first", visualization: "flowchart", coverage: "95%"} -->
-<!-- @connectivity: {prerequisite: "1.0"} -->
+### 1.2. Class Design for Weather Station (تصميم الفئات)
+<!-- @render: {type: "diagram-first", visualization: "uml", coverage: "95%"} -->
+<!-- @connectivity: {prerequisite: "1.1"} -->
 
 #### 📍 أين نحن الآن؟
-[جملة واحدة توضح مكاننا في الموضوع]
+بعد فهم متطلبات النظام، ننتقل الآن إلى تصميم بنية الفئات التي تحقق هذه المتطلبات.
 
 #### ⬅️ الربط مع السابق
-[كيف يرتبط هذا بالموضوع السابق]
+المتطلبات السابقة (SRS) حددت لنا: يجب أن يكون هناك محطة رئيسية وأدوات قياس متعددة. الآن نترجم هذا إلى فئات `classes`.
 
 #### 💡 الفكرة الأساسية
-**[جملة واحدة قوية تلخص الفكرة]**
+**تصميم الفئات ينظم البيانات والتصرفات في بنية منطقية — كل فئة لها مسؤولية واحدة واضحة (Single Responsibility Principle).**
 
 ---
 
-#### 📊 المخطط
-[مخطط أو رسم توضيحي]
+#### 📊 المخطط: Class Diagram
+
+```mermaid
+classDiagram
+    class WeatherStation {
+        -id: String
+        -location: String
+        -status: String
+        +reportWeather()
+        +powerSave()
+        +remoteControl()
+    }
+    
+    class WeatherData {
+        -airTemperatures: float[]
+        -groundTemperatures: float[]
+        -windSpeeds: float[]
+        -windDirections: float[]
+        +collect()
+        +summarize()
+    }
+    
+    class Instrument {
+        -id: String
+        -type: String
+        +get()
+        +test()
+    }
+    
+    class GroundThermometer {
+        -temperature: float
+    }
+    
+    class Anemometer {
+        -windSpeed: float
+        -windDirection: float
+    }
+    
+    WeatherStation "1" --> "*" Instrument
+    WeatherStation "1" --> "1" WeatherData
+    Instrument <|-- GroundThermometer
+    Instrument <|-- Anemometer
+```
+
+**شرح العناصر:**
+- **WeatherStation:** الفئة الرئيسية
+  - `-id`: معرّف فريد للمحطة
+  - `-location`: موقع المحطة الجغرافي
+  - `-status`: حالة التشغيل
+  - `+reportWeather()`: إرسال تقرير الطقس
+  - `+powerSave()`: تفعيل توفير الطاقة
+  - `+remoteControl()`: التحكم عن بعد
+
+- **WeatherData:** تجميع البيانات المختلفة
+  - `collect()`: جمع القراءات من الأدوات
+  - `summarize()`: تلخيص البيانات
+
+- **Instrument:** فئة الأدوات الأساسية
+  - **GroundThermometer:** ترمومتر التربة (وراث من Instrument)
+  - **Anemometer:** أنيمومتر قياس الرياح (وراث من Instrument)
+
+**شرح الروابط:**
+- **1 → *:** محطة واحدة تحتوي على عدة أدوات
+- **WeatherStation ↔ WeatherData:** علاقة 1:1 — كل محطة لها مجموعة بيانات واحدة
+- **<|--:** علاقة الوراثة (`Inheritance`) — الفئات الخاصة ترث من الفئة الأساسية
 
 ---
 
 #### 📖 الشرح
-[فقرات توضيحية]
+
+تخيّل محطة الطقس كشركة صغيرة:
+- **WeatherStation** هي الإدارة العامة — تدير كل شيء وتأخذ القرارات
+- **Instruments** هي الموظفون — كل واحد متخصص في شيء (ترمومتر يقيس الحرارة، أنيمومتر يقيس الرياح)
+- **WeatherData** هي أرشيف البيانات — تحفظ كل القراءات
+
+بدل ما تقول "لدينا جهاز غريب يقيس كل شيء"، نقول: لدينا أنواع مختلفة من الأدوات، كل واحد متخصص. ده أسهل للصيانة والتطوير.
+
+مثلاً، لو أردنا إضافة أداة جديدة (بارومتر لقياس الضغط)، ما نحتاج نغير `WeatherStation` نفسها — بس ننشئ فئة جديدة `Barometer` ترث من `Instrument` وتنتهي.
 
 #### 🎯 الملخص السريع
-- نقطة 1
-- نقطة 2
-- نقطة 3
+- كل فئة لها مسؤولية واحدة واضحة
+- الوراثة (`Inheritance`) توفر كود مشترك وتجنب التكرار
+- الروابط بين الفئات تمثل التفاعلات في النظام الفعلي
+- الرسم يسهّل فهم البنية قبل الكود
 
 #### 📚 التطبيق
-[كيف نستخدم هذا؟]
+هذا التصميم هو أساس المرحلة القادمة: تطوير الكود الفعلي (`Implementation`). كل فئة ستصير `class` في البرمجة — مثلاً في Java أو Python.
 
 #### ⚠️ أخطاء شائعة
 
 #### الفهم الخاطئ ❌:
-[الخطأ الشائع]
+"أنا أفهم البرمجة، ليش أضيع وقت برسم Diagrams؟"
 
 #### الفهم الصحيح ✅:
-[التصحيح]
+الـ Diagrams توفر لك "خارطة الطريق" قبل ما تبدأ الكود. لو رسمت غلط، تكتشفه قبل ما تكتب 1000 سطر كود غلط.
+
+---
 
 #### 📄 النص الأصلي من المحاضرة
 <details>
 <summary>عرض النص الأصلي (coverage: 95%)</summary>
 
-> [الاقتباس الحرفي من المحاضرة]
+> في محطة الطقس، حددنا الفئات الرئيسية: WeatherStation كفئة رئيسية تدير كل الوحدات. ثم فئات الأدوات المختلفة: ترمومتر التربة (GroundThermometer)، أنيمومتر قياس الرياح (Anemometer)، وبارومتر قياس الضغط (Barometer). كل أداة ترث من فئة الأداة الأساسية (Instrument).
 
 **ملاحظة على التغطية:**
-- ✓ تم شرح بالكامل: النقاط الأساسية
-- ⚠️ لم يتم شرح بالكامل: حالة خاصة
-- ℹ️ إضافة من الدليل: تشبيه
+- ✓ تم شرح بالكامل: الفئات الرئيسية والوراثة
+- ✓ تم شرح بالكامل: العلاقات بين الفئات
+- ⚠️ لم يتم شرح بالكامل: مثال تطبيقي عملي (معقد جداً بدون كود فعلي)
+- ℹ️ إضافة من الدليل: مثال الشركة والموظفين
 
 </details>
 ```

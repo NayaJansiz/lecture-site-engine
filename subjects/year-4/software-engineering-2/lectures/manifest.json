@@ -18,19 +18,13 @@
       "matIcon": "school",
       "badge": "المحاضرة ٤"
     },
+  
     {
-      "path": "par5.md",
-      "num": 5,
-      "icon": "🎮",
-      "matIcon": "sports_esports",
-      "badge": "المحاضرة ٥"
-    },
-    {
-      "path": "par13.md",
-      "num": 13,
+      "path": "par14.md",
+      "num": 14,
       "icon": "📌",
       "matIcon": "school",
-      "badge": "المحاضرة ١٣"
+      "badge": "المحاضرة ١٤"
     }
   ],
   "lectureIcons": [

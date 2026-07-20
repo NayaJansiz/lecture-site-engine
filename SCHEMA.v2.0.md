@@ -182,8 +182,22 @@ Each `### {num}. Topic` section in the DETAIL part should follow this order:
 [Where is this used next? Connection to future topics?]
 
 #### ⚠️ أخطاء شائعة
-- ❌ Common misconception
-- ✅ Correct understanding
+
+```markdown
+#### الفهم الخاطئ ❌:
+[misconception]
+
+#### الفهم الصحيح ✅:
+[correct understanding]
+```
+
+#### ⚠️ تنبيه بصري (Visual Reference Alert)
+[Optional — only if a diagram/photo/chart is essential to understand this topic]
+
+```markdown
+#### ⚠️ تنبيه:
+هذا الموضوع موضح أفضل بكثير من الرسمة/الصورة في الصفحة X من ملف المحاضرة الأصلية — يجب أن تشوفها هناك.
+```
 
 #### 📄 النص الأصلي من المحاضرة
 <details>

@@ -3,7 +3,7 @@ import { ms, PART_MAT_ICONS } from '../core/icons.js';
 import { isChecklistPart } from '../core/part-filters.js';
 import { renderBlocks } from '../blocks/index.js';
 import { renderPart } from '../parts/index.js';
-import { mcqSectionAnchor } from '../core/slug.js';
+import { mcqSectionAnchor, normalizeMcqSection } from '../core/slug.js';
 
 export function renderAiDisclaimer(config) {
   const site = config.defaultTitle || 'Study Guide';
@@ -234,15 +234,28 @@ function buildPartSubsections(part) {
       const seen = new Set();
       const byLecture = [];
       for (const q of part.questions) {
-        if (!q.section || seen.has(q.section)) continue;
-        seen.add(q.section);
+        const key = normalizeMcqSection(q.section);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
         byLecture.push({
           level: 3,
-          text: q.section,
-          id: mcqSectionAnchor(q.section),
+          text: key,
+          id: mcqSectionAnchor(key),
         });
       }
-      if (byLecture.length) return byLecture;
+      if (byLecture.length) {
+        const lectureOrder = (text) => {
+          const m = text.match(/المحاضرة\s+(\d+)(?:\s*\(جزء\s+(\d+)\))?/);
+          if (!m) return [999, 0];
+          return [Number(m[1]), Number(m[2] || 0)];
+        };
+        byLecture.sort((a, b) => {
+          const [an, ap] = lectureOrder(a.text);
+          const [bn, bp] = lectureOrder(b.text);
+          return an - bn || ap - bp || a.text.localeCompare(b.text, 'ar');
+        });
+        return byLecture;
+      }
 
       return part.questions.map(q => ({
         level: 3,

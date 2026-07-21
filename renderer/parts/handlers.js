@@ -3,7 +3,7 @@ import { inlineMd } from '../core/inline-md.js';
 import { ms } from '../core/icons.js';
 import { renderBlocks } from '../blocks/index.js';
 import { calloutHtml } from '../blocks/handlers.js';
-import { mcqSectionAnchor } from '../core/slug.js';
+import { mcqSectionAnchor, normalizeMcqSection } from '../core/slug.js';
 
 function diffBadgeClass(d) {
   if (d === 'سهل') return 'bg-primary/20 text-primary';
@@ -162,13 +162,14 @@ export function renderMCQ(questions, partId) {
     // `section` string on every question — insert a heading whenever it
     // changes so consecutive questions from the same section stay grouped
     // visually without repeating the label on every card.
-    if (q.section && q.section !== lastSection) {
-      const secId = `${partId}-${mcqSectionAnchor(q.section)}`;
+    const sectionKey = normalizeMcqSection(q.section);
+    if (sectionKey && sectionKey !== lastSection) {
+      const secId = `${partId}-${mcqSectionAnchor(sectionKey)}`;
       html += `<h3 id="${esc(secId)}" class="font-headline-md text-headline-md text-primary dark:text-inverse-primary flex items-center gap-sm pt-md first:pt-0 scroll-mt-16">
-        ${ms('menu_book', false, 'text-lg')} ${esc(q.section)}
+        ${ms('menu_book', false, 'text-lg')} ${esc(sectionKey)}
       </h3>`;
     }
-    lastSection = q.section || lastSection;
+    lastSection = sectionKey || lastSection;
 
     if (q.type === 'group') {
       html += renderMcqGroup(q, partId);

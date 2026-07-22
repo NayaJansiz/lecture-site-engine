@@ -1933,7 +1933,10 @@ function initSearch() {
       let html = '';
       let rank = 0;
       for (const { entry } of matches) {
-        const key = entry.id;
+        // Content blocks often share a part id — keep distinct titles visible.
+        const key = entry.kind === 'content'
+          ? `${entry.id}::${entry.title || entry.text || ''}`
+          : entry.id;
         if (seen.has(key)) continue;
         seen.add(key);
         rank += 1;

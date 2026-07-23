@@ -14,6 +14,20 @@ const IDLE_TIMEOUT_MS = 2 * 60 * 1000;
 const SCROLL_MILESTONES = [25, 50, 75, 100];
 const DEFAULT_POSTHOG_HOST = 'https://eu.i.posthog.com';
 
+/** Minimum signals for a session to count as "studying" rather than "watching". */
+const STUDIER_MIN_ACTIVE_SECONDS = 30;
+const STUDIER_MIN_SCROLL_PCT = 40;
+const RETURN_VISIT_STORAGE_KEY = 'sg_visit_meta_v1';
+
+/**
+ * Words/minute used to estimate expected reading time for Arabic/mixed academic text.
+ * Deliberately conservative (slower than casual-reading averages) since lecture content
+ * includes formulas, code, and diagrams that slow real reading down.
+ */
+const READING_WORDS_PER_MINUTE = 130;
+/** A lecture is "meaningfully opened" (counts toward subject coverage) above this active time. */
+const MEANINGFUL_OPEN_SECONDS = 60;
+
 /** @type {{ subjectName: string, storagePrefix: string } | null} */
 let context = null;
 
@@ -79,13 +93,93 @@ export function buildBaseProps(opts) {
 
 /**
  * @param {ReturnType<typeof buildBaseProps>} base
- * @param {{ activeSeconds: number, maxScrollPct: number }} session
+ * @param {{
+ *   activeSeconds: number,
+ *   maxScrollPct: number,
+ *   exitScrollPct?: number,
+ *   exitReason?: string,
+ *   interactionCount?: number,
+ *   engagementLevel?: string,
+ *   wordCount?: number,
+ *   expectedReadSeconds?: number,
+ *   readingPaceRatio?: number,
+ *   meaningfulOpen?: boolean,
+ * }} session
  */
 export function buildSessionEndProps(base, session) {
   return {
     ...base,
     active_seconds: session.activeSeconds,
     max_scroll_pct: session.maxScrollPct,
+    ...(session.exitScrollPct != null ? { exit_scroll_pct: session.exitScrollPct } : {}),
+    ...(session.exitReason ? { exit_reason: session.exitReason } : {}),
+    ...(session.interactionCount != null ? { interaction_count: session.interactionCount } : {}),
+    ...(session.engagementLevel ? { engagement_level: session.engagementLevel } : {}),
+    ...(session.wordCount != null ? { content_word_count: session.wordCount } : {}),
+    ...(session.expectedReadSeconds != null ? { expected_read_seconds: session.expectedReadSeconds } : {}),
+    ...(session.readingPaceRatio != null ? { reading_pace_ratio: session.readingPaceRatio } : {}),
+    ...(session.meaningfulOpen != null ? { meaningful_open: session.meaningfulOpen } : {}),
+  };
+}
+
+/**
+ * Classify a content session as "studier" (meaningfully engaged) or "watcher"
+ * (opened content but barely engaged with it).
+ * Pure function — no globals — for easy testing and reuse.
+ *
+ * @param {{ activeSeconds: number, maxScrollPct: number, interactionCount: number }} signals
+ * @returns {'studier' | 'watcher'}
+ */
+export function classifyEngagement({ activeSeconds, maxScrollPct, interactionCount }) {
+  const hasEnoughFocus = (activeSeconds || 0) >= STUDIER_MIN_ACTIVE_SECONDS;
+  const hasEnoughScroll = (maxScrollPct || 0) >= STUDIER_MIN_SCROLL_PCT;
+  const hasInteracted = (interactionCount || 0) > 0;
+  return hasEnoughFocus && (hasEnoughScroll || hasInteracted) ? 'studier' : 'watcher';
+}
+
+/**
+ * Estimate expected reading time (seconds) for a block of content from its word count.
+ * Pure function — used both live (word count measured from the rendered DOM) and in tests.
+ *
+ * @param {number} wordCount
+ * @returns {number} expected reading time in seconds
+ */
+export function estimateReadSeconds(wordCount) {
+  if (!wordCount || wordCount <= 0) return 0;
+  return Math.round((wordCount / READING_WORDS_PER_MINUTE) * 60);
+}
+
+/**
+ * Compare actual active time against expected reading time to sanity-check whether a
+ * session looks like real reading (pace near or above expected) vs. a fly-by (active time
+ * far below what the content would take to read).
+ * Pure function — no globals.
+ *
+ * @param {{ activeSeconds: number, expectedReadSeconds: number }} signals
+ * @returns {number} ratio of active time to expected read time (0 when expected is unknown)
+ */
+export function computeReadingPaceRatio({ activeSeconds, expectedReadSeconds }) {
+  if (!expectedReadSeconds || expectedReadSeconds <= 0) return 0;
+  return Math.round(((activeSeconds || 0) / expectedReadSeconds) * 100) / 100;
+}
+
+/**
+ * Compute return-visit metadata from a stored first-seen timestamp + visit count.
+ * Pure function operating on plain values (no localStorage access) for testability.
+ *
+ * @param {{ firstSeenAt: number | null, visitCount: number | null }} stored
+ * @param {number} now
+ * @returns {{ firstSeenAt: number, visitCount: number, daysSinceFirstSeen: number, isReturning: boolean }}
+ */
+export function computeReturnVisitMeta(stored, now) {
+  const firstSeenAt = stored?.firstSeenAt || now;
+  const visitCount = (stored?.visitCount || 0) + 1;
+  const daysSinceFirstSeen = Math.max(0, Math.floor((now - firstSeenAt) / (24 * 60 * 60 * 1000)));
+  return {
+    firstSeenAt,
+    visitCount,
+    daysSinceFirstSeen,
+    isReturning: visitCount > 1,
   };
 }
 
@@ -105,6 +199,18 @@ export function clarityEventNameFor(event, props = {}) {
   // UX events (mcq, search, exam, …) — same name in Clarity
   if (typeof event === 'string' && event && !event.startsWith('$')) return event;
   return null;
+}
+
+/**
+ * Rough word count for mixed Arabic/English/number text. Splits on whitespace, which is a
+ * reasonable approximation for both scripts since Arabic word-separation is space-based.
+ * @param {string} text
+ */
+export function countWords(text) {
+  if (!text) return 0;
+  const trimmed = String(text).trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
 }
 
 function virtualPath(segment) {
@@ -248,7 +354,7 @@ function loadPosthogSnippet(apiKey, apiHost) {
           return `${u.toString(1)}.people (stub)`;
         };
         const methods =
-          'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getSurveys getActiveMatchingSurveys identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id captureException set_config'.split(
+          'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getSurveys getActiveMatchingSurveys identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id captureException set_config on'.split(
             ' ',
           );
         for (let n = 0; n < methods.length; n++) g(u, methods[n]);
@@ -265,6 +371,9 @@ function loadPosthogSnippet(apiKey, apiHost) {
         capture_pageleave: false,
         persistence: 'localStorage+cookie',
         session_recording: { maskAllInputs: true },
+        capture_exceptions: true,
+        capture_dead_clicks: true,
+        rageclick: true,
         loaded: () => resolve(true),
       });
       // Fallback if loaded callback is slow / already ready
@@ -283,10 +392,39 @@ async function ensurePosthog() {
   try {
     await loadPosthogSnippet(key, host);
     posthogReady = true;
+    installGlobalErrorHandlers();
     return true;
   } catch {
     return false;
   }
+}
+
+let globalErrorHandlersInstalled = false;
+
+/** Best-effort: forward uncaught errors / rejections to PostHog error tracking. */
+function installGlobalErrorHandlers() {
+  if (globalErrorHandlersInstalled || typeof window === 'undefined') return;
+  globalErrorHandlersInstalled = true;
+
+  window.addEventListener('error', (event) => {
+    if (!posthogAvailable() || typeof window.posthog.captureException !== 'function') return;
+    try {
+      const err = event?.error instanceof Error ? event.error : new Error(String(event?.message || 'Unknown error'));
+      window.posthog.captureException(err, { ...getActiveContextProps(), source: 'window_onerror' });
+    } catch {
+      /* ignore */
+    }
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    if (!posthogAvailable() || typeof window.posthog.captureException !== 'function') return;
+    try {
+      const reason = event?.reason instanceof Error ? event.reason : new Error(String(event?.reason || 'Unhandled rejection'));
+      window.posthog.captureException(reason, { ...getActiveContextProps(), source: 'unhandled_rejection' });
+    } catch {
+      /* ignore */
+    }
+  });
 }
 
 function registerSuperProps() {
@@ -297,6 +435,45 @@ function registerSuperProps() {
       storage_prefix: context?.storagePrefix || 'study-guide',
       site_env: detectSiteEnv(),
     });
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Read/update first-seen + visit-count in localStorage; returns computed meta or null. */
+function trackReturnVisit() {
+  if (typeof window === 'undefined' || !window.localStorage) return null;
+  try {
+    const now = Date.now();
+    const raw = window.localStorage.getItem(RETURN_VISIT_STORAGE_KEY);
+    const stored = raw ? JSON.parse(raw) : null;
+    const meta = computeReturnVisitMeta(stored, now);
+    window.localStorage.setItem(
+      RETURN_VISIT_STORAGE_KEY,
+      JSON.stringify({ firstSeenAt: meta.firstSeenAt, visitCount: meta.visitCount, lastSeenAt: now }),
+    );
+    return meta;
+  } catch {
+    return null;
+  }
+}
+
+/** Register return-visit super properties + person properties on PostHog (best-effort). */
+function registerReturnVisitProps(meta) {
+  if (!meta || !posthogAvailable()) return;
+  try {
+    window.posthog.register({
+      is_returning_visitor: meta.isReturning,
+      visit_count: meta.visitCount,
+      days_since_first_seen: meta.daysSinceFirstSeen,
+    });
+    if (typeof window.posthog.setPersonProperties === 'function') {
+      window.posthog.setPersonProperties({
+        visit_count: meta.visitCount,
+        days_since_first_seen: meta.daysSinceFirstSeen,
+        is_returning_visitor: meta.isReturning,
+      });
+    }
   } catch {
     /* ignore */
   }
@@ -320,11 +497,15 @@ class StudySession {
     /** @type {Set<number>} */
     this.milestonesHit = new Set();
     this.scrollRoot = null;
+    this.interactionCount = 0;
+    this.ended = false;
+    this.wordCount = 0;
 
     this.onVisibilityChange = this.onVisibilityChange.bind(this);
     this.onActivity = this.onActivity.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.onPageHide = this.onPageHide.bind(this);
+    this.onInteraction = this.onInteraction.bind(this);
   }
 
   baseProps() {
@@ -338,8 +519,8 @@ class StudySession {
 
     this.resumeTicking();
     document.addEventListener('visibilitychange', this.onVisibilityChange);
-    document.addEventListener('click', this.onActivity, { passive: true });
-    document.addEventListener('keydown', this.onActivity, { passive: true });
+    document.addEventListener('click', this.onInteraction, { passive: true });
+    document.addEventListener('keydown', this.onInteraction, { passive: true });
     document.addEventListener('touchstart', this.onActivity, { passive: true });
     window.addEventListener('scroll', this.onScroll, { passive: true });
     window.addEventListener('pagehide', this.onPageHide);
@@ -347,9 +528,21 @@ class StudySession {
     requestAnimationFrame(() => this.checkScrollMilestones());
   }
 
+  /** Real content interaction: click / keydown within the session, or an explicit UX event. */
+  onInteraction() {
+    this.interactionCount += 1;
+    this.onActivity();
+  }
+
+  /** Called by trackUxEvent for meaningful UX actions (mcq, toc, search, …) tied to this session. */
+  noteMeaningfulInteraction() {
+    this.interactionCount += 1;
+  }
+
   /** Call after lecture HTML is in #content */
   attachContentRoot() {
     this.scrollRoot = document.getElementById('content');
+    this.wordCount = countWords(this.scrollRoot?.textContent || '');
     requestAnimationFrame(() => this.checkScrollMilestones());
   }
 
@@ -439,16 +632,25 @@ class StudySession {
   }
 
   onPageHide() {
-    this.end();
+    this.end('tab_closed');
   }
 
-  end() {
+  /**
+   * @param {'navigated_away' | 'tab_closed' | 'idle_timeout'} [reason]
+   */
+  end(reason = 'navigated_away') {
+    if (this.ended) return;
+    this.ended = true;
+
+    const exitReason = this.isIdle ? 'idle_timeout' : reason;
+    const exitScrollPct = this.readScrollDepth();
+
     this.pauseTicking();
     clearTimeout(this.idleTimer);
 
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
-    document.removeEventListener('click', this.onActivity);
-    document.removeEventListener('keydown', this.onActivity);
+    document.removeEventListener('click', this.onInteraction);
+    document.removeEventListener('keydown', this.onInteraction);
     document.removeEventListener('touchstart', this.onActivity);
     window.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('pagehide', this.onPageHide);
@@ -457,10 +659,29 @@ class StudySession {
     const maxScroll = this.milestonesHit.size
       ? Math.max(...this.milestonesHit)
       : 0;
+    const engagementLevel = classifyEngagement({
+      activeSeconds: seconds,
+      maxScrollPct: maxScroll,
+      interactionCount: this.interactionCount,
+    });
+    const expectedReadSeconds = estimateReadSeconds(this.wordCount);
+    const readingPaceRatio = computeReadingPaceRatio({
+      activeSeconds: seconds,
+      expectedReadSeconds,
+    });
+    const meaningfulOpen = seconds >= MEANINGFUL_OPEN_SECONDS;
 
     const endProps = buildSessionEndProps(this.baseProps(), {
       activeSeconds: seconds,
       maxScrollPct: maxScroll,
+      exitScrollPct,
+      exitReason,
+      interactionCount: this.interactionCount,
+      engagementLevel,
+      wordCount: this.wordCount,
+      expectedReadSeconds,
+      readingPaceRatio,
+      meaningfulOpen,
     });
     capture('study_session_end', endProps);
 
@@ -492,8 +713,13 @@ export function initAnalytics(options = {}) {
   };
   window.addEventListener('pagehide', endActiveSession);
 
+  const visitMeta = trackReturnVisit();
+
   ensurePosthog().then((ok) => {
-    if (ok) registerSuperProps();
+    if (ok) {
+      registerSuperProps();
+      registerReturnVisitProps(visitMeta);
+    }
   });
 }
 
@@ -546,12 +772,26 @@ export function getActiveContextProps() {
   return currentBase(virtualPath('home'), 'home', 'home');
 }
 
+/** UX events that indicate real studying, not just passive viewing. */
+const MEANINGFUL_UX_EVENTS = new Set([
+  'mcq_answered',
+  'toc_navigated',
+  'jump_to_summary',
+  'expand_original_toggled',
+  'search_performed',
+  'search_result_clicked',
+  'lecture_progress_toggled',
+  'exam_started',
+  'exam_finished',
+]);
+
 /**
  * Fire a UX event with full study context merged in.
  * @param {string} event
  * @param {Record<string, unknown>} [extra]
  */
 export function trackUxEvent(event, extra = {}) {
+  if (MEANINGFUL_UX_EVENTS.has(event)) activeSession?.noteMeaningfulInteraction();
   capture(event, { ...getActiveContextProps(), ...extra });
 }
 

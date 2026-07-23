@@ -93,9 +93,13 @@
 | الحدث | المعنى |
 |--------|--------|
 | `content_viewed` | فتح محتوى (رئيسية / محاضرة / دورات / ملاحظات) |
-| `study_session_end` | نهاية جلسة دراسة + `active_seconds` و `max_scroll_pct` |
+| `study_session_end` | نهاية جلسة دراسة + `active_seconds`, `max_scroll_pct`, `exit_scroll_pct` (وين وصل فعلياً لما طلع), `exit_reason` (`navigated_away`/`tab_closed`/`idle_timeout`), `engagement_level` (`studier`/`watcher`) |
 | `scroll_milestone` | وصل 25/50/75/100٪ سكرول |
 | `focus_milestone` | وصل دقيقة / 5 / 15 تركيز |
+
+**studier vs watcher**: كل جلسة بتتصنف تلقائياً — `studier` إذا قعد ٣٠ ثانية+ وسكرول ٤٠٪+ (أو تفاعل فعلي زي إجابة سؤال / بحث / TOC)، غير هيك `watcher`. منيح لتمييز اللي فعلاً بيذاكر عن اللي بس فاتح الصفحة.
+
+**زوار عائدون**: كل event فيه كمان `is_returning_visitor`, `visit_count`, `days_since_first_seen` (محسوبة من `localStorage`، بدون أي معلومة شخصية).
 
 ### تعلم وتجربة استخدام
 

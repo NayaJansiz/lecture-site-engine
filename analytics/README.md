@@ -40,7 +40,7 @@ Clarity project ID `xim6tigbcd` stays hardcoded (same as before) — no secret n
 | `$pageview` / `content_viewed` | tags only (`page`, …) | Home, lecture, DAWRAT, note, exam open | `subject`, `page`, `content_type`, `content_id` |
 | `scroll_milestone` | `scroll_25` … `scroll_100` | Scroll depth | above + `milestone_pct` |
 | `study_idle` | `{type}_idle` | 2 min without activity | above + `idle_after_seconds` |
-| `study_session_end` | `{type}_session_end` | Leave content | above + `active_seconds`, `max_scroll_pct` |
+| `study_session_end` | `{type}_session_end` | Leave content | above + `active_seconds`, `max_scroll_pct`, `exit_scroll_pct`, `exit_reason` (`navigated_away`\|`tab_closed`\|`idle_timeout`), `interaction_count`, `engagement_level` (`studier`\|`watcher`) |
 | `focus_milestone` | `{type}_focus_1min` / `_5min` / `_15min` | Focus thresholds | above + `focus_minutes` |
 | `hub_pageview` | `hub_pageview` | Hub index load | `site_env`, `page` |
 | `hub_subject_click` | `hub_subject_click` | Subject card click | `subject_id`, `year` |
@@ -64,7 +64,43 @@ Clarity project ID `xim6tigbcd` stays hardcoded (same as before) — no secret n
 | `content_load_failed` | Lecture / search / exam load error | `failure_kind`, `message` (truncated) |
 
 Super properties (PostHog, subject pages): `subject`, `storage_prefix`, `site_env`
-(`production` / `sandbox` / `local`).
+(`production` / `sandbox` / `local`), plus return-visit properties below.
+
+### Engagement classification: studier vs. watcher
+
+`study_session_end` carries `engagement_level`, computed client-side per session
+(`classifyEngagement` in `site-shell/js/analytics.js`, pure function, unit tested):
+
+- **studier**: `active_seconds >= 30` **and** (`max_scroll_pct >= 40` **or** at least one
+  meaningful interaction — MCQ answered, TOC navigation, search, progress toggle, expand
+  original, exam started/finished)
+- **watcher**: everything else — content was opened but there's little evidence of real
+  reading/engagement (e.g. tab left open, or a quick glance)
+
+`interaction_count` is also on the event, so you can build finer buckets than the two-level
+label if needed.
+
+### Where people give up
+
+`study_session_end` now also carries:
+
+- `exit_scroll_pct` — actual scroll depth at the moment the session ended (vs.
+  `max_scroll_pct`, which is the highest milestone ever reached — useful when someone
+  scrolls back up before leaving)
+- `exit_reason` — `navigated_away` (clicked elsewhere in the SPA), `tab_closed` (pagehide),
+  or `idle_timeout` (2 min inactivity before leaving)
+
+Use `exit_scroll_pct` broken down by `content_id` to find the lecture/section where students
+consistently stop reading.
+
+### Return visitors
+
+Tracked client-side via `localStorage` (`sg_visit_meta_v1`, no PII — just a timestamp and a
+counter) and registered as PostHog super properties + person properties on every event:
+
+- `is_returning_visitor` (boolean)
+- `visit_count` (number of visits from this browser)
+- `days_since_first_seen` (number)
 
 ## Build wiring
 
